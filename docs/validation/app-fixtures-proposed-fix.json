@@ -1,0 +1,140 @@
+{
+  "proposed_warning_patch_applied_in_memory": true,
+  "archive_bytes": 43672,
+  "archive_sha256": "0f91ef84734b0852d563684a6dd871353ad3fc3a9420fb02e73ccf0af8ffab4d",
+  "archive_members": 43,
+  "manifest_entries_verified": 42,
+  "canonical_fixtures": [
+    {
+      "file": "canonical-accepted.json",
+      "model": "JobAccepted",
+      "valid": true
+    },
+    {
+      "file": "canonical-cancel-requested.json",
+      "model": "JobStatus",
+      "valid": true
+    },
+    {
+      "file": "canonical-cancelled.json",
+      "model": "JobStatus",
+      "valid": true
+    },
+    {
+      "file": "canonical-error-conflict.json",
+      "model": "ErrorResponse",
+      "valid": true
+    },
+    {
+      "file": "canonical-error-missing.json",
+      "model": "ErrorResponse",
+      "valid": true
+    },
+    {
+      "file": "canonical-error-not-ready.json",
+      "model": "ErrorResponse",
+      "valid": true
+    },
+    {
+      "file": "canonical-failed.json",
+      "model": "JobStatus",
+      "valid": true
+    },
+    {
+      "file": "canonical-layout.json",
+      "model": "JobStatus",
+      "valid": true
+    },
+    {
+      "file": "canonical-options-auto.json",
+      "model": "JobOptions",
+      "valid": true
+    },
+    {
+      "file": "canonical-options-one-cell.json",
+      "model": "JobOptions",
+      "valid": true
+    },
+    {
+      "file": "canonical-options.json",
+      "model": "JobOptions",
+      "valid": true
+    },
+    {
+      "file": "canonical-queued.json",
+      "model": "JobStatus",
+      "valid": true
+    },
+    {
+      "file": "canonical-replayed.json",
+      "model": "JobAccepted",
+      "valid": true
+    },
+    {
+      "file": "canonical-result-cell-failed.json",
+      "model": "JobResult",
+      "valid": true
+    },
+    {
+      "file": "canonical-result-corrected.json",
+      "model": "JobResult",
+      "valid": true
+    },
+    {
+      "file": "canonical-result-partial.json",
+      "model": "JobResult",
+      "valid": true
+    },
+    {
+      "file": "canonical-result-review.json",
+      "model": "JobResult",
+      "valid": true
+    },
+    {
+      "file": "canonical-result.json",
+      "model": "JobResult",
+      "valid": true
+    },
+    {
+      "file": "canonical-running.json",
+      "model": "JobStatus",
+      "valid": true
+    },
+    {
+      "file": "canonical-segmentation.json",
+      "model": "JobStatus",
+      "valid": true
+    },
+    {
+      "file": "canonical-succeeded.json",
+      "model": "JobStatus",
+      "valid": true
+    }
+  ],
+  "negative_semantics": [
+    {
+      "mutation": "order",
+      "rejected": true
+    },
+    {
+      "mutation": "blank",
+      "rejected": true
+    },
+    {
+      "mutation": "bounds",
+      "rejected": true
+    },
+    {
+      "mutation": "null_flattened",
+      "rejected": true
+    }
+  ],
+  "image": {
+    "width": 300,
+    "height": 100,
+    "sha256": "31c84bba54f8c7ca9a40a1c53cef38afe79a7e630a39cb5b012f5272a3c284c1",
+    "app_base64_matches": true
+  },
+  "supplied_openapi_matches_current": true,
+  "scope": "Offline service-model validation only; no HTTP, app adapter, database or accuracy acceptance"
+}
