@@ -8,4 +8,5 @@ COPY scriptalocal /app/scriptalocal
 COPY tests /app/tests
 COPY docs/api/examples /app/docs/api/examples
 COPY scripts/export_contract.py /app/scripts/export_contract.py
+COPY scripts/validation/export_manuscript_result.py /app/scripts/validation/export_manuscript_result.py
 CMD ["python", "-m", "unittest", "discover", "-s", "tests", "-v"]
