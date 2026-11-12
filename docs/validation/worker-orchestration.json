@@ -1,0 +1,35 @@
+{
+  "tests": 16,
+  "passed": 16,
+  "seconds": 6.345,
+  "database": "isolated real PostgreSQL queue validation database",
+  "runner_image": "sha256:61e14e651877ac85c73b3d01746020ed67f9c8053753670877da1a2d386fbd36",
+  "fault_scope": "controlled heartbeat/commit exceptions and explicit lease expiry; real database transactions",
+  "verified": [
+    "lazy handler stays leased beyond original deadline",
+    "cancellation checkpoint and acknowledgement prevent publication",
+    "expired old attempt fenced after replacement claim",
+    "startup/midstage heartbeat outages fail closed",
+    "stalled heartbeat drain prevents new work/publication",
+    "bounded retry and public error redaction",
+    "invalid completion fails explicitly",
+    "profile-specific routing",
+    "committed same-job/revision predecessor artifacts only",
+    "ambiguous commit response retains one output/next stage",
+    "cancellation acknowledgement outage requires restart",
+    "server-side statement timeout"
+  ],
+  "core_tests": 65,
+  "original_queue_tests": 20,
+  "scope": "generic stage orchestration and adapter checkpoints; actual full-row GPU pipeline/HTTP worker remains open",
+  "source_sha256": {
+    "scriptalocal/job_queue.py": "5c10e99a81044d04865202312d94b825969e889582741479ceab0ead0b3c1091",
+    "scriptalocal/worker.py": "e396d373bbb30dae2a1b1f5e3a415da9935b5e9a0f7c29782ab6b0068c37fef0",
+    "scriptalocal/worker_control.py": "dbae5f9a7c621ef597bdbd86571f8301763c1d1ea8f751cebc1485118d91eb5b",
+    "scriptalocal/recognition.py": "81682644c107969cb4a75ed85bace7eb72cc3a7b51b68a3d649e6b1dde9c3d0b",
+    "scriptalocal/segmentation.py": "924f5bcb3ac00fedcab857a890f9e7f02cd1f8b1150284e1e450b8067ec5e269",
+    "integration_tests/test_workers.py": "fb597c616d91f74e9719a87b3a06341b98fc78457fdd5c1e8405b12d99a55c29"
+  },
+  "original_queue_suite_seconds": 6.902,
+  "original_queue_suite_evidence": "worker-queue-tests.txt"
+}
