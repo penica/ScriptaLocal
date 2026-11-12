@@ -31,7 +31,7 @@ def read_dsn(path):
 def build_app(config_path):
     data=private_json(absolute_path(str(config_path)),65536)
     required={'dsn_file','originals_root','artifacts_root','credentials_file','profiles_file'}
-    allowed=required|{'api','queue','maximum_artifact_bytes','maximum_ready_age_seconds'}
+    allowed=required|{'api','queue','maximum_artifact_bytes','maximum_ready_age_seconds','operator_settings_file'}
     if not isinstance(data,dict) or not required<=data.keys() or data.keys()-allowed:
         raise ValueError('Invalid server configuration keys')
     paths={name:absolute_path(data[name]) for name in required}
@@ -45,7 +45,8 @@ def build_app(config_path):
     profiles=ProfileRegistry(paths['profiles_file'],maximum_ready_age_seconds=data.get('maximum_ready_age_seconds',60))
     # Readiness reports missing schema/model readiness. Startup does not migrate,
     # provision models, or assume a worker exists merely because files exist.
-    return create_app(queue,sources,credentials,profiles,settings=settings)
+    operator=absolute_path(data['operator_settings_file']) if 'operator_settings_file' in data else None
+    return create_app(queue,sources,credentials,profiles,settings=settings,operator_path=operator)
 
 
 def application():
