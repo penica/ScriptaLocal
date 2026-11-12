@@ -1,5 +1,7 @@
 # Validation evidence
 
+Current priority: functional service and Registers integration. The owner explicitly deferred accuracy/model-training work from the current critical path; quality-specific acceptance remains unmeasured and must not be inferred from functional tests.
+
 Validation started 12 November 2026. Application acceptance is not established by these foundation probes.
 
 ## Storage
@@ -118,3 +120,7 @@ The 43,672-byte fixture ZIP checksum, intake registry receipt and all 42 manifes
 ## Resident HTTP execution and recovery
 
 `ocr-http-bootstrap.json` records initial authenticated fail-closed startup without a worker. `resident-http.json` records two sequential real GPU jobs through HTTP with one model load, a third job recovered after SIGKILL during segmentation, exactly one final revision/result, and unchanged original bytes. Five readiness component tests pass. API restart preserved all three results; clean worker stop removed readiness. Temporary validation services are stopped. [API behavior](../ocr-api-validation.md) and [resident worker reproduction and limits](../resident-worker-validation.md) distinguish this from pending production deployment, artifact discovery, corrections, Registers integration, broader quality and throughput acceptance.
+
+## Artifacts, correction revisions and initial local restore
+
+`artifact-access.json` records all 102 derived artifacts and three job-scoped original downloads from a separately restored database. `backup-restore-first.json` records 103 verified data-file checksums at the configured local backup destination; [restore scope](../backup-restore-validation.md) leaves correction-history restoration and rollback open. `revisions.json` records 30 API, 16 pipeline, 21 queue, 16 worker and 65 core checks plus real text/geometry edits, immutable raw/history results, stale-save conflict and persistence across a PostgreSQL restart. These runs used synthetic correction values, never training ground truth. [Revision behavior](../revision-validation.md) documents bounds and identity semantics.
