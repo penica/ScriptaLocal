@@ -24,7 +24,7 @@ def document():
                (404,'Resource not found'),(409,'Conflict or result not ready'),
                (413,'Upload or dimensions exceed configured limit'),
                (415,'Unsupported format or multiple frames'),(422,'Invalid request'),
-               (429,'Queue or concurrency limit reached'),(503,'Required component unavailable')]}
+               (429,'Queue or concurrency limit reached'),(500,'Unexpected service error'),(503,'Required component unavailable')]}
     job_parameter = {'name':'job_id','in':'path','required':True,
                      'schema':{'type':'string','format':'uuid'}}
     paths = {}
@@ -56,17 +56,23 @@ def document():
                                  'contentMediaType':'application/json',
                                  'contentSchema':{'$ref':'#/components/schemas/JobOptions'}}}}}}}
     add('/v1/jobs/{job_id}','get','job_status','JobStatus')
-    add('/v1/jobs/{job_id}/result','get','job_result','JobResult')
+    result=add('/v1/jobs/{job_id}/result','get','job_result','JobResult',parameters=[
+        {'name':'revision','in':'query','required':False,'schema':{'type':'integer','minimum':1}}])
+    result['description']='Returns the latest completed result when the current job succeeds. An explicit revision retrieves immutable completed history even while a newer revision is queued, cancelled or failed.'
     add('/v1/jobs/{job_id}/cancel','post','cancel_job','JobStatus')
     add('/v1/jobs/{job_id}','delete','delete_job',status=204)
     revision=add('/v1/jobs/{job_id}/revisions','post','revise_job','JobAccepted',202,body='RevisionInput')
     revision['description']='Creates a new revision without changing prior raw output. Geometry changes queue downstream processing; text-only revisions queue assembly. Stale expected_revision returns 409.'
+    inventory=add('/v1/jobs/{job_id}/artifacts','get','list_artifacts','ArtifactInventory',parameters=[
+        {'name':'after','in':'query','required':False,'schema':{'type':'string','format':'uuid'}},
+        {'name':'limit','in':'query','required':False,'schema':{'type':'integer','minimum':1,'maximum':200,'default':100}}])
+    inventory['description']='Returns a job-wide original descriptor and UUID-ordered committed artifacts. Follow next_cursor as after. Repeat enumeration after completion if stages or revisions were changing during pagination. Filesystem paths are never returned.'
     artifact=add('/v1/jobs/{job_id}/artifacts/{artifact_id}','get','retrieve_artifact',parameters=[{
         'name':'artifact_id','in':'path','required':True,'schema':{'type':'string','format':'uuid'}}])
     artifact['responses']['200']={'description':'Authorized job artifact; path is never supplied by the caller.',
-                                 'content':{'application/octet-stream':{'schema':{'type':'string','format':'binary'}}}}
+                                 'content':{mime:{'schema':{'type':'string','format':'binary'}} for mime in ['application/octet-stream','image/png','image/jpeg','image/tiff']}}
     return {'openapi':'3.1.0','info':{'title':'ScriptaLocal API','version':'1.0.0-design',
-             'description':'Designed contract; endpoints are not yet implemented. All geometry uses original encoded pixel edges.'},
+             'description':'Version 1 contract with an API prototype, immutable revision history and queued corrections. All geometry uses original encoded pixel edges.'},
             'security':[{'BearerAuth':[]}], 'paths':paths,
             'components':{'schemas':schemas,'securitySchemes':{'BearerAuth':{
                 'type':'http','scheme':'bearer','description':'Server-issued token with read, write or delete capability; never embed credentials in browser bundles.'}}}}
