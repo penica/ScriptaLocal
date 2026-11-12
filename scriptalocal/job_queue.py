@@ -10,7 +10,7 @@ import psycopg
 from psycopg.rows import dict_row
 from psycopg.types.json import Jsonb
 
-from .contracts import JobOptions,JobResult,SourceImage
+from .contracts import JobOptions,JobResult,RevisionInput,SourceImage
 from .job_artifacts import ArtifactError,ArtifactRecord,ArtifactStore
 
 STAGES=('layout','segmentation','recognition')
@@ -109,7 +109,7 @@ class JobQueue:
         with self.connect() as db:
             history=db.execute('SELECT version,sha256 FROM sl_schema_migrations').fetchall()
             if {row['version']:row['sha256'] for row in history}!=expected:return False
-            for table in ('sl_jobs','sl_stages','sl_artifacts','sl_deletions'):
+            for table in ('sl_jobs','sl_stages','sl_artifacts','sl_deletions','sl_revision_edits'):
                 # Table names are fixed literals, never request input.
                 db.execute('SELECT 1 FROM '+table+' LIMIT 0')
         return True
@@ -309,6 +309,51 @@ class JobQueue:
                 raise QueueError('stage_input_unavailable','Committed predecessor output is unavailable')
             return tuple(ArtifactRecord(row['id'],row['logical_key'],row['relative_path'],row['sha256'],row['bytes']) for row in rows)
 
+    def revise(self,identifier,owner,request):
+        from .corrections import validate_geometry
+        owner=principal(owner);request=RevisionInput.model_validate(request).model_dump(mode='json')
+        with self.connect() as db:
+            db.execute('SELECT pg_advisory_xact_lock(7346002)')
+            job=self._job(db,identifier,owner,lock=True)
+            if job['current_revision']!=request['expected_revision']:raise QueueError('revision_conflict','Revision changed; reload before saving')
+            if job['status']!='succeeded':raise QueueError('result_not_ready','Only a completed revision can be revised')
+            if db.execute("SELECT count(*) AS count FROM sl_jobs WHERE status IN ('queued','running')").fetchone()['count']>=self.settings.maximum_active_jobs:
+                raise QueueError('queue_full','Job queue has reached its active-job limit')
+            row=db.execute('SELECT a.* FROM sl_revisions r JOIN sl_artifacts a ON a.id=r.result_artifact_id WHERE r.job_id=%s AND r.revision=%s',(identifier,job['current_revision'])).fetchone()
+            if row is None:raise ArtifactError('Base result is unavailable')
+            base=JobResult.model_validate_json(self.artifacts.read(ArtifactRecord(row['id'],row['logical_key'],row['relative_path'],row['sha256'],row['bytes'])))
+            if base.job_id!=identifier or base.revision!=job['current_revision'] or base.source.model_dump(mode='json')!=job['source'] or base.provenance.configuration_sha256!=job['configuration_sha256']:
+                raise ArtifactError('Base result metadata differs')
+            ids={str(line.id) for cell in base.cells for line in cell.lines}
+            if any(item['line_id'] not in ids for item in request['text_corrections']):raise QueueError('invalid_revision','Correction target is not in the base revision')
+            options=dict(job['options']);geometry=request['corrected_dividers']
+            if geometry is not None:
+                row=db.execute("SELECT a.* FROM sl_stages s JOIN sl_artifacts a ON a.id=s.output_artifact_id WHERE s.job_id=%s AND s.revision<=%s AND s.name='layout' AND s.status='succeeded' ORDER BY s.revision DESC LIMIT 1",(identifier,job['current_revision'])).fetchone()
+                if row is None:raise ArtifactError('Layout configuration is unavailable')
+                layout=json.loads(self.artifacts.read(ArtifactRecord(row['id'],row['logical_key'],row['relative_path'],row['sha256'],row['bytes'])))
+                try:
+                    configuration=layout['configuration']
+                    if canonical_hash(configuration)!=job['configuration_sha256']:raise ValueError('Configuration differs')
+                    validate_geometry(job['source'],geometry,configuration['settings']['layout']['minimum_cell_width'])
+                except (KeyError,TypeError,ValueError):raise QueueError('invalid_revision','Divider geometry is invalid for this job') from None
+                options['corrected_dividers']=geometry
+            revision=job['current_revision']+1
+            db.execute("INSERT INTO sl_revisions(job_id,revision,options,state) VALUES(%s,%s,%s,'pending')",(identifier,revision,Jsonb(options)))
+            db.execute('INSERT INTO sl_revision_edits(job_id,revision,base_revision,actor,request) VALUES(%s,%s,%s,%s,%s)',(identifier,revision,job['current_revision'],owner,Jsonb(request)))
+            self._new_stage(db,identifier,revision,'layout' if geometry is not None else 'recognition')
+            db.execute("UPDATE sl_jobs SET current_revision=%s,options=%s,status='queued',cancel_requested=false,error_code=NULL,updated_at=clock_timestamp() WHERE id=%s",(revision,Jsonb(options),identifier))
+            return db.execute('SELECT * FROM sl_jobs WHERE id=%s',(identifier,)).fetchone()
+
+    def revision_edit(self,lease):
+        with self.connect() as db:
+            job,stage=self._locked(db,lease);self._assert_live(job,stage,lease)
+            if job['cancel_requested']:raise QueueError('cancel_requested','Cancellation was requested')
+            edit=db.execute('SELECT * FROM sl_revision_edits WHERE job_id=%s AND revision=%s',(lease.job_id,lease.revision)).fetchone()
+            if edit is None or not edit['request']['text_corrections']:return None
+            row=db.execute('SELECT a.* FROM sl_revisions r JOIN sl_artifacts a ON a.id=r.result_artifact_id WHERE r.job_id=%s AND r.revision=%s',(lease.job_id,edit['base_revision'])).fetchone()
+            if row is None:raise ArtifactError('Base revision artifact is unavailable')
+            return edit,ArtifactRecord(row['id'],row['logical_key'],row['relative_path'],row['sha256'],row['bytes'])
+
     def find_idempotent(self,owner,key):
         owner=principal(owner)
         if not isinstance(key,str) or not re.fullmatch(r'[!-~]{1,128}',key):raise ValueError('Invalid idempotency key')
@@ -328,11 +373,12 @@ class JobQueue:
             db.execute('DELETE FROM sl_jobs WHERE id=%s',(identifier,))
             return request_id
 
-    def result_reference(self,identifier,owner):
+    def result_reference(self,identifier,owner,revision=None):
         with self.connect() as db:
             job=self._job(db,identifier,owner)
-            if job['status']!='succeeded':raise QueueError('result_not_ready','A completed result is not available')
+            if revision is None and job['status']!='succeeded':raise QueueError('result_not_ready','A completed result is not available')
+            selected=job['current_revision'] if revision is None else revision
             record=db.execute('SELECT a.* FROM sl_revisions r JOIN sl_artifacts a ON a.id=r.result_artifact_id WHERE r.job_id=%s AND r.revision=%s',
-                              (identifier,job['current_revision'])).fetchone()
-            if record is None:raise QueueError('result_unavailable','Result metadata is unavailable')
+                              (identifier,selected)).fetchone()
+            if record is None:raise QueueError('result_not_ready','A completed revision result is not available')
             return ArtifactRecord(record['id'],record['logical_key'],record['relative_path'],record['sha256'],record['bytes'])
