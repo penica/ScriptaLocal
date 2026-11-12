@@ -106,10 +106,11 @@ Use TODO, DOING or BLOCKED with an unchecked box; use DONE with a checked box on
   - Done when: Use pinned Kraken segmentation with line extraction, baseline ordering and original-coordinate mapping. Verify multiline, overlapping, blank and long-line cases; expose segmentation failure and review reasons instead of successful empty output.
   - Evidence, 12 November 2026: Added reusable scale-preserving segmentation and a lazy resident Kraken adapter with pinned-weight verification. 53 core tests pass (seven new segmentation cases): baseline order/stable IDs, blank versus missing-line states, context/overlap review, EXIF mapping, long lines, canvas/crop/count limits and clipped versus raw geometry. Offline real GPU adapter finds three lines in the manual cell in 8.375 seconds; geometry boundary warnings remain explicit. Full-row/downstream and corpus acceptance remain open. See docs/segmentation-validation.md and docs/validation/segmentation-reusable.json.
 
-- [ ] **HTR-015 — Implement resident recognition worker** — TODO
-  - Owner: unassigned.
+- [ ] **HTR-015 — Implement resident recognition worker** — DOING
+  - Owner: current chat.
   - Depends on: HTR-010, HTR-014.
   - Done when: Keep TrOCR loaded, batch bounded single-line images, preserve verbatim output and detect generation truncation. Compare FP32/FP16, handle OOM with bounded recovery, record model revision and avoid uncalibrated confidence claims.
+  - Evidence, 12 November 2026: Added resident offline TrOCR adapter with pinned manifest/file checksums, bounded scheduler, verbatim text, explicit empty/truncated/wide-line review and bounded OOM batch splitting without precision/provider changes. Seven new recognition tests bring the core suite to 63 passing checks. Real three-line GPU runs reused each loaded model; FP32/FP16 outputs matched on this sample, using 1,478,038,528/761,414,656 bytes peak CUDA allocation and 0.545/0.348-second warm batches. Controlled CUDA OOM recovery preserved the same output; a real one-token limit correctly marked all three lines truncated/needs-review. Task remains open for leased-worker integration and broader quality acceptance. See docs/recognition-validation.md and docs/validation/recognition-*.json.
 
 - [x] **HTR-016 — Add persistent jobs and leased stage queue** — DONE
   - Owner: current chat.
@@ -146,6 +147,8 @@ Use TODO, DOING or BLOCKED with an unchecked box; use DONE with a checked box on
 
 
   - Evidence, 12 November 2026: Registers supplied a checksum-verified 43,672-byte fixture ZIP with 42 manifest entries. Its 40 tests pass unchanged. Service semantic validation accepts 18/21 fixtures; three missing cell/line warning scopes are reported, and proposed in-memory warning additions make 21/21 pass without altering source bytes. Published semantic CLI/rules and seven-question clarification for Registers/Builder. Real adapter, HTTP round trip and unresolved lifecycle/resource gates remain open. Evidence: docs/validation/app-fixtures.json and app-fixtures-proposed-fix.json.
+
+  - Evidence, 12 November 2026 (revised fixtures): Received 95,735-byte revised ZIP, SHA-256 9fd05b62b1057e5647340c1015712c2ff6419bf8b0e14573ee834288f9025078. Its 52 tests pass unchanged and all 21 canonical fixtures pass service-model semantics. Compared all canonical objects: only the three agreed warning arrays changed; text, geometry and IDs are unchanged. Four invalid semantic mutations remain rejected. This completes the current fixture-warning correction acceptance, not the application adapter or HTTP round trip. Evidence: docs/validation/app-fixtures-revised.json and app-fixture-revised-tests.txt.
 
 - [ ] **HTR-022 — Benchmark recognition and layout quality** — TODO
   - Owner: unassigned.
