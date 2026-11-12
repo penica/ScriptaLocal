@@ -1,0 +1,13 @@
+# Manual submission workspace
+
+Open **https://scripta.penic.net:8093/ui** and sign in with the dedicated access key. The local key file is `data/service/secrets/manual-ui.token`; do not commit it or use the Cloudflare/administrator credential. New installations generate this key through `scripts.configure_service`.
+
+Choose a PNG, JPEG or single-image TIFF crop, preview it where the browser supports that format, and press **Transcribe image**. The page follows queued/layout/segmentation/recognition states and shows ordered cells, blank/unknown readings and review warnings. You can cancel, reopen a submission by ID, copy text or download text/JSON. JSON preserves raw readings and null values; the human-readable text export uses explicit unavailable markers. The current browser tab remembers only the last submission ID, never the access key.
+
+The Settings panel lets an authorized `configure` credential save the backup destination. This persists in `data/service/operations/operator.json`, mounted separately from read-only credentials/settings. Automatic backups are not enabled by this UI. No folder creation or scan writes are triggered by saving that destination. The old `settings/operator.json` is retained as rollback material on the existing host; the operations file is now authoritative.
+
+Sessions live in server memory for at most eight hours, with a bounded session/login-attempt count. The browser receives a Secure, HttpOnly, SameSite=Strict `__Host-` cookie, not a bearer token. API requests still revalidate the underlying credential and keep existing caller ownership/capabilities. Cookie-authenticated mutations need a session CSRF header; sign-in rejects cross-origin requests. Revocation applies immediately. API restart clears browser sessions and requires sign-in again. Static assets contain no key, use no external scripts, and render readings as text rather than HTML.
+
+The workspace is a separately authorized task after the broad validation goal was paused. It does not resume that goal or replace the Registers application. Existing bearer API clients continue working, and the GPU worker/model deployment is unchanged.
+
+Validation: four isolated PostgreSQL UI cases passed for sessions, CSRF, ownership, revocation/expiry, settings permissions and persistence. The original 30 API and 65 core tests passed. A real Chromium run submitted the supplied row and displayed 18 cells/24 lines, exported JSON, reopened after reload, saved the existing backup destination, signed out and checked a 390px layout without horizontal overflow or uncaught page errors. Screenshots/raw readings stay private under `data/validation/manual-ui-browser/`.
