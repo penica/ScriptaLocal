@@ -1,0 +1,14 @@
+{
+  "pipeline_integration_tests": 11,
+  "seconds": 8.379,
+  "core_tests": 65,
+  "runner_image": "sha256:cb0d1d04adf50a5fa237082912fbc6163713bdc179c54ba73782e501934b5f27",
+  "installed_packages": 171,
+  "constraints_match": "exact",
+  "constraints_sha256": "0f62b5226d99841d263a3cfb99d6ca3a8905b7b1ace874c5afc7daa646cb5a6a",
+  "compose_config": "passed, external dedicated internal database network",
+  "integration_models": "synthetic substitutes; no GPU/model accuracy claim",
+  "real_gpu_evidence": "queued-full-row.json",
+  "real_source_hashes_match_checkout": true,
+  "scope": "full-row stage assembly and queue integration; HTTP/application/quality release remains open"
+}
