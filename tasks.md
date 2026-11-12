@@ -137,13 +137,15 @@ Use TODO, DOING or BLOCKED with an unchecked box; use DONE with a checked box on
   - Depends on: HTR-019.
   - Done when: Verify offline inference after provisioning, no silent cloud fallback, redacted logs, controlled paths, decoder limits and protected credentials. Provide opt-in LAN routing with scoped authentication, HTTPS and narrow CORS; keep default loopback deployment working.
 
-- [ ] **HTR-021 — Provide caller client and provider integration** — TODO
-  - Owner: unassigned.
+- [ ] **HTR-021 — Provide caller client and provider integration** — DOING
+  - Owner: current chat.
   - Depends on: HTR-007, HTR-017, HTR-020.
   - Done when: Ship a usable upload/poll/export client. Once existing-app source or provider contract is supplied, add Local HTR selection, service configuration, progress, actionable errors and cell-preserving result import; test a real round trip while retaining explicit Codex choice. Record external integration as incomplete until tested.
   - Evidence, 12 November 2026: Created docs/existing-app-handover.md with a ready-to-send request for the other AI coder covering crop/provider/result contracts, networking, revisions and sanitized fixtures. The initial handover request preceded receipt of the app contract.
   - Evidence, 12 November 2026: Created ignored data/integration-handover/ for the two files supplied by the existing app coding agent; both documents are now received and checksum-verified. Reviewed API differences in docs/registers-integration-response.md; referenced synthetic PNG/JSON fixtures were not included and remain needed for cross-app acceptance.
 
+
+  - Evidence, 12 November 2026: Registers supplied a checksum-verified 43,672-byte fixture ZIP with 42 manifest entries. Its 40 tests pass unchanged. Service semantic validation accepts 18/21 fixtures; three missing cell/line warning scopes are reported, and proposed in-memory warning additions make 21/21 pass without altering source bytes. Published semantic CLI/rules and seven-question clarification for Registers/Builder. Real adapter, HTTP round trip and unresolved lifecycle/resource gates remain open. Evidence: docs/validation/app-fixtures.json and app-fixtures-proposed-fix.json.
 
 - [ ] **HTR-022 — Benchmark recognition and layout quality** — TODO
   - Owner: unassigned.
