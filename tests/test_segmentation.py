@@ -8,6 +8,7 @@ from PIL import Image,ImageDraw
 
 from scriptalocal.images import decode_image
 from scriptalocal.layout import Cell,LayoutSettings,extract_cell
+from scriptalocal.worker_control import ProcessingInterrupted
 from scriptalocal.segmentation import DetectedLine,SegmentationError,SegmentationSettings,segment_cell
 
 
@@ -99,6 +100,17 @@ class SegmentationTests(unittest.TestCase):
         result=self.run_cell(lambda _:[self.detection(x=1,right=8)])
         self.assertEqual(len(result.unassigned_lines),1)
         self.assertEqual(result.unassigned_lines[0].pixels.size,(7,12))
+
+    def test_checkpoint_cancellation_is_not_hidden_as_segmentation_failure(self):
+        calls=[]
+        def checkpoint():
+            if calls:raise ProcessingInterrupted('cancel_requested')
+        def backend(_):
+            calls.append(True)
+            yield self.detection()
+        with self.assertRaises(ProcessingInterrupted):
+            segment_cell(self.identifier,self.crop,backend,original_size=(300,160),settings=self.settings,checkpoint=checkpoint)
+        self.assertEqual(len(calls),1)
 
     def test_long_line_keeps_pixels_without_splitting_or_resizing(self):
         line=replace(self.detection(),pixels=Image.new('RGB',(4000,30),'white'))
