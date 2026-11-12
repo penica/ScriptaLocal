@@ -3,6 +3,7 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+import ssl
 import time
 import urllib.error
 import urllib.request
@@ -13,6 +14,7 @@ def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--url',default='http://127.0.0.1:8092')
     parser.add_argument('--token-file',type=Path,required=True)
+    parser.add_argument('--ca-file',type=Path)
     parser.add_argument('--image',type=Path,required=True)
     parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--jobs',type=int,default=2)
@@ -20,7 +22,8 @@ def main():
     if not 1<=args.jobs<=10:raise ValueError('Use one to ten probe jobs')
     token=args.token_file.read_text().strip();image=args.image.read_bytes();digest=hashlib.sha256(image).hexdigest()
     args.output.mkdir(mode=0o700,parents=True,exist_ok=True)
-    opener=urllib.request.build_opener(urllib.request.ProxyHandler({}))
+    context=ssl.create_default_context(cafile=str(args.ca_file)) if args.ca_file else ssl.create_default_context()
+    opener=urllib.request.build_opener(urllib.request.ProxyHandler({}),urllib.request.HTTPSHandler(context=context))
     def request(path,*,body=None,headers=None):
         headers=dict(headers or {});headers['Authorization']='Bearer '+token
         req=urllib.request.Request(args.url+path,data=body,headers=headers)
