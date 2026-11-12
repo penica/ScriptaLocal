@@ -45,10 +45,12 @@ Use TODO, DOING or BLOCKED with an unchecked box; use DONE with a checked box on
   - Completion, 12 November 2026: Built and rebuilt pinned Python 3.11.13/PyTorch 2.7.1+cu126 environment with a complete 165-package version constraint snapshot. Rebuilt package list exactly matches the lock, pip check passed, and the rebuilt image passed CPU OpenCV/NumPy/SciPy/scikit-image, Kraken binarization/imports and CUDA TrOCR architecture generation. Actual Bern safetensors model also loaded and generated offline on GPU 1. Initial Compose read-only/no-network GPU 0 probe passed. Evidence: deploy/validation/constraints.lock and docs/validation/dependencies-locked-gpu-0.json; learned segmentation quality and real manuscript accuracy are separate open validations.
 
 
-- [ ] **HTR-007 — Define API schema and result semantics** — TODO
-  - Owner: unassigned.
+- [x] **HTR-007 — Define API schema and result semantics** — DONE
+  - Owner: current chat.
   - Depends on: HTR-002.
   - Done when: Publish versioned OpenAPI/JSON examples for jobs, ordered cells/lines, original-image coordinates, transforms, states, provenance, errors, corrections and idempotency. Specify limits and distinguish blank, unreadable, failed and needs-review.
+  - Completion, 12 November 2026: Published designed OpenAPI 3.1 contract and fictional examples under docs/api, backed by Pydantic models. Documented multipart upload/options, job lifecycle, idempotency/replay, coordinates/EXIF/transforms, blank/unknown/failure states, immutable raw output, saved corrections, revision conflicts, access and configurable limits. OpenAPI structural validation and schema-reference checks pass in the 24-test CPU suite. HTTP routes are still unimplemented; caller compatibility awaits its handover.
+
 
 - [ ] **HTR-008 — Assemble manuscript reference corpus** — DOING
   - Owner: current chat.
@@ -66,17 +68,20 @@ Use TODO, DOING or BLOCKED with an unchecked box; use DONE with a checked box on
   - Evidence, 12 November 2026 (learned segmentation): Bundled blla candidate SHA-256 77a638a83c9e535620827a09e410ed36391e9e8e8126d5796a0f15b978186056 ran offline. Default scaling missed all three lines in the real cell; padding to preserve pixel scale found three lines, visually checked via saved crops, and real TrOCR generation ran on each. This is one-sample functional evidence, not model-selection/accuracy acceptance.
 
 
-- [ ] **HTR-010 — Build single-cell inference vertical slice** — TODO
-  - Owner: unassigned.
+- [ ] **HTR-010 — Build single-cell inference vertical slice** — DOING
+  - Owner: current chat.
   - Depends on: HTR-006, HTR-007, HTR-009.
   - Done when: Run a real manually bounded multiline cell through Kraken line extraction and TrOCR single-line recognition on GPU 0; return ordered text and geometry with model provenance. Record time and VRAM. A sample is required for handwriting acceptance.
   - Evidence, 12 November 2026: scripts/validation/manuscript_slice.py runs the supplied manuscript with explicit manual cell bounds through learned Kraken segmentation and real TrOCR offline on GPU 0, preserving geometry and private line crops/text. Padded candidate extracted three visible lines; summary timings/VRAM in docs/validation/manuscript-cell-padded-summary.json. The unpadded failure is retained as needs-review evidence. Versioned service contract/provenance integration remains open, so task is unchecked.
+  - Evidence, 12 November 2026 (contract update): HTR-007 now defines the versioned result contract. The probe still needs full provenance/state adaptation to that contract; segmentation model selection under HTR-009 remains open.
 
 
-- [ ] **HTR-011 — Implement image validation and geometry transforms** — TODO
-  - Owner: unassigned.
+- [x] **HTR-011 — Implement image validation and geometry transforms** — DONE
+  - Owner: current chat.
   - Depends on: HTR-007.
   - Done when: Preserve original image bytes and hashes; validate dimensions, format, orientation and decoding limits. Support PNG/JPEG/single-image TIFF and reject unsupported multi-frame inputs. Verify coordinate round trips and corrupt/oversized image handling.
+  - Completion, 12 November 2026: Implemented bounded PNG/JPEG/single-image TIFF decoding, MIME/byte/pixel/frame checks, original hashes and atomic unchanged publication, transparent-background normalization and reversible affine/EXIF coordinate mapping. Tests verify all 8 orientations for PNG and TIFF against actual output pixels, corrupt/truncated/oversized/multiframe inputs, coordinate round trips and corrupt/symlink artifact rejection. Uploaded 2418 × 272 JPEG also decoded and persisted byte-for-byte. Evidence: docs/validation/cpu-contract-images.json, cpu-tests.txt and real-image-input.json; HTTP upload read limits remain an API implementation responsibility.
+
 
 - [ ] **HTR-012 — Detect vertical borders and derive cells** — TODO
   - Owner: unassigned.
