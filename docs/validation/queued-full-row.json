@@ -1,0 +1,89 @@
+{
+  "sample_rows": 1,
+  "automatic_layout": true,
+  "cells": 18,
+  "line_count": 24,
+  "cell_states": {
+    "recognized": 0,
+    "blank": 0,
+    "unreadable": 0,
+    "failed": 0,
+    "needs-review": 18
+  },
+  "review_required": true,
+  "job_warning_codes": [
+    "automatic_layout_requires_review",
+    "outer_rule_bounds_require_review"
+  ],
+  "image_sha256": "0a5b42a6aa9f2ad626931151f05c600b5ebb88766620b825e40c7a95ce59d8e6",
+  "original_bytes_unchanged": true,
+  "api_result_schema": "passed",
+  "http_job_exists": false,
+  "database_job_succeeded": true,
+  "stages": [
+    {
+      "name": "layout",
+      "status": "succeeded",
+      "attempts": 1
+    },
+    {
+      "name": "segmentation",
+      "status": "succeeded",
+      "attempts": 1
+    },
+    {
+      "name": "recognition",
+      "status": "succeeded",
+      "attempts": 1
+    }
+  ],
+  "committed_artifacts": {
+    "count": 34,
+    "bytes": 692670
+  },
+  "result_bytes": 34203,
+  "runtime_image": "sha256:cb0d1d04adf50a5fa237082912fbc6163713bdc179c54ba73782e501934b5f27",
+  "pipeline_version": "pipeline-f880f83b6da6",
+  "configuration_sha256": "5a8bbbccc5b5ea66d3197f565c907493006c88cb3e17da98eeb99955ea6265c9",
+  "models": {
+    "segmentation": {
+      "engine": "kraken",
+      "model_id": "kraken/blla.mlmodel",
+      "revision": "77a638a83c9e535620827a09e410ed36391e9e8e8126d5796a0f15b978186056",
+      "weights_sha256": "77a638a83c9e535620827a09e410ed36391e9e8e8126d5796a0f15b978186056"
+    },
+    "recognition": {
+      "engine": "transformers",
+      "model_id": "dh-unibe/trocr-kurrent-XVI-XVII",
+      "revision": "a6bb6086ba3f7ddc62193a0289b1ee733c1af15e",
+      "weights_sha256": "dfb88d0a11fecc1fb92152a9d435e16c787bb6190c4995f277e4dfeb2976d065"
+    }
+  },
+  "model_load_and_verification_seconds": 11.603,
+  "stage_seconds": {
+    "layout": 3.690511843888089,
+    "segmentation": 56.609660767018795,
+    "recognition": 4.289774635108188
+  },
+  "total_probe_seconds": 76.999,
+  "peak_cuda_bytes": 1756423168,
+  "precision": "fp32",
+  "model_loads": 1,
+  "network": "internal validation database network only, no external route; offline libraries enforced",
+  "source_sha256": {
+    "images.py": "1cd4e087a7e2a2aefbae323c820b6e13a93b94f3931dabc008528d9ccf7843b8",
+    "layout.py": "71d5299d347e0f860e38725a718b5bfa9a8d25a05da4e166db2efa717be04112",
+    "segmentation.py": "924f5bcb3ac00fedcab857a890f9e7f02cd1f8b1150284e1e450b8067ec5e269",
+    "recognition.py": "81682644c107969cb4a75ed85bace7eb72cc3a7b51b68a3d649e6b1dde9c3d0b",
+    "pipeline.py": "2d9820974a2fd4fdd131cc7cbf1d8bdbd095279b7d48f5e00d0ef2e2060e726b",
+    "worker.py": "e396d373bbb30dae2a1b1f5e3a415da9935b5e9a0f7c29782ab6b0068c37fef0",
+    "worker_control.py": "dbae5f9a7c621ef597bdbd86571f8301763c1d1ea8f751cebc1485118d91eb5b",
+    "job_queue.py": "5c10e99a81044d04865202312d94b825969e889582741479ceab0ead0b3c1091",
+    "job_artifacts.py": "763df4c44ccbdcbd5a2cea24ad91e642f4887a27e319b76785ab8611675fcd74",
+    "contracts.py": "5cc2b1f9f0553ebb3726ccc1e37671c0e2f2d07726f081f210b87cf5005b6b02",
+    "kraken_segmenter.py": "14fcb7f8a4f47da239edfda19483acc4f4478e5481d05051b1fed5eba4918d08",
+    "trocr_recognizer.py": "1a14b8a41bda5a36e16cc11c1e353f79038fe294a67b345de85cae6a7aa1e845"
+  },
+  "accuracy": "unmeasured: no corrected transcripts or annotated full-row corpus",
+  "acceptance": "one functional full-row queued GPU run; not HTTP/application/quality release"
+}
