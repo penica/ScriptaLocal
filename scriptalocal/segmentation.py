@@ -9,6 +9,7 @@ import numpy as np
 from PIL import Image
 
 from .images import Affine
+from .worker_control import ProcessingInterrupted
 from .layout import CellCrop
 
 
@@ -85,13 +86,15 @@ def _clip_polygon(points,width,height):
     return tuple(points)
 
 
-def segment_cell(cell_id:str,crop:CellCrop,backend,*,original_size,settings=SegmentationSettings()):
+def segment_cell(cell_id:str,crop:CellCrop,backend,*,original_size,settings=SegmentationSettings(),checkpoint=None):
     """Backend receives an unscaled padded canvas; returns bounded DetectedLine items.
 
     No lines in nonwhite cells is review, never blank. Pure-white cell pixels can
     be blank; any ink/noise/rule in the cell prevents that automatic decision.
     Context pixels remain untouched and are used for line extraction.
     """
+    check=checkpoint or (lambda:None)
+    check()
     namespace=UUID(cell_id)
     width,height=crop.pixels.size
     if crop.cell_mask.shape!=(height,width):raise SegmentationError('Cell mask dimensions differ')
@@ -109,6 +112,7 @@ def segment_cell(cell_id:str,crop:CellCrop,backend,*,original_size,settings=Segm
     try:
         detections=iter(backend(canvas))
         for index,detection in enumerate(detections):
+            check()
             if index>=settings.maximum_lines:raise SegmentationError('Line count exceeds limit')
             polygon=_points(detection.polygon,3);baseline=_points(detection.baseline,2)
             if any(x<0 or y<0 or x>canvas.width or y>canvas.height for x,y in (*polygon,*baseline)):
@@ -144,6 +148,7 @@ def segment_cell(cell_id:str,crop:CellCrop,backend,*,original_size,settings=Segm
                 line_warnings.append('line_polygon_exceeds_context')
             y=median(point[1] for point in local_base);x=min(point[0] for point in local_base)
             lines.append((y,x,mapped_polygon,mapped_baseline,detection.pixels.copy(),line_warnings,raw_polygon))
+    except ProcessingInterrupted:raise
     except SegmentationError:raise
     except Exception as exc:raise SegmentationError('Segmentation backend failed') from exc
     lines.sort(key=lambda line:(line[0],line[1],line[2]))
