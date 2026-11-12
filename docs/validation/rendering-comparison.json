@@ -1,0 +1,92 @@
+{
+  "comparison_kind": "rendering-against-cached-baseline",
+  "corpus_rendering": {
+    "mode": "white-alpha",
+    "legacy_black_replayed_exactly": 24,
+    "same_crop_sizes": 24,
+    "original_source_unchanged": true,
+    "renderer_sha256": "6e9cbe9de45c5f5e93b8884e446cc3bc9c66b80bf27ffea06194f6364a709e1a"
+  },
+  "model": {
+    "engine": "transformers",
+    "model_id": "dh-unibe/trocr-kurrent-XVI-XVII",
+    "revision": "a6bb6086ba3f7ddc62193a0289b1ee733c1af15e",
+    "weights_sha256": "dfb88d0a11fecc1fb92152a9d435e16c787bb6190c4995f277e4dfeb2976d065"
+  },
+  "manifest_sha256": "d3fc87c3d4b4d0fc708059b6351874b4e35e4dd4a035358394fb0186fbce5445",
+  "line_crops": 24,
+  "corpus_sha256": "1a9ebfee11fd67373e89e5ce44a4a0e9a408497e38babae479772d6a431ad89e",
+  "ai_reference_sha256": "1527b31d123bba97c7a6e6b6be0c5de481d5896956d150fdc83327486ddef12a",
+  "source_image_sha256": "0a5b42a6aa9f2ad626931151f05c600b5ebb88766620b825e40c7a95ce59d8e6",
+  "cached_baseline_provenance": {
+    "pipeline_version": "pipeline-f880f83b6da6",
+    "configuration_sha256": "5a8bbbccc5b5ea66d3197f565c907493006c88cb3e17da98eeb99955ea6265c9",
+    "segmentation_model": {
+      "engine": "kraken",
+      "model_id": "kraken/blla.mlmodel",
+      "revision": "77a638a83c9e535620827a09e410ed36391e9e8e8126d5796a0f15b978186056",
+      "weights_sha256": "77a638a83c9e535620827a09e410ed36391e9e8e8126d5796a0f15b978186056"
+    },
+    "recognition_model": {
+      "engine": "transformers",
+      "model_id": "dh-unibe/trocr-kurrent-XVI-XVII",
+      "revision": "a6bb6086ba3f7ddc62193a0289b1ee733c1af15e",
+      "weights_sha256": "dfb88d0a11fecc1fb92152a9d435e16c787bb6190c4995f277e4dfeb2976d065"
+    }
+  },
+  "controlled_decoding_recipe": {
+    "num_beams": 4,
+    "max_new_tokens": 128,
+    "length_penalty": 2.0,
+    "no_repeat_ngram_size": 0,
+    "use_cache": false,
+    "do_sample": false,
+    "early_stopping": true
+  },
+  "candidate_author_defaults_before_control": {
+    "num_beams": 4,
+    "max_new_tokens": null,
+    "length_penalty": 2.0,
+    "no_repeat_ngram_size": 0,
+    "use_cache": false,
+    "do_sample": false,
+    "early_stopping": true
+  },
+  "clean_up_tokenization_spaces": false,
+  "model_load_and_verification_seconds": 10.343,
+  "generation_seconds": 5.055,
+  "peak_cuda_bytes": 1517197312,
+  "backend_calls": 6,
+  "oom_events": 0,
+  "identical_verbatim_to_cached_baseline": 8,
+  "changed_verbatim_from_cached_baseline": 16,
+  "states": {
+    "recognized": 24,
+    "needs-review": 0,
+    "failed": 0
+  },
+  "ai_visual_diagnostics": {
+    "cached_baseline": {
+      "provisional_ai_text_anchors": 4,
+      "matches_after_exterior_whitespace_strip": 0,
+      "provisional_nontext_examples": 2,
+      "nonempty_outputs_on_provisional_nontext": 2
+    },
+    "candidate": {
+      "provisional_ai_text_anchors": 4,
+      "matches_after_exterior_whitespace_strip": 0,
+      "provisional_nontext_examples": 2,
+      "nonempty_outputs_on_provisional_nontext": 2
+    }
+  },
+  "human_ground_truth": false,
+  "accuracy_ranking": "not established",
+  "network": "disabled; inference files mounted read-only",
+  "hardware": "one assigned RTX 3060; host GPU 1",
+  "source_sha256": {
+    "scripts/validation/compare_recognizer.py": "b175df58870fb6b66b7ace964630b19d3bc87f82e866823b63d1b2d89c408a57",
+    "scriptalocal/recognition.py": "81682644c107969cb4a75ed85bace7eb72cc3a7b51b68a3d649e6b1dde9c3d0b",
+    "scriptalocal/trocr_recognizer.py": "1a14b8a41bda5a36e16cc11c1e353f79038fe294a67b345de85cae6a7aa1e845"
+  },
+  "scope": "Experimental white mask padding only; not adopted as pipeline default and not a human-ground-truth benchmark"
+}
