@@ -1,0 +1,58 @@
+{
+  "timestamp": "2026-11-12T12:33:41.667403+00:00",
+  "commands": {
+    "disk": {
+      "argv": [
+        "df",
+        "-h",
+        "/",
+        "/var/lib/docker"
+      ],
+      "exit_code": 0,
+      "stdout": "Filesystem                         Size  Used Avail Use% Mounted on\n/dev/mapper/ubuntu--vg-ubuntu--lv  216G   30G  176G  15% /\n/dev/mapper/ubuntu--vg-ubuntu--lv  216G   30G  176G  15% /\n",
+      "stderr": ""
+    },
+    "docker": {
+      "argv": [
+        "docker",
+        "info",
+        "--format",
+        "{{.DockerRootDir}} {{json .CDISpecDirs}}"
+      ],
+      "exit_code": 0,
+      "stdout": "/var/lib/docker [\"/etc/cdi\",\"/run/cdi\"]\n",
+      "stderr": ""
+    },
+    "gpu": {
+      "argv": [
+        "nvidia-smi",
+        "--query-gpu=index,uuid,name,memory.total,driver_version",
+        "--format=csv"
+      ],
+      "exit_code": 0,
+      "stdout": "index, uuid, name, memory.total [MiB], driver_version\n0, GPU-f7232bad-ae60-06b9-f1ac-dd0f62773496, NVIDIA GeForce RTX 3060, 12288 MiB, 595.112.07\n1, GPU-64231694-f9ba-ae03-30e7-1a5a2c1e8d24, NVIDIA GeForce RTX 3060, 12288 MiB, 595.112.07\n",
+      "stderr": ""
+    },
+    "cdi": {
+      "argv": [
+        "nvidia-ctk",
+        "cdi",
+        "list"
+      ],
+      "exit_code": 0,
+      "stdout": "nvidia.com/gpu=0\nnvidia.com/gpu=1\nnvidia.com/gpu=GPU-64231694-f9ba-ae03-30e7-1a5a2c1e8d24\nnvidia.com/gpu=GPU-f7232bad-ae60-06b9-f1ac-dd0f62773496\nnvidia.com/gpu=all\n",
+      "stderr": "time=\"2026-11-12T13:33:41+01:00\" level=info msg=\"Found 5 CDI devices\"\n"
+    },
+    "pool": {
+      "argv": [
+        "zpool",
+        "status",
+        "-x"
+      ],
+      "exit_code": 0,
+      "stdout": "  pool: storage\n state: ONLINE\nstatus: One or more devices has experienced an unrecoverable error.  An\n\tattempt was made to correct the error.  Applications are unaffected.\naction: Determine if the device needs to be replaced, and clear the errors\n\tusing 'zpool clear' or replace the device with 'zpool replace'.\n   see: https://openzfs.github.io/openzfs-docs/msg/ZFS-8000-9P\n  scan: scrub repaired 0B in 00:49:32 with 0 errors on Sun Nov  8 01:13:37 2026\nconfig:\n\n\tNAME                                          STATE     READ WRITE CKSUM\n\tstorage                                       ONLINE       0     0     0\n\t  raidz1-0                                    ONLINE       0     0     0\n\t    disk-1  ONLINE       5     0     0\n\t    disk-2           ONLINE       0     0     0\n\nerrors: No known data errors\n",
+      "stderr": ""
+    }
+  },
+  "redactions": "Unrelated dataset/service inventory retained privately in data/validation/host-inventory-private.json."
+}
