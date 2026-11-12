@@ -1,8 +1,8 @@
-# Agent upload API
+# Agent file transfer API
 
-ScriptaLocal now runs a separate file-intake API at `http://127.0.0.1:8091`. It accepts agent uploads into a folder selected when the operator creates an upload request. This is independent of the planned OCR job API and does not run uploaded files or start transcription.
+ScriptaLocal now runs a separate file-intake API at `http://10.10.100.209:8091`. It accepts agent uploads into a folder selected when the operator creates an upload request. This is independent of the planned OCR job API and does not run uploaded files or start transcription.
 
-The current binding is loopback only. An agent on another machine needs a reachable HTTPS endpoint or a configured private tunnel; that network location has not been supplied yet. Do not give a remote agent this machine's localhost URL as if it were reachable from there.
+The user selected the host's `10.10.100.209/24` LAN address. The service binds specifically to `10.10.100.209:8091`, using direct HTTP as requested. A separate-container upload through this LAN address passed; the coding agent completed its two-file handover upload with verified checksums. The initial loopback-only setup remains historical validation evidence.
 
 ## Workflow
 
@@ -104,7 +104,35 @@ docker run --rm --network none --read-only --user "$(id -u):$(id -g)" \
   --cap-drop ALL --security-opt no-new-privileges \
   --memory 1g --cpus 2 --tmpfs /tmp:size=128m \
   -v "$PWD/integration_tests:/tests:ro" scriptalocal-intake:locked \
-  python -m unittest discover -s /tests -v
+  python -m unittest discover -s /tests -p test_intake.py -v
 ```
 
-Live HTTP validation additionally uploads through the headless client, checks saved bytes, restarts the Compose service, verifies an identical retry, revokes the test request, and checks that tokens are absent from logs. Remote-agent reachability remains unverified until the agent's network location is known.
+Live HTTP validation additionally uploads through the headless client, checks saved bytes, restarts the Compose service, verifies an identical retry, revokes the test request, and checks that tokens are absent from logs. A separate network namespace has successfully uploaded through the selected LAN address. The coding agent completed its actual two-file upload; both hashes match its supplied receipts.
+
+## Scoped downloads
+
+Administrators can now publish fixed snapshots of selected files from a configured destination. This never exposes a folder listing or arbitrary filesystem path. Each share gets a separate expiring read-only token. Upload tokens cannot download, and download tokens cannot upload or administer the service. Only credential hashes are stored in the transfer registry; keep generated handovers private.
+
+```bash
+docker compose --env-file data/intake/compose.env \
+  -p scriptalocal-intake -f deploy/intake/compose.yaml exec -T intake \
+  python -m scriptalocal.intake_cli share \
+  --destination integration-handover --subfolder scriptalocal-response \
+  --label 'Integration response' --expires-in-seconds 86400 \
+  registers-integration-response.md scriptalocal-openapi.json
+```
+
+This writes a private JSON ticket and Markdown download handover under `data/intake/requests/`. Give the receiving agent that handover: it supplies the manifest URL, per-file URLs, scoped bearer credential, expiry and SHA-256 checksums. The agent can use ordinary HTTP tools without installing this project. Use `Authorization: Bearer <download_token>`; never put credentials in query strings, follow redirects with credentials, or commit the handover.
+
+| Method and path | Credential | Purpose |
+| --- | --- | --- |
+| `POST /intake/v1/downloads` | Administrator | Snapshot explicitly named files |
+| `GET /intake/v1/downloads/{id}` | Matching download ticket or administrator | Read file manifest/checksums |
+| `GET /intake/v1/downloads/{id}/files/{file_id}` | Matching download ticket | Download verified snapshot bytes |
+| `POST /intake/v1/downloads/{id}/revoke` | Administrator | Revoke future reads |
+
+Creation JSON contains `destination`, optional `subfolder`, `label`, `filenames` and optional `expires_in_seconds`. The configured file/count/total/expiry limits apply. Responses return `manifest_url`, `download_token` and manifest entries with `file_id`, `filename`, `bytes` and `sha256`. Downloads include attachment disposition, `X-Content-SHA256`, `Cache-Control: no-store` and `X-Content-Type-Options: nosniff`.
+
+Source files are copied into private immutable share snapshots before publication. Later source edits do not change a share. No-follow regular-file reads reject symlinks and FIFOs; every download verifies bytes against its receipt. Invalid credentials and out-of-scope files return 404. Matching expired/revoked tokens return 410. Revocation prevents new reads, but cannot recall bytes already sent. Shares persist across service restart. Expired snapshots currently remain in private storage until operator cleanup; expiry is access control, not automatic deletion.
+
+Revoke with `python -m scriptalocal.intake_cli unshare <request_id>` inside the same Compose service. Twenty-two intake integration tests now cover uploads and downloads; a separate-container HTTP download through the LAN address verified both shared integration documents and rejected unauthenticated reads. See `docs/validation/intake-download-{http.json,tests.txt}`.
