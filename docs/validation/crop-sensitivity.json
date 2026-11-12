@@ -1,0 +1,90 @@
+{
+  "source_sha256": "0a5b42a6aa9f2ad626931151f05c600b5ebb88766620b825e40c7a95ce59d8e6",
+  "original_unchanged": true,
+  "manual_source_bounds": [
+    450,
+    48,
+    650,
+    110
+  ],
+  "case_sizes": {
+    "automatic": [
+      188,
+      223
+    ],
+    "manual_source_rectangle": [
+      200,
+      62
+    ],
+    "manual_rectified_margin_crop": [
+      188,
+      70
+    ]
+  },
+  "models": [
+    {
+      "model": "baseline",
+      "reference": {
+        "engine": "transformers",
+        "model_id": "dh-unibe/trocr-kurrent-XVI-XVII",
+        "revision": "a6bb6086ba3f7ddc62193a0289b1ee733c1af15e",
+        "weights_sha256": "dfb88d0a11fecc1fb92152a9d435e16c787bb6190c4995f277e4dfeb2976d065"
+      },
+      "generation_seconds": 1.143,
+      "cases": [
+        {
+          "case": "automatic",
+          "matches_provisional_ai_word": false,
+          "state": "recognized",
+          "text_sha256": "e010443740e83a9d1fc5cc8df4b07a2dc05a08344749ef68c4818ab4f2577898"
+        },
+        {
+          "case": "manual_source_rectangle",
+          "matches_provisional_ai_word": true,
+          "state": "recognized",
+          "text_sha256": "9ff18ebe7449349f358e3af0b57cf7a032c1c6b2272cb2656ff85eb112232f16"
+        },
+        {
+          "case": "manual_rectified_margin_crop",
+          "matches_provisional_ai_word": true,
+          "state": "recognized",
+          "text_sha256": "9ff18ebe7449349f358e3af0b57cf7a032c1c6b2272cb2656ff85eb112232f16"
+        }
+      ]
+    },
+    {
+      "model": "new_candidate",
+      "reference": {
+        "engine": "transformers",
+        "model_id": "dh-unibe/trocr-german-kurrent-xvi-xix-from-kurrent-v2",
+        "revision": "bd1d96b67225b580846d7759f6ba74c66f56680e",
+        "weights_sha256": "054474de1f621f61d1284ee4f274c58def0bb887b1a91694081960fb05dbaf3c"
+      },
+      "generation_seconds": 0.351,
+      "cases": [
+        {
+          "case": "automatic",
+          "matches_provisional_ai_word": false,
+          "state": "recognized",
+          "text_sha256": "fd4459345d1e8c6968188dfd81f1da2e3a93ff901a28d9cd005931597db68e3a"
+        },
+        {
+          "case": "manual_source_rectangle",
+          "matches_provisional_ai_word": false,
+          "state": "recognized",
+          "text_sha256": "cbcc1e79a7faf42c583b814410405bca290866edbe563e5ec2f5374d7b8602d6"
+        },
+        {
+          "case": "manual_rectified_margin_crop",
+          "matches_provisional_ai_word": false,
+          "state": "recognized",
+          "text_sha256": "bcc27721f5cb670171ef48e7d76f53634d50690077003889d7306feb2664b910"
+        }
+      ]
+    }
+  ],
+  "human_ground_truth": false,
+  "scope": "single AI-reviewed word, manual oracle crop; not an automatic preprocessing fix or accuracy benchmark",
+  "network": "disabled",
+  "source_script_sha256": "fe3a015a692aa3a758ad4c042bbeb1db9e5fb97796bccf31d42ce48e2d6227bf"
+}
