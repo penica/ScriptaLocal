@@ -61,7 +61,7 @@ class ImagePipeline:
         self.recognition_reference=ModelReference.model_validate(recognizer.reference).model_dump(mode='json')
         if segmenter.model_height!=settings.segmentation.model_height:raise ValueError('Segmentation canvas height must match loaded model')
         if recognizer.precision not in {'fp32','fp16'}:raise ValueError('Unsupported recognition precision')
-        names=['images.py','layout.py','segmentation.py','recognition.py','pipeline.py','worker.py','worker_control.py','job_queue.py','job_artifacts.py','contracts.py','kraken_segmenter.py','trocr_recognizer.py']
+        names=['images.py','layout.py','segmentation.py','recognition.py','pipeline.py','corrections.py','worker.py','worker_control.py','job_queue.py','job_artifacts.py','contracts.py','kraken_segmenter.py','trocr_recognizer.py']
         hashes={name:hashlib.sha256((Path(__file__).parent/name).read_bytes()).hexdigest() for name in names}
         self.version='pipeline-'+canonical_hash(hashes)[:12]
         self.manifest={'schema':'scriptalocal-pipeline-config-v1','source_sha256':hashes,'settings':asdict(settings),
@@ -162,7 +162,18 @@ class ImagePipeline:
         return records
 
     def recognition(self,context):
-        started=time.monotonic();segmentation,artifacts=self._inputs(context,'segmentation')
+        started=time.monotonic();self._check(context)
+        edit=self.queue.revision_edit(context.lease)
+        if edit is not None:
+            from .corrections import apply_text_revision
+            details,record=edit;base=JobResult.model_validate_json(self.queue.artifacts.read(record))
+            result=apply_text_revision(base,details,context.lease.revision)
+            result.stage_seconds['correction_assembly']=time.monotonic()-started
+            content=result.model_dump_json().encode()
+            if len(content)>self.settings.maximum_result_bytes:raise StageFailure('result_limits_exceeded')
+            context.checkpoint()
+            return [self.queue.artifacts.publish(context.lease,'result',content)]
+        segmentation,artifacts=self._inputs(context,'segmentation')
         inputs=[];seen_artifacts=set();total_pixels=0
         if len(segmentation['cells'])>self.settings.maximum_cells:raise StageFailure('result_limits_exceeded')
         for cell in segmentation['cells']:
