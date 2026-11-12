@@ -3,7 +3,7 @@
   "info": {
     "title": "ScriptaLocal API",
     "version": "1.0.0-design",
-    "description": "Designed contract; endpoints are not yet implemented. All geometry uses original encoded pixel edges."
+    "description": "Version 1 contract with an API prototype, immutable revision history and queued corrections. All geometry uses original encoded pixel edges."
   },
   "security": [
     {
@@ -98,6 +98,16 @@
           },
           "429": {
             "description": "Queue or concurrency limit reached",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected service error",
             "content": {
               "application/json": {
                 "schema": {
@@ -215,6 +225,16 @@
               }
             }
           },
+          "500": {
+            "description": "Unexpected service error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "503": {
             "description": "Required component unavailable",
             "content": {
@@ -323,6 +343,16 @@
               }
             }
           },
+          "500": {
+            "description": "Unexpected service error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "503": {
             "description": "Required component unavailable",
             "content": {
@@ -423,6 +453,16 @@
           },
           "429": {
             "description": "Queue or concurrency limit reached",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected service error",
             "content": {
               "application/json": {
                 "schema": {
@@ -581,6 +621,16 @@
               }
             }
           },
+          "500": {
+            "description": "Unexpected service error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "503": {
             "description": "Required component unavailable",
             "content": {
@@ -683,6 +733,16 @@
           },
           "429": {
             "description": "Queue or concurrency limit reached",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected service error",
             "content": {
               "application/json": {
                 "schema": {
@@ -810,6 +870,16 @@
               }
             }
           },
+          "500": {
+            "description": "Unexpected service error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "503": {
             "description": "Required component unavailable",
             "content": {
@@ -830,8 +900,18 @@
               "type": "string",
               "format": "uuid"
             }
+          },
+          {
+            "name": "revision",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
           }
-        ]
+        ],
+        "description": "Returns the latest completed result when the current job succeeds. An explicit revision retrieves immutable completed history even while a newer revision is queued, cancelled or failed."
       }
     },
     "/v1/jobs/{job_id}/cancel": {
@@ -921,6 +1001,16 @@
           },
           "429": {
             "description": "Queue or concurrency limit reached",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected service error",
             "content": {
               "application/json": {
                 "schema": {
@@ -1048,6 +1138,16 @@
               }
             }
           },
+          "500": {
+            "description": "Unexpected service error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "503": {
             "description": "Required component unavailable",
             "content": {
@@ -1083,6 +1183,156 @@
         "description": "Creates a new revision without changing prior raw output. Geometry changes queue downstream processing; text-only revisions queue assembly. Stale expected_revision returns 409."
       }
     },
+    "/v1/jobs/{job_id}/artifacts": {
+      "get": {
+        "operationId": "list_artifacts",
+        "summary": "list artifacts",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArtifactInventory"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credentials required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Insufficient capability",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict or result not ready",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Upload or dimensions exceed configured limit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported format or multiple frames",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Queue or concurrency limit reached",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected service error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Required component unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200,
+              "default": 100
+            }
+          }
+        ],
+        "description": "Returns a job-wide original descriptor and UUID-ordered committed artifacts. Follow next_cursor as after. Repeat enumeration after completion if stages or revisions were changing during pagination. Filesystem paths are never returned."
+      }
+    },
     "/v1/jobs/{job_id}/artifacts/{artifact_id}": {
       "get": {
         "operationId": "retrieve_artifact",
@@ -1092,6 +1342,24 @@
             "description": "Authorized job artifact; path is never supplied by the caller.",
             "content": {
               "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "image/png": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "image/jpeg": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "image/tiff": {
                 "schema": {
                   "type": "string",
                   "format": "binary"
@@ -1179,6 +1447,16 @@
               }
             }
           },
+          "500": {
+            "description": "Unexpected service error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "503": {
             "description": "Required component unavailable",
             "content": {
@@ -1215,6 +1493,125 @@
   },
   "components": {
     "schemas": {
+      "ArtifactDescriptor": {
+        "additionalProperties": false,
+        "properties": {
+          "artifact_id": {
+            "format": "uuid",
+            "title": "Artifact Id",
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "original",
+              "derived"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "logical_key": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Logical Key",
+            "type": "string"
+          },
+          "revision": {
+            "anyOf": [
+              {
+                "minimum": 1,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Revision"
+          },
+          "stage": {
+            "anyOf": [
+              {
+                "enum": [
+                  "layout",
+                  "segmentation",
+                  "recognition"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Stage"
+          },
+          "sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Sha256",
+            "type": "string"
+          },
+          "bytes": {
+            "minimum": 0,
+            "title": "Bytes",
+            "type": "integer"
+          },
+          "mime_type": {
+            "title": "Mime Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "artifact_id",
+          "kind",
+          "logical_key",
+          "revision",
+          "stage",
+          "sha256",
+          "bytes",
+          "mime_type"
+        ],
+        "title": "ArtifactDescriptor",
+        "type": "object"
+      },
+      "ArtifactInventory": {
+        "additionalProperties": false,
+        "properties": {
+          "job_id": {
+            "format": "uuid",
+            "title": "Job Id",
+            "type": "string"
+          },
+          "original": {
+            "$ref": "#/components/schemas/ArtifactDescriptor"
+          },
+          "artifacts": {
+            "items": {
+              "$ref": "#/components/schemas/ArtifactDescriptor"
+            },
+            "maxItems": 200,
+            "title": "Artifacts",
+            "type": "array"
+          },
+          "next_cursor": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Cursor"
+          }
+        },
+        "required": [
+          "job_id",
+          "original",
+          "artifacts",
+          "next_cursor"
+        ],
+        "title": "ArtifactInventory",
+        "type": "object"
+      },
       "CellResult": {
         "additionalProperties": false,
         "properties": {
