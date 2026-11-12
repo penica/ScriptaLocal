@@ -1,0 +1,32 @@
+services:
+  intake:
+    image: ${SCRIPTALOCAL_INTAKE_IMAGE:?Set the immutable intake image ID}
+    user: "${SCRIPTALOCAL_UID:-1000}:${SCRIPTALOCAL_GID:-1000}"
+    environment:
+      SCRIPTALOCAL_INTAKE_CONFIG: /data/intake/config.json
+    ports:
+      - "${SCRIPTALOCAL_INTAKE_BIND:-127.0.0.1}:${SCRIPTALOCAL_INTAKE_PORT:-8091}:8091"
+    volumes:
+      - ${SCRIPTALOCAL_DATA_ROOT:?Set absolute data root}/intake:/data/intake
+      - ${SCRIPTALOCAL_DATA_ROOT}/integration-handover:/data/integration-handover
+      - ${SCRIPTALOCAL_DATA_ROOT}/reference/row-crops:/data/reference/row-crops
+      - ${SCRIPTALOCAL_DATA_ROOT}/reference/ground-truth:/data/reference/ground-truth
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 512m
+    cpus: 1
+    pids_limit: 128
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8091/health/live',timeout=3)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    logging:
+      driver: json-file
+      options:
+        max-size: 5m
+        max-file: '3'
