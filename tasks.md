@@ -141,10 +141,12 @@ Use TODO, DOING or BLOCKED with an unchecked box; use DONE with a checked box on
 
   - Completion, 12 November 2026: Added immutable server-attributed edit records, optimistic concurrency, queued text-only assembly without model calls, geometry regeneration and historical result retrieval. All 30 API, 16 pipeline, 21 queue, 16 worker and 65 core tests pass. Real HTTP synthetic correction completed in 0.617 seconds; divider regeneration completed in 62.948 seconds. All three revision results retain exact prior bytes across edits and PostgreSQL restart, with exactly one result per revision and no carried corrections on regenerated lines. Cancellation/conflicting writers preserve history. See docs/revision-validation.md and docs/validation/revisions.json.
 
-- [ ] **HTR-019 — Package Compose deployment and local access** — TODO
-  - Owner: unassigned.
+- [x] **HTR-019 — Package Compose deployment and local access** — DONE
+  - Owner: current chat.
   - Depends on: HTR-005, HTR-006, HTR-017.
   - Done when: Provide pinned images, health checks, resource caps, internal-only database/workers, persistent mounts, secrets example and loopback API binding. Start/restart the stack on this host and document commands and measured disk use.
+
+  - Completion, 12 November 2026: Persistent Compose API/database/GPU worker are healthy at loopback port 8090 with immutable baked images, exact 24/171-package locks, health checks, resource/log caps and private persistent mounts. Added non-overwriting setup tool (3 tests), protected credentials and non-superuser database role; fresh SCRAM initialization, secret-read denial, parameter/log privacy and hot credential revocation pass. Real row returned 18 cells/24 lines in 67.973 seconds; full maintenance restart preserved exact result/original bytes. Running image/source identities match provenance. Commands and measured disk use: docs/service-deployment.md and docs/validation/service-deployment.json. LAN HTTPS, retention/deadlines and Registers integration remain separate tasks.
 
 - [ ] **HTR-020 — Verify privacy, input boundaries and LAN configuration** — TODO
   - Owner: unassigned.
