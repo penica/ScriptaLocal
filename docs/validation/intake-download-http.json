@@ -1,0 +1,23 @@
+{
+  "base_url": "http://10.10.100.209:8091",
+  "manifest": "passed",
+  "snapshot_checksums": "passed",
+  "unauthorized_file_read": "rejected",
+  "files": [
+    {
+      "filename": "registers-integration-response.md",
+      "bytes": 9966,
+      "sha256": "a1807f13b7036f596ffdab69af8336280735b485e8ab1279040381a02518596b"
+    },
+    {
+      "filename": "scriptalocal-openapi.json",
+      "bytes": 59243,
+      "sha256": "46fd79540cfe08ec6d4f0f8903dcee7234bf14d718553e980122ba3dcd28db6c"
+    }
+  ],
+  "integration_tests": 22,
+  "credential_log_check": "passed",
+  "image": "sha256:7a2974e6ce05279a609d705c9de9a2d910bcc291d74d775ab18e78d4fdca674c",
+  "snapshot_restart_persistence": "passed in integration test",
+  "live_service": "healthy process, LAN HTTP retrieval passed"
+}
