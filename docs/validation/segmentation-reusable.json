@@ -1,0 +1,40 @@
+{
+  "image_sha256": "0a5b42a6aa9f2ad626931151f05c600b5ebb88766620b825e40c7a95ce59d8e6",
+  "source_rows": 1,
+  "manually_bounded_cells": 1,
+  "detected_lines": 3,
+  "state": "needs-review",
+  "warnings": [
+    "baseline_crosses_cell_boundary",
+    "line_polygon_clipped_to_source",
+    "line_polygon_exceeds_context"
+  ],
+  "seconds_including_model_load": 8.375,
+  "peak_cuda_bytes": 401017344,
+  "canvas_size": [
+    400,
+    1800
+  ],
+  "settings": {
+    "padding": 32,
+    "minimum_width": 400,
+    "model_height": 1800,
+    "maximum_canvas_pixels": 16000000,
+    "maximum_lines": 256,
+    "maximum_line_pixels": 4000000,
+    "overlap_baseline_distance": 4.0
+  },
+  "weights_sha256": "77a638a83c9e535620827a09e410ed36391e9e8e8126d5796a0f15b978186056",
+  "accuracy": "not measured: no corrected transcript",
+  "source_sha256": {
+    "scriptalocal/segmentation.py": "2f568a29c52bb5bb979b1f6d01d7c6fcc2701ef6d17fbff843c5d14a7f6224da",
+    "scriptalocal/kraken_segmenter.py": "8e040583342ef319401de63b76b9abb557179547c1e3813f58f688071a4b31fd",
+    "scripts/validation/segmentation_probe.py": "4a3a28155c4476595308bb194b9e79319ffcd396076edc43db14df2fbabdcdfb"
+  },
+  "runtime_image": "sha256:60a02b3204640a5513e16aa40ca29eed0dcd5859b6eaf1261ba3092127f21f57",
+  "network": "disabled",
+  "gpu": "RTX 3060, host device 0 only",
+  "core_tests": 53,
+  "geometry_tests_added": 7,
+  "acceptance": "functional manual-cell adapter only; corpus and complete row acceptance remain open"
+}
