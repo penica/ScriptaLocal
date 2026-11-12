@@ -9,6 +9,7 @@ from uuid import uuid4
 from PIL import Image
 from scriptalocal.recognition import Generation,LineInput,RecognitionError,RecognitionOOM,RecognitionSettings,recognize_lines
 from scriptalocal.trocr_recognizer import verify_model
+from scriptalocal.worker_control import ProcessingInterrupted
 
 
 class Backend:
@@ -73,6 +74,15 @@ class RecognitionTests(unittest.TestCase):
         self.assertEqual(result.lines[0].text,'  Name, Exact.  ')
         for kwargs in [{'batch_size':0},{'maximum_new_tokens':True},{'maximum_oom_recoveries':-1},{'wide_line_review_ratio':float('nan')}]:
             with self.assertRaises(ValueError):RecognitionSettings(**kwargs)
+
+    def test_checkpoint_cancellation_prevents_next_batch(self):
+        backend=Backend();checks=[]
+        def checkpoint():
+            checks.append(True)
+            if backend.calls:raise ProcessingInterrupted('cancel_requested')
+        with self.assertRaises(ProcessingInterrupted):
+            recognize_lines(self.lines(3),backend,settings=RecognitionSettings(batch_size=1),checkpoint=checkpoint)
+        self.assertEqual(len(backend.calls),1)
 
     def test_pinned_manifest_checks_paths_bytes_hashes_and_symlinks(self):
         with tempfile.TemporaryDirectory() as folder:
