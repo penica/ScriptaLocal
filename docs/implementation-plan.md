@@ -1,6 +1,6 @@
 # ScriptaLocal implementation plan
 
-Date: 12 November 2026. Status: implementation plan; no application installed or inference demonstrated.
+Date: 12 November 2026. Status: foundation validation underway; application inference and quality acceptance remain unverified.
 
 ## Outcome
 
@@ -139,3 +139,13 @@ The exact executable work and completion evidence live in `../tasks.md`. Phase 1
 - [Bern 19th-century Kurrent model card](https://huggingface.co/dh-unibe/trocr-kurrent): comparison candidate.
 - [Kraken documentation](https://kraken.re/main/index.html): direct API/CLI, segmentation/recognition and model repository.
 - [OpenCV line extraction tutorial](https://docs.opencv.org/4.x/dd/dd7/tutorial_morph_lines_detection.html): morphological extraction as a starting method, not proof of historical-table robustness.
+
+## Validation update and configuration decisions, 12 November 2026
+
+Root storage now has approximately 179 GiB available before validation image pulls, resolving the original capacity constraint. Use project-local ignored `data/` directories for models, artifacts, database, reference crops and build cache. Docker remains at `/var/lib/docker`; no daemon relocation is needed. All paths are environment configuration, not application constants.
+
+The user selected `/srv/storage/scriptalocal-backups` as an initial local backup location on the existing large pool, with Synology NFS to be mounted later. This root is configurable; subsequent NFS deployment must verify the expected mount before backup to prevent accidental fallback into an unmounted local directory. If a management UI is introduced, expose backup destination/settings there with validation and protected credentials, without requiring source changes. Other operational settings (service URL, GPU allocation, model selection, paths, retention, limits and concurrency) must likewise be configurable.
+
+ZFS is online with no known data errors, but one member reports five read errors. No pool repairs, error clearing or disk reconfiguration were performed. Local backups can validate restoration, but independent/off-machine recovery remains pending the NAS. The pool already contains other workloads and must not be treated as a spare blank disk.
+
+GPU container computation passed using existing CDI definitions and pinned PyTorch 2.7.1/CUDA 12.6 image, with exactly one visible device per container. The Compose implementation will use CDI device mapping on this host rather than adding an NVIDIA runtime or restarting Docker. Evidence and commands are in `docs/validation/`.
