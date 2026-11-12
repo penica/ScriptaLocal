@@ -1,0 +1,15 @@
+{
+  "date": "2026-11-12",
+  "service": "http://127.0.0.1:8091",
+  "actual_http_upload": "passed",
+  "checksum_verification": "passed",
+  "container_restart_and_idempotent_retry": "passed",
+  "validation_ticket_revoked": true,
+  "tokens_absent_from_server_logs": true,
+  "container_user": "1000:1000",
+  "read_only_root": true,
+  "bind": "127.0.0.1:8091",
+  "remote_reachability": "pending agent network location",
+  "file_bytes": 35,
+  "image": "sha256:664b715501ef5785bd2f196c9ea5d9fb582fdc19b7cff4823e684e88c03305b0"
+}
