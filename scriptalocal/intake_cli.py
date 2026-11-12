@@ -50,6 +50,12 @@ def main():
     create.add_argument('--output-directory',type=Path)
     upload=commands.add_parser('upload');upload.add_argument('--ticket',type=Path,required=True)
     upload.add_argument('files',type=Path,nargs='+')
+    share=commands.add_parser('share');share.add_argument('--destination',required=True)
+    share.add_argument('--subfolder',default='');share.add_argument('--label',required=True)
+    share.add_argument('--expires-in-seconds',type=int,default=86400)
+    share.add_argument('--output-directory',type=Path)
+    share.add_argument('filenames',nargs='+')
+    unshare=commands.add_parser('unshare');unshare.add_argument('request_id')
     status=commands.add_parser('status');status.add_argument('request_id')
     revoke=commands.add_parser('revoke');revoke.add_argument('request_id')
     args=parser.parse_args()
@@ -83,6 +89,31 @@ def main():
             print(json.dumps(receipt))
         return
     settings=IntakeSettings.load(args.config)
+    if args.command=='unshare':
+        result=call(args.api_url.rstrip('/')+'/intake/v1/downloads/'+args.request_id+'/revoke',method='POST',token=settings.admin_token)
+        print(json.dumps(result,indent=2));return
+    if args.command=='share':
+        options={name:getattr(args,name) for name in ['destination','subfolder','label','filenames','expires_in_seconds']}
+        ticket=call(args.api_url.rstrip('/')+'/intake/v1/downloads',method='POST',token=settings.admin_token,document=options)
+        directory=args.output_directory or settings.state_root.parent/'requests'
+        ticket_path=directory/(ticket['request_id']+'-download.json')
+        handover_path=directory/(ticket['request_id']+'-download.md')
+        private_write(ticket_path,json.dumps(ticket,indent=2)+'\n')
+        text='''# Agent download handover
+
+Download the explicitly shared files below. Use the bearer token only with these URLs. Do not follow redirects or commit the credential. Verify each downloaded SHA-256 before reading it.
+
+'''
+        text+='Manifest URL: '+ticket['manifest_url']+'\n\n'
+        text+='Authorization: Bearer '+ticket['download_token']+'\n\n'
+        text+='Expiry (UTC): '+datetime.fromtimestamp(ticket['expires_at'],timezone.utc).isoformat()+'\n\n'
+        for item in ticket['files']:
+            text+='- '+item['filename']+' ('+str(item['bytes'])+' bytes)\n'
+            text+='  - GET '+ticket['manifest_url']+'/files/'+item['file_id']+'\n'
+            text+='  - SHA-256: '+item['sha256']+'\n'
+        text+='\nThis credential grants read-only access to these snapshots. It cannot upload or administer the service.\n'
+        private_write(handover_path,text)
+        print(json.dumps({'request_id':ticket['request_id'],'ticket_file':str(ticket_path),'handover_file':str(handover_path),'token_printed':False}));return
     base=args.api_url.rstrip('/')+'/intake/v1/requests'
     if args.command in {'status','revoke'}:
         url=base+'/'+args.request_id+('/revoke' if args.command=='revoke' else '')
