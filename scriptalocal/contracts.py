@@ -250,6 +250,31 @@ class JobStatus(Contract):
         return self
 
 
+class ArtifactDescriptor(Contract):
+    artifact_id: UUID
+    kind: Literal['original','derived']
+    logical_key: Annotated[str, Field(min_length=1,max_length=128)]
+    revision: Annotated[int, Field(ge=1)] | None
+    stage: Literal['layout','segmentation','recognition'] | None
+    sha256: Annotated[str, Field(pattern=r'^[a-f0-9]{64}$')]
+    bytes: Annotated[int, Field(ge=0)]
+    mime_type: str
+
+    @model_validator(mode='after')
+    def validate_scope(self):
+        if self.kind=='original':
+            if self.revision is not None or self.stage is not None or self.logical_key!='original':raise ValueError('Original metadata is job-wide')
+        elif self.revision is None or self.stage is None:raise ValueError('Derived artifacts require revision and stage')
+        return self
+
+
+class ArtifactInventory(Contract):
+    job_id: UUID
+    original: ArtifactDescriptor
+    artifacts: Annotated[list[ArtifactDescriptor], Field(max_length=200)]
+    next_cursor: UUID | None
+
+
 class TextCorrection(Contract):
     line_id: UUID
     text: str | None
