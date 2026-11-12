@@ -148,10 +148,12 @@ Use TODO, DOING or BLOCKED with an unchecked box; use DONE with a checked box on
 
   - Completion, 12 November 2026: Persistent Compose API/database/GPU worker are healthy at loopback port 8090 with immutable baked images, exact 24/171-package locks, health checks, resource/log caps and private persistent mounts. Added non-overwriting setup tool (3 tests), protected credentials and non-superuser database role; fresh SCRAM initialization, secret-read denial, parameter/log privacy and hot credential revocation pass. Real row returned 18 cells/24 lines in 67.973 seconds; full maintenance restart preserved exact result/original bytes. Running image/source identities match provenance. Commands and measured disk use: docs/service-deployment.md and docs/validation/service-deployment.json. LAN HTTPS, retention/deadlines and Registers integration remain separate tasks.
 
-- [ ] **HTR-020 — Verify privacy, input boundaries and LAN configuration** — TODO
-  - Owner: unassigned.
+- [x] **HTR-020 — Verify privacy, input boundaries and LAN configuration** — DONE
+  - Owner: current chat.
   - Depends on: HTR-019.
   - Done when: Verify offline inference after provisioning, no silent cloud fallback, redacted logs, controlled paths, decoder limits and protected credentials. Provide opt-in LAN routing with scoped authentication, HTTPS and narrow CORS; keep default loopback deployment working.
+
+  - Completion, 12 November 2026: User-selected scripta.penic.net now serves scoped-authenticated HTTPS on 10.10.100.209:8093 with a verified Let’s Encrypt DNS-01 certificate and pinned Cloudflare-enabled gateway. Default system trust, wrong-name/Host rejection, no untrusted CORS, HTTPS redirects, encrypted handover downloads and credential-free logs pass; loopback and intake bindings remain unchanged. Full HTTPS row transcription returned 18 cells/24 lines in 67.562 seconds. 65 core and two setup tests pass. See docs/lan-access.md and docs/validation/lan-access.json. Actual Registers-worker/application acceptance remains HTR-021.
 
 - [ ] **HTR-021 — Provide caller client and provider integration** — DOING
   - Owner: current chat.
@@ -164,6 +166,8 @@ Use TODO, DOING or BLOCKED with an unchecked box; use DONE with a checked box on
   - Evidence, 12 November 2026: Registers supplied a checksum-verified 43,672-byte fixture ZIP with 42 manifest entries. Its 40 tests pass unchanged. Service semantic validation accepts 18/21 fixtures; three missing cell/line warning scopes are reported, and proposed in-memory warning additions make 21/21 pass without altering source bytes. Published semantic CLI/rules and seven-question clarification for Registers/Builder. Real adapter, HTTP round trip and unresolved lifecycle/resource gates remain open. Evidence: docs/validation/app-fixtures.json and app-fixtures-proposed-fix.json.
 
   - Evidence, 12 November 2026 (revised fixtures): Received 95,735-byte revised ZIP, SHA-256 9fd05b62b1057e5647340c1015712c2ff6419bf8b0e14573ee834288f9025078. Its 52 tests pass unchanged and all 21 canonical fixtures pass service-model semantics. Compared all canonical objects: only the three agreed warning arrays changed; text, geometry and IDs are unchanged. Four invalid semantic mutations remain rejected. This completes the current fixture-warning correction acceptance, not the application adapter or HTTP round trip. Evidence: docs/validation/app-fixtures-revised.json and app-fixture-revised-tests.txt.
+
+  - Evidence, 12 November 2026 (live handover): Prepared and HTTPS-verified four snapshots for Registers to assemble Builder’s implementation bundle, with an isolated 24-hour acceptance credential. Service endpoint is https://scripta.penic.net:8093; no private CA setup is required. Backend implementation and current wire rules are in docs/builder-implementation-handover.md. External worker/provider round trip remains open.
 
 - [ ] **HTR-022 — Benchmark recognition and layout quality** — DOING
   - Owner: current chat.
