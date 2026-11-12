@@ -33,3 +33,5 @@ A separate [agent upload API](docs/agent-uploads.md) is running on the selected 
 
 - [Response for the existing app coder](docs/registers-integration-response.md)
 - [Durable queue implementation and validation](docs/job-queue.md)
+
+- [Leased stage worker validation](docs/worker-validation.md)
