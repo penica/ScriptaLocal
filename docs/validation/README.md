@@ -66,3 +66,11 @@ The unpadded real-cell segmentation found zero lines in a visibly three-line cel
 The scale-preserving real-cell probe found and visually isolated three lines, then executed TrOCR recognition on each offline. It took 7.455 s including segmentation and recognition initialization/generation, with 1.40 GB peak allocated CUDA memory. See `manuscript-cell-padded-summary.json`; private crop images and raw text remain in ignored `data/validation/manuscript-cell-padded/`. No CER/WER can be computed without a corrected transcript.
 
 The exploratory OpenCV divider overlay initially produced 20 intervals including thin outside-table margins. Explicit outer-rule bounds removed those margins, leaving 18 candidate interior cells. The center fold/blank regions and column semantics still require review. This is not yet the robust detector's difficult-case acceptance.
+
+## Image validation and public contract
+
+`cpu-contract-images.json` and `cpu-tests.txt` record 24 passing tests in a separately pinned, network-disabled, read-only CPU container with no GPU requested. The complete 27-package constraint snapshot is `deploy/cpu-validation/constraints.lock`; the final rebuild matched that snapshot exactly. `make validation-cpu-build` and `make validation-cpu` reproduce these checks.
+
+`scriptalocal/images.py` preserves original bytes and uses content-addressed, fsynced atomic publication. It validates image formats, MIME, byte/pixel/side/frame limits and EXIF transforms. TIFF dimensions are taken from encoded-raster tags because Pillow may already report oriented dimensions. Verification uses a fresh parser because inspecting PNG EXIF can change parser state. Tests compare actual decoded pixel positions for all eight orientations of PNG and TIFF and verify reversible crop/rotation/scale/padding mappings. `real-image-input.json` records byte-preserving decode/publication of the user's real JPEG.
+
+The designed HTTP contract is in `../api/openapi.json`, with fictional examples and behavioral documentation in `../api/README.md`. Pydantic and OpenAPI structural validators enforce schema invariants. This does not claim an implemented HTTP service, database, queue, authentication, backup restore or existing-app integration.
