@@ -1,0 +1,2 @@
+/opt/conda/lib/python3.11/site-packages/kraken
+/opt/conda/lib/python3.11/site-packages/kraken/blla.mlmodel
