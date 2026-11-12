@@ -1,0 +1,383 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "ScriptaLocal agent intake",
+    "version": "1"
+  },
+  "paths": {
+    "/health/live": {
+      "get": {
+        "summary": "Live",
+        "operationId": "live_health_live_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/intake/v1/destinations": {
+      "get": {
+        "summary": "Destinations",
+        "operationId": "destinations_intake_v1_destinations_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Administrator": []
+          }
+        ]
+      }
+    },
+    "/intake/v1/openapi.json": {
+      "get": {
+        "summary": "Specification",
+        "operationId": "specification_intake_v1_openapi_json_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Administrator": []
+          }
+        ]
+      }
+    },
+    "/intake/v1/requests": {
+      "post": {
+        "summary": "Create Request",
+        "operationId": "create_request_intake_v1_requests_post",
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Administrator": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UploadRequestInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/intake/v1/requests/{request_id}": {
+      "get": {
+        "summary": "Request Details",
+        "operationId": "request_details_intake_v1_requests__request_id__get",
+        "parameters": [
+          {
+            "name": "request_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Request Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Administrator": []
+          },
+          {
+            "UploadTicket": []
+          }
+        ]
+      }
+    },
+    "/intake/v1/requests/{request_id}/revoke": {
+      "post": {
+        "summary": "Revoke",
+        "operationId": "revoke_intake_v1_requests__request_id__revoke_post",
+        "parameters": [
+          {
+            "name": "request_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Request Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Administrator": []
+          }
+        ]
+      }
+    },
+    "/intake/v1/requests/{request_id}/files": {
+      "put": {
+        "summary": "Upload",
+        "operationId": "upload_intake_v1_requests__request_id__files_put",
+        "parameters": [
+          {
+            "name": "request_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Request Id"
+            }
+          },
+          {
+            "name": "X-Upload-Filename",
+            "in": "header",
+            "required": true,
+            "description": "Percent-encoded UTF-8 basename only, without a folder path.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/octet-stream": {
+              "schema": {
+                "type": "string",
+                "format": "binary"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "UploadTicket": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "UploadRequestInput": {
+        "additionalProperties": false,
+        "properties": {
+          "destination": {
+            "maxLength": 100,
+            "minLength": 1,
+            "title": "Destination",
+            "type": "string"
+          },
+          "subfolder": {
+            "default": "",
+            "maxLength": 500,
+            "title": "Subfolder",
+            "type": "string"
+          },
+          "label": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Label",
+            "type": "string"
+          },
+          "max_files": {
+            "default": 2,
+            "minimum": 1,
+            "title": "Max Files",
+            "type": "integer"
+          },
+          "max_file_bytes": {
+            "default": 10485760,
+            "minimum": 1,
+            "title": "Max File Bytes",
+            "type": "integer"
+          },
+          "max_total_bytes": {
+            "default": 20971520,
+            "minimum": 1,
+            "title": "Max Total Bytes",
+            "type": "integer"
+          },
+          "expires_in_seconds": {
+            "default": 86400,
+            "minimum": 1,
+            "title": "Expires In Seconds",
+            "type": "integer"
+          },
+          "allowed_suffixes": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 40,
+            "minItems": 1,
+            "title": "Allowed Suffixes",
+            "type": "array"
+          }
+        },
+        "required": [
+          "destination",
+          "label"
+        ],
+        "title": "UploadRequestInput",
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "Administrator": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Private administrator token; never share with the uploading agent."
+      },
+      "UploadTicket": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Expiring token scoped to one upload request and destination."
+      }
+    }
+  },
+  "x-intake-auth-described": true
+}
