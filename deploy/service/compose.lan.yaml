@@ -1,0 +1,30 @@
+services:
+  gateway:
+    profiles: [lan]
+    image: ${SCRIPTALOCAL_PROXY_IMAGE:?Pin the tested official Caddy digest}
+    user: '${SCRIPTALOCAL_UID:-1000}:${SCRIPTALOCAL_GID:-1000}'
+    restart: unless-stopped
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs: [/tmp:size=16m,/config:size=16m]
+    depends_on:
+      api: {condition: service_healthy}
+    ports: ['${SCRIPTALOCAL_LAN_ADDRESS:?}:${SCRIPTALOCAL_LAN_PORT:-8093}:8443']
+    volumes:
+      - ${SCRIPTALOCAL_SERVICE_ROOT:?}/lan/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ${SCRIPTALOCAL_SERVICE_ROOT}/secrets/cloudflare-api-token:/run/secrets/cloudflare_api_token:ro
+      - ${SCRIPTALOCAL_SERVICE_ROOT}/caddy-data:/data
+    healthcheck:
+      test: [CMD,nc,-z,-w,'2',127.0.0.1,'8443']
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    mem_limit: 256m
+    cpus: 1
+    pids_limit: 64
+    logging:
+      options:
+        max-size: 5m
+        max-file: '2'
+    networks: [edge]
