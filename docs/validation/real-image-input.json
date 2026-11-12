@@ -1,0 +1,23 @@
+{
+  "sha256": "0a5b42a6aa9f2ad626931151f05c600b5ebb88766620b825e40c7a95ce59d8e6",
+  "format": "JPEG",
+  "encoded_size": [
+    2418,
+    272
+  ],
+  "oriented_size": [
+    2418,
+    272
+  ],
+  "exif_orientation": 1,
+  "original_to_oriented": [
+    1,
+    0,
+    0,
+    0,
+    1,
+    0
+  ],
+  "original_bytes_preserved": true,
+  "uploaded_bytes": 295539
+}
