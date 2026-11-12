@@ -1,0 +1,59 @@
+docker run --rm --network none --read-only --memory 2g --cpus 2 --tmpfs /tmp:size=64m -v "/home/penica/eScriptorium:/app:ro" scriptalocal-cpu-validation:locked
+test_all_sanitized_examples_validate (test_contracts.ContractTests.test_all_sanitized_examples_validate) ... ok
+test_blank_middle_cell_and_line_breaks_survive_roundtrip (test_contracts.ContractTests.test_blank_middle_cell_and_line_breaks_survive_roundtrip) ... ok
+test_cell_and_line_order_and_ids_are_not_silently_repaired (test_contracts.ContractTests.test_cell_and_line_order_and_ids_are_not_silently_repaired) ... ok
+test_divider_endpoints_allow_exif_rotated_encoded_frame (test_contracts.ContractTests.test_divider_endpoints_allow_exif_rotated_encoded_frame) ... ok
+test_exported_openapi_references_resolve_and_schemas_are_valid (test_contracts.ContractTests.test_exported_openapi_references_resolve_and_schemas_are_valid) ... ok
+test_geometry_bounds_finiteness_area_and_orientation (test_contracts.ContractTests.test_geometry_bounds_finiteness_area_and_orientation) ... ok
+test_geometry_transform_singular_or_infinite_rejected (test_contracts.ContractTests.test_geometry_transform_singular_or_infinite_rejected) ... ok
+test_human_correction_preserves_raw_output (test_contracts.ContractTests.test_human_correction_preserves_raw_output) ... ok
+test_job_status_lifecycle_and_timestamps (test_contracts.ContractTests.test_job_status_lifecycle_and_timestamps) ... ok
+test_missing_provenance_and_extra_fields_rejected (test_contracts.ContractTests.test_missing_provenance_and_extra_fields_rejected) ... ok
+test_revision_conflicts_are_explicit_and_old_line_ids_cannot_mix_with_geometry (test_contracts.ContractTests.test_revision_conflicts_are_explicit_and_old_line_ids_cannot_mix_with_geometry) ... ok
+test_uncertain_readings_cannot_be_successful_empty_text (test_contracts.ContractTests.test_uncertain_readings_cannot_be_successful_empty_text) ... ok
+test_existing_corrupt_or_symlink_artifact_is_rejected (test_images.ArtifactTests.test_existing_corrupt_or_symlink_artifact_is_rejected) ... ok
+test_original_publication_is_unchanged_and_idempotent (test_images.ArtifactTests.test_original_publication_is_unchanged_and_idempotent) ... ok
+test_byte_and_pixel_limits (test_images.DecodeTests.test_byte_and_pixel_limits) ... ok
+test_corrupt_and_empty_inputs (test_images.DecodeTests.test_corrupt_and_empty_inputs) ... ok
+test_corrupt_pixel_stream_not_only_header (test_images.DecodeTests.test_corrupt_pixel_stream_not_only_header) ... ok
+test_exif_geometry_matches_actual_pixels_all_orientations (test_images.DecodeTests.test_exif_geometry_matches_actual_pixels_all_orientations) ... ok
+test_formats_and_original_bytes (test_images.DecodeTests.test_formats_and_original_bytes) ... ok
+test_invalid_limits_and_nonbytes (test_images.DecodeTests.test_invalid_limits_and_nonbytes) ... ok
+test_invalid_orientation_is_not_silently_ignored (test_images.DecodeTests.test_invalid_orientation_is_not_silently_ignored) ... ok
+test_transparency_is_composited_on_white (test_images.DecodeTests.test_transparency_is_composited_on_white) ... ok
+test_unsupported_mismatched_and_multiframe (test_images.DecodeTests.test_unsupported_mismatched_and_multiframe) ... ok
+test_crop_rotate_scale_padding_round_trip (test_images.GeometryTests.test_crop_rotate_scale_padding_round_trip) ... ok
+test_invalid_geometry (test_images.GeometryTests.test_invalid_geometry) ... ok
+test_corrections_replace_automatic_proposal_and_empty_means_one_cell (test_layout.CorrectionTests.test_corrections_replace_automatic_proposal_and_empty_means_one_cell) ... ok
+test_crossed_reversed_duplicate_invalid_and_nonfinite_corrections_rejected (test_layout.CorrectionTests.test_crossed_reversed_duplicate_invalid_and_nonfinite_corrections_rejected) ... ok
+test_partial_height_manual_line_is_extrapolated_consistently (test_layout.CorrectionTests.test_partial_height_manual_line_is_extrapolated_consistently) ... ok
+test_candidate_limit_is_visible (test_layout.DetectionTests.test_candidate_limit_is_visible) ... ok
+test_clear_faint_broken_and_double_borders (test_layout.DetectionTests.test_clear_faint_broken_and_double_borders) ... ok
+test_invalid_settings (test_layout.DetectionTests.test_invalid_settings) ... ok
+test_narrow_column_inside_a_detected_outer_rule_remains (test_layout.DetectionTests.test_narrow_column_inside_a_detected_outer_rule_remains) ... ok
+test_narrow_interior_columns_remain (test_layout.DetectionTests.test_narrow_interior_columns_remain) ... ok
+test_no_dividers_returns_one_reviewable_cell (test_layout.DetectionTests.test_no_dividers_returns_one_reviewable_cell) ... ok
+test_outer_margins_are_not_extra_cells (test_layout.DetectionTests.test_outer_margins_are_not_extra_cells) ... ok
+test_small_slant_has_quadrilateral_cells (test_layout.DetectionTests.test_small_slant_has_quadrilateral_cells) ... ok
+test_stable_ids_and_consecutive_order_for_same_geometry (test_layout.DetectionTests.test_stable_ids_and_consecutive_order_for_same_geometry) ... ok
+test_context_preserves_crossing_ink_and_source_pixels (test_layout.InkPreservationTests.test_context_preserves_crossing_ink_and_source_pixels) ... ok
+test_exif_crop_mapping_reaches_encoded_original_coordinates (test_layout.InkPreservationTests.test_exif_crop_mapping_reaches_encoded_original_coordinates) ... ok
+test_explicit_oriented_corrections_are_not_rotated_twice (test_layout.InkPreservationTests.test_explicit_oriented_corrections_are_not_rotated_twice) ... ok
+test_outside_cell_is_not_silently_clipped (test_layout.InkPreservationTests.test_outside_cell_is_not_silently_clipped) ... ok
+test_slanted_mask_does_not_erase_outside_context (test_layout.InkPreservationTests.test_slanted_mask_does_not_erase_outside_context) ... ok
+test_empty_and_truncated_output_remains_uncertain_not_blank (test_probe_export.ProbeExportTests.test_empty_and_truncated_output_remains_uncertain_not_blank) ... ok
+test_exif_line_geometry_maps_back_to_encoded_raster (test_probe_export.ProbeExportTests.test_exif_line_geometry_maps_back_to_encoded_raster) ... ok
+test_successful_export_preserves_raw_text_provenance_and_review (test_probe_export.ProbeExportTests.test_successful_export_preserves_raw_text_provenance_and_review) ... ok
+test_wrong_image_configuration_and_missing_lines_rejected (test_probe_export.ProbeExportTests.test_wrong_image_configuration_and_missing_lines_rejected) ... ok
+test_exact_white_blank_bypasses_backend_but_ink_without_lines_is_review (test_segmentation.SegmentationTests.test_exact_white_blank_bypasses_backend_but_ink_without_lines_is_review) ... ok
+test_exif_geometry_returns_to_original_frame_once (test_segmentation.SegmentationTests.test_exif_geometry_returns_to_original_frame_once) ... ok
+test_long_line_keeps_pixels_without_splitting_or_resizing (test_segmentation.SegmentationTests.test_long_line_keeps_pixels_without_splitting_or_resizing) ... ok
+test_malformed_geometry_backend_error_and_limits_are_failures (test_segmentation.SegmentationTests.test_malformed_geometry_backend_error_and_limits_are_failures) ... ok
+test_overlap_and_context_crossing_require_review (test_segmentation.SegmentationTests.test_overlap_and_context_crossing_require_review) ... ok
+test_padding_geometry_is_clipped_with_raw_evidence_and_context_is_retained (test_segmentation.SegmentationTests.test_padding_geometry_is_clipped_with_raw_evidence_and_context_is_retained) ... ok
+test_preserves_scale_context_pixels_and_orders_baselines (test_segmentation.SegmentationTests.test_preserves_scale_context_pixels_and_orders_baselines) ... ok
+
+----------------------------------------------------------------------
+Ran 53 tests in 1.511s
+
+OK
