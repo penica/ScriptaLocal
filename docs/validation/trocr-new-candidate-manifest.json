@@ -1,0 +1,73 @@
+{
+  "repository": "dh-unibe/trocr-german-kurrent-xvi-xix-from-kurrent-v2",
+  "revision": "bd1d96b67225b580846d7759f6ba74c66f56680e",
+  "license": "mit",
+  "files": [
+    {
+      "path": "LICENSE",
+      "bytes": 1102,
+      "sha256": "653cacc638ce0671d401f87a2fb17cf3ff01845f770c03bbf0045d3c719438e0",
+      "upstream_lfs_sha256": null
+    },
+    {
+      "path": "README.md",
+      "bytes": 14664,
+      "sha256": "f23369cb5f9d86d28893f72ac63eb252f0fbb6c1cb66735aa09d8b769eca97c4",
+      "upstream_lfs_sha256": null
+    },
+    {
+      "path": "config.json",
+      "bytes": 1690,
+      "sha256": "94728037a7fb5dc98d729159caa6868e7cc32b154db8abc3077f6db665213ad1",
+      "upstream_lfs_sha256": null
+    },
+    {
+      "path": "generation_config.json",
+      "bytes": 339,
+      "sha256": "b6fd87ee4b0094c48029d02bfebd8e8092b46cc7647676e0938675daf61370cd",
+      "upstream_lfs_sha256": null
+    },
+    {
+      "path": "merges.txt",
+      "bytes": 456318,
+      "sha256": "1ce1664773c50f3e0cc8842619a93edc4624525b728b188a9e0be33b7726adc5",
+      "upstream_lfs_sha256": null
+    },
+    {
+      "path": "model.safetensors",
+      "bytes": 1335747032,
+      "sha256": "054474de1f621f61d1284ee4f274c58def0bb887b1a91694081960fb05dbaf3c",
+      "upstream_lfs_sha256": "054474de1f621f61d1284ee4f274c58def0bb887b1a91694081960fb05dbaf3c"
+    },
+    {
+      "path": "preprocessor_config.json",
+      "bytes": 390,
+      "sha256": "96fd208e04b8eb30aace1a1d9188a82fdc0001281f4032788f8e357a52d1a847",
+      "upstream_lfs_sha256": null
+    },
+    {
+      "path": "special_tokens_map.json",
+      "bytes": 957,
+      "sha256": "8293ae960b0a0852d4d3813118030a1149a3ed9fe37bc2e1e7b3c2e62eb2d4b7",
+      "upstream_lfs_sha256": null
+    },
+    {
+      "path": "tokenizer.json",
+      "bytes": 3558642,
+      "sha256": "2bb1a22cfbe25b8e5a232b7fc4d7fc5073923b45724a5f813b00811bb6620f66",
+      "upstream_lfs_sha256": null
+    },
+    {
+      "path": "tokenizer_config.json",
+      "bytes": 1284,
+      "sha256": "3bd510d03876a11710babb62c6634f7a498ca5ef76c23f3749b8bd8d00391b1b",
+      "upstream_lfs_sha256": null
+    },
+    {
+      "path": "vocab.json",
+      "bytes": 798293,
+      "sha256": "ed19656ea1707df69134c4af35c8ceda2cc9860bf2c3495026153a133670ab5e",
+      "upstream_lfs_sha256": null
+    }
+  ]
+}
