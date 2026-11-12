@@ -1,0 +1,44 @@
+{
+  "date": "2026-11-12",
+  "tests_passed": 18,
+  "tests_failed": 0,
+  "image": "sha256:664b715501ef5785bd2f196c9ea5d9fb582fdc19b7cff4823e684e88c03305b0",
+  "dependency_packages": 20,
+  "test_log": "docs/validation/intake-tests.txt",
+  "actual_http_report": "docs/validation/intake-http.json",
+  "test_environment": {
+    "network": "none",
+    "user": "1000:1000",
+    "read_only_root": true,
+    "capabilities": "dropped",
+    "no_new_privileges": true
+  },
+  "scope": [
+    "scoped administrator/upload credentials",
+    "folder selection and traversal rejection",
+    "unchanged bytes/checksum receipts",
+    "file/count/total byte quotas",
+    "idempotent retries/no overwrites",
+    "symlink and FIFO rejection",
+    "expiry and midstream revocation",
+    "restart recovery",
+    "chunked stream limits",
+    "atomic concurrent file reservations",
+    "upload concurrency and timeouts",
+    "unauthorized bodies not consumed",
+    "private OpenAPI and required headers"
+  ],
+  "file_sha256": {
+    "scriptalocal/intake.py": "60b518e4509372e79c18ace6a6a954057f4a52f14c0e9b586bf43f7f45debeec",
+    "scriptalocal/intake_store.py": "33adc436b3d28570bafad57f4e5501724e3904ddc70fd9d9daa64864d83936e9",
+    "scriptalocal/intake_cli.py": "23d5704e2e478140cb3fb5b0da20173d9e914f3a8734aa6e1d89835da199e9da",
+    "integration_tests/test_intake.py": "4c13702929de4e49090c1443bfc02ad5c803d987742e7dbb3f3401b8d24f7361",
+    "deploy/intake/Dockerfile": "8a8b02cb33afefb04c333832d1b951e9b0067f200cbdfb1a61ff92ed81e8c34d",
+    "deploy/intake/constraints.lock": "8d44469ae0da8e1209a01c680e2ee37d572f9d69fc05ff0178f87b2d83b7d311",
+    "deploy/intake/compose.yaml": "ec6751359a73007282b7617bec7b70cc757609ff7e92bb555cc18e294e55b659"
+  },
+  "remaining": [
+    "agent network location/reachable HTTPS or private tunnel",
+    "actual other-agent handover upload"
+  ]
+}
