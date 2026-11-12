@@ -3,6 +3,7 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+import ssl
 import time
 import urllib.error
 import urllib.request
@@ -11,9 +12,11 @@ import urllib.request
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--url',default='http://127.0.0.1:8092')
     parser.add_argument('--token-file',type=Path,required=True);parser.add_argument('--receipt',type=Path,required=True)
+    parser.add_argument('--ca-file',type=Path)
     parser.add_argument('--output',type=Path,required=True);args=parser.parse_args()
     token=args.token_file.read_text().strip();job=json.loads(args.receipt.read_text())['job_id'];path='/v1/jobs/'+job
-    http=urllib.request.build_opener(urllib.request.ProxyHandler({}));args.output.mkdir(mode=0o700,parents=True,exist_ok=True)
+    context=ssl.create_default_context(cafile=str(args.ca_file)) if args.ca_file else ssl.create_default_context()
+    http=urllib.request.build_opener(urllib.request.ProxyHandler({}),urllib.request.HTTPSHandler(context=context));args.output.mkdir(mode=0o700,parents=True,exist_ok=True)
     def request(endpoint,body=None):
         headers={'Authorization':'Bearer '+token}
         if body is not None:headers['Content-Type']='application/json';body=json.dumps(body).encode()
