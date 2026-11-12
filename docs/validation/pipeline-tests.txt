@@ -1,0 +1,16 @@
+test_complete_row_preserves_multiline_text_and_blank_middle_position (test_pipeline.PipelineTests.test_complete_row_preserves_multiline_text_and_blank_middle_position) ... ok
+test_exif_result_geometry_is_mapped_to_encoded_source_once (test_pipeline.PipelineTests.test_exif_result_geometry_is_mapped_to_encoded_source_once) ... ok
+test_line_budget_overflow_fails_segmentation_stage (test_pipeline.PipelineTests.test_line_budget_overflow_fails_segmentation_stage) ... ok
+test_no_valid_layout_does_not_fabricate_a_single_cell (test_pipeline.PipelineTests.test_no_valid_layout_does_not_fabricate_a_single_cell) ... ok
+test_oom_failure_is_explicit_partial_result_and_blank_is_retained (test_pipeline.PipelineTests.test_oom_failure_is_explicit_partial_result_and_blank_is_retained) ... ok
+test_original_tampering_is_detected_before_layout (test_pipeline.PipelineTests.test_original_tampering_is_detected_before_layout) ... ok
+test_result_and_line_budget_overflow_fail_without_publishing_truncated_json (test_pipeline.PipelineTests.test_result_and_line_budget_overflow_fail_without_publishing_truncated_json) ... ok
+test_segmentation_failure_does_not_become_blank_or_empty_success (test_pipeline.PipelineTests.test_segmentation_failure_does_not_become_blank_or_empty_success) ... ok
+test_truncated_recognition_keeps_raw_text_and_own_scope_warnings (test_pipeline.PipelineTests.test_truncated_recognition_keeps_raw_text_and_own_scope_warnings) ... ok
+test_unverified_foreign_line_artifact_cannot_be_recognized (test_pipeline.PipelineTests.test_unverified_foreign_line_artifact_cannot_be_recognized) ... ok
+test_wrong_model_selection_does_not_silently_use_resident_default (test_pipeline.PipelineTests.test_wrong_model_selection_does_not_silently_use_resident_default) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 8.379s
+
+OK
