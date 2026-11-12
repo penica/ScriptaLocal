@@ -1,0 +1,53 @@
+{
+  "date": "2026-11-12",
+  "tests_passed": 24,
+  "tests_failed": 0,
+  "image_id": "sha256:e082fe3329bd6351ccd2e2f7cf583773648c8f03fa16173fb689b7689d1117bc",
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--network",
+    "none",
+    "--read-only",
+    "--memory",
+    "1g",
+    "--cpus",
+    "2",
+    "--tmpfs",
+    "/tmp:size=64m",
+    "scriptalocal-cpu-validation:locked"
+  ],
+  "network": "disabled",
+  "gpu_access": "none requested",
+  "test_log": "docs/validation/cpu-tests.txt",
+  "resolved_packages": 27,
+  "coverage": [
+    "PNG/JPEG/TIFF",
+    "all 8 EXIF orientations for PNG and TIFF with pixel-to-coordinate checks",
+    "corrupt/empty/unsupported/multiframe/oversized input",
+    "reversible crop/rotation/scale/padding geometry",
+    "atomic unchanged original publication and artifact integrity",
+    "blank middle cell and multiline roundtrip",
+    "reading uncertainty, raw text and saved corrections",
+    "invalid geometry/order/IDs/provenance",
+    "revision shape and status/timestamp invariants",
+    "OpenAPI 3.1 structural validation and local reference resolution"
+  ],
+  "file_sha256": {
+    "scriptalocal/images.py": "1cd4e087a7e2a2aefbae323c820b6e13a93b94f3931dabc008528d9ccf7843b8",
+    "scriptalocal/contracts.py": "3d66415c88c9a204b191771563eb20bfe3e963e644470eca3af7fcdebd4a9c1c",
+    "tests/test_images.py": "8581b5f43bd44fbd193b6bcfa2fa7b5944d81009b3e09943632ca7cde7c5e629",
+    "tests/test_contracts.py": "645de058fe76672335162c61b765225210a55566491b27dde25e91d0e4b38fc2",
+    "scripts/export_contract.py": "7428f53b716dc3e03daead56146921f37fc83cbcdaccdcc55c1f90aa8fc1023f",
+    "docs/api/openapi.json": "46fd79540cfe08ec6d4f0f8903dcee7234bf14d718553e980122ba3dcd28db6c",
+    "deploy/cpu-validation/constraints.lock": "7e90fe500dd87a3b9131b1fc6568da23c03631b289596229ba4fdb9862b277f3"
+  },
+  "not_covered": [
+    "HTTP routes/authentication",
+    "persistent job execution and recovery",
+    "manuscript accuracy",
+    "existing-app integration",
+    "full database backup restoration"
+  ]
+}
