@@ -12,7 +12,9 @@ from uuid import UUID, uuid4
 
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, Response
+from urllib.parse import quote
+from . import intake_downloads
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator
 from starlette.requests import ClientDisconnect
 
@@ -36,6 +38,15 @@ class UploadRequestInput(BaseModel):
         if any(not re.fullmatch(r'\.[a-z0-9]{1,10}',value) for value in values):
             raise ValueError('Use lowercase filename suffixes such as .json')
         return sorted(set(values))
+
+
+class DownloadRequestInput(BaseModel):
+    model_config=ConfigDict(extra='forbid',strict=True)
+    destination:str=Field(min_length=1,max_length=100)
+    subfolder:str=Field(default='',max_length=500)
+    label:str=Field(min_length=1,max_length=200)
+    filenames:list[str]=Field(min_length=1,max_length=50)
+    expires_in_seconds:int=Field(default=86400,ge=1)
 
 
 def error_response(code,message,status):
@@ -80,6 +91,7 @@ def create_app(settings:IntakeSettings):
     @asynccontextmanager
     async def lifespan(app):
         store=IntakeStore(settings);app.state.store=store;app.state.active_uploads=0
+        intake_downloads.initialize(store)
         try:yield
         finally:store.close()
     app=FastAPI(title='ScriptaLocal agent intake',version='1',lifespan=lifespan,
@@ -115,6 +127,31 @@ def create_app(settings:IntakeSettings):
     async def specification(request:Request):
         require_admin(request,settings)
         return app.openapi()
+
+    @app.post('/intake/v1/downloads',status_code=201)
+    async def publish_download(request:Request):
+        require_admin(request,settings)
+        try:options=DownloadRequestInput.model_validate(await small_json(request,settings.upload_timeout_seconds))
+        except ValidationError:raise IntakeError('invalid_request','Invalid download request options')
+        details,token=intake_downloads.publish(app.state.store,options)
+        return {**details,'download_token':token,'manifest_url':settings.public_base_url.rstrip('/')+'/intake/v1/downloads/'+details['request_id']}
+
+    @app.get('/intake/v1/downloads/{download_id}')
+    async def download_manifest(download_id:UUID,request:Request):
+        return intake_downloads.describe(app.state.store,str(download_id),bearer(request),is_admin(request,settings))
+
+    @app.post('/intake/v1/downloads/{download_id}/revoke')
+    async def revoke_download(download_id:UUID,request:Request):
+        require_admin(request,settings)
+        return intake_downloads.revoke(app.state.store,str(download_id))
+
+    @app.get('/intake/v1/downloads/{download_id}/files/{file_id}')
+    async def download_file(download_id:UUID,file_id:UUID,request:Request):
+        record,content=intake_downloads.read(app.state.store,str(download_id),str(file_id),bearer(request))
+        return Response(content,media_type='application/octet-stream',headers={
+            'Content-Disposition':"attachment; filename*=UTF-8''"+quote(record['filename'],safe=''),
+            'X-Content-SHA256':record['sha256'],'Cache-Control':'no-store',
+            'X-Content-Type-Options':'nosniff'})
 
     @app.post('/intake/v1/requests',status_code=201)
     async def create_request(request:Request):
@@ -191,12 +228,17 @@ def create_app(settings:IntakeSettings):
             return specification
         components=specification.setdefault('components',{})
         components.setdefault('schemas',{})['UploadRequestInput']=UploadRequestInput.model_json_schema()
+        components.setdefault('schemas',{})['DownloadRequestInput']=DownloadRequestInput.model_json_schema()
         components['securitySchemes']={
+            'DownloadTicket':{'type':'http','scheme':'bearer','description':'Expiring read-only token scoped to explicitly published snapshot files.'},
             'Administrator':{'type':'http','scheme':'bearer','description':'Private administrator token; never share with the uploading agent.'},
             'UploadTicket':{'type':'http','scheme':'bearer','description':'Expiring token scoped to one upload request and destination.'}}
         for path,methods in specification['paths'].items():
             for method,operation in methods.items():
-                operation['security']=([] if path=='/health/live' else
+                operation['security']=(
+                    [{'DownloadTicket':[]}] if path.endswith('/files/{file_id}') else
+                    [{'Administrator':[]},{'DownloadTicket':[]}] if path=='/intake/v1/downloads/{download_id}' else
+                    [] if path=='/health/live' else
                     [{'UploadTicket':[]}] if method=='put' else
                     [{'Administrator':[]},{'UploadTicket':[]}] if path=='/intake/v1/requests/{request_id}' else
                     [{'Administrator':[]}])
@@ -206,6 +248,7 @@ def create_app(settings:IntakeSettings):
             'name':'X-Upload-Filename','in':'header','required':True,
             'description':'Percent-encoded UTF-8 basename only, without a folder path.',
             'schema':{'type':'string'}})
+        specification['paths']['/intake/v1/downloads']['post']['requestBody']={'required':True,'content':{'application/json':{'schema':{'$ref':'#/components/schemas/DownloadRequestInput'}}}}
         specification['x-intake-auth-described']=True
         return specification
     app.openapi=documented_schema
