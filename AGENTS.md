@@ -6,6 +6,8 @@ Build a local handwriting transcription backend for an existing external web app
 
 Read `docs/implementation-plan.md` and `tasks.md` before implementation. The selected deployment is Docker Compose on this host, using NVIDIA Container Toolkit. Do not introduce a VM, LXC layer, upstream eScriptorium deployment, or replacement annotation website without a documented reason tied to requirements.
 
+The owner explicitly requested a small manual-submission web interface after pausing the broad validation goal. That UI task is authorized separately; do not resume the paused goal. Keep it a lightweight same-origin client of the existing API, with no replacement annotation system.
+
 ## Task tracking
 
 - `tasks.md` is the implementation checklist. Keep IDs stable and add tasks when scope is discovered.
