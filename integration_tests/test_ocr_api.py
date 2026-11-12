@@ -142,6 +142,79 @@ class OCRAPITests(unittest.TestCase):
         self.assertIsNone(response['error_code']);self.assertFalse(response['cancel_requested']);self.assertEqual(response['warnings'],[])
         self.assertEqual(self.client.get('/v1/jobs/'+job_id+'/result',headers=self.headers()).status_code,409)
 
+    def test_revision_admission_is_attributed_and_stale_edits_conflict(self):
+        job=self.accepted()['job_id'];self.finish(job)
+        body={'expected_revision':1,'text_corrections':[{'line_id':self.example['cells'][0]['lines'][0]['id'],'text':'Saved exact name','state':'recognized'}]}
+        path='/v1/jobs/'+job+'/revisions'
+        self.assertEqual(self.client.post(path,headers=self.headers('bob'),json=body).status_code,404)
+        self.assertEqual(self.client.post(path,headers=self.headers('reader'),json=body).status_code,403)
+        response=self.client.post(path,headers=self.headers(),json=body)
+        self.assertEqual(response.status_code,202,response.text);self.assertEqual(response.json()['revision'],2)
+        self.assertEqual(self.client.post(path,headers=self.headers(),json=body).status_code,409)
+        historical=self.client.get('/v1/jobs/'+job+'/result?revision=1',headers=self.headers())
+        self.assertEqual(historical.status_code,200);self.assertEqual(historical.json()['revision'],1)
+        self.assertEqual(self.client.get('/v1/jobs/'+job+'/result',headers=self.headers()).status_code,409)
+        with self.queue.connect() as db:
+            edit=db.execute('SELECT actor,submitted_at,request FROM sl_revision_edits WHERE job_id=%s',(UUID(job),)).fetchone()
+        self.assertEqual(edit['actor'],'alice');self.assertEqual(edit['request']['text_corrections'],body['text_corrections'])
+        self.assertEqual(edit['request']['expected_revision'],1);self.assertIsNone(edit['request']['corrected_dividers']);self.assertIsNotNone(edit['submitted_at'].tzinfo)
+
+    def test_revision_body_limits_unknown_targets_and_actor_spoofing_are_rejected(self):
+        job=self.accepted()['job_id'];self.finish(job);path='/v1/jobs/'+job+'/revisions'
+        body={'expected_revision':1,'text_corrections':[{'line_id':str(uuid4()),'text':'private replacement','state':'recognized'}]}
+        self.assertEqual(self.client.post(path,headers=self.headers(),json=body).status_code,422)
+        body['text_corrections'][0]['line_id']=self.example['cells'][0]['lines'][0]['id'];body['actor_id']='forged'
+        response=self.client.post(path,headers=self.headers(),json=body);self.assertEqual(response.status_code,422)
+        self.assertNotIn('private replacement',response.text);self.assertNotIn('forged',response.text)
+        self.assertEqual(self.client.post(path,headers=self.headers(),content=b'{}').status_code,415)
+        with TestClient(create_app(self.queue,self.sources,self.credentials,self.profiles,settings=replace(self.settings,maximum_revision_bytes=10))) as client:
+            self.assertEqual(client.post(path,headers=self.headers(),json=body).status_code,413)
+        self.assertEqual(self.queue.get(UUID(job),'alice')['current_revision'],1)
+
+    def test_artifact_inventory_pages_committed_outputs_and_downloads_original(self):
+        job=self.accepted()['job_id'];self.finish(job)
+        path='/v1/jobs/'+job+'/artifacts';cursor=None;entries=[];original=None
+        for _ in range(4):
+            response=self.client.get(path,params={'limit':1,**({'after':cursor} if cursor else {})},headers=self.headers())
+            self.assertEqual(response.status_code,200,response.text);page=response.json()
+            self.assertEqual(page['job_id'],job);self.assertEqual(len(page['artifacts']),1)
+            if original is None:original=page['original']
+            else:self.assertEqual(original,page['original'])
+            entries.extend(page['artifacts']);cursor=page['next_cursor']
+            if cursor is None:break
+        self.assertIsNone(cursor);self.assertEqual(len(entries),3);self.assertEqual(len({entry['artifact_id'] for entry in entries}),3)
+        self.assertEqual({entry['stage'] for entry in entries},{'layout','segmentation','recognition'})
+        self.assertEqual(original['bytes'],len(self.png));self.assertEqual(original['sha256'],hashlib.sha256(self.png).hexdigest())
+        self.assertNotIn(str(self.root),json.dumps(page));self.assertNotIn('relative_path',json.dumps(page))
+        for entry in [original,*entries]:
+            downloaded=self.client.get(path+'/'+entry['artifact_id'],headers=self.headers())
+            self.assertEqual(downloaded.status_code,200);self.assertEqual(hashlib.sha256(downloaded.content).hexdigest(),entry['sha256'])
+            if entry==original:self.assertEqual(downloaded.content,self.png);self.assertTrue(downloaded.headers['content-type'].startswith('image/png'))
+        for query in [{'limit':0},{'limit':201},{'after':'not-a-uuid'}]:
+            self.assertEqual(self.client.get(path,params=query,headers=self.headers()).status_code,422)
+
+    def test_original_and_inventory_access_remain_job_and_owner_scoped(self):
+        first=self.accepted()['job_id'];second=self.accepted()['job_id']
+        path='/v1/jobs/'+first+'/artifacts';original=self.client.get(path,headers=self.headers()).json()['original']['artifact_id']
+        for endpoint in [path,path+'/'+original]:
+            self.assertEqual(self.client.get(endpoint,headers=self.headers('bob')).status_code,404)
+            self.assertEqual(self.client.get(endpoint,headers=self.headers('writer')).status_code,403)
+        self.assertEqual(self.client.get('/v1/jobs/'+second+'/artifacts/'+original,headers=self.headers()).status_code,404)
+        self.assertEqual(self.client.get('/v1/jobs/'+str(uuid4())+'/artifacts',headers=self.headers()).status_code,404)
+
+    def test_original_download_rejects_corruption_symlink_and_fifo_without_blocking(self):
+        job=self.accepted()['job_id'];path='/v1/jobs/'+job+'/artifacts'
+        original=self.client.get(path,headers=self.headers()).json()['original']['artifact_id']
+        source=self.sources.root/(hashlib.sha256(self.png).hexdigest()+'.original')
+        source.write_bytes(b'corrupt')
+        self.assertEqual(self.client.get(path+'/'+original,headers=self.headers()).status_code,503)
+        source.unlink();target=self.root/'outside.png';target.write_bytes(self.png);source.symlink_to(target)
+        self.assertEqual(self.client.get(path+'/'+original,headers=self.headers()).status_code,503)
+        self.assertEqual(self.client.get(path,headers=self.headers()).status_code,503)
+        source.unlink();os.mkfifo(source)
+        started=time.monotonic();self.assertEqual(self.client.get(path+'/'+original,headers=self.headers()).status_code,503)
+        self.assertLess(time.monotonic()-started,2)
+
     def test_capabilities_and_owner_scope_do_not_reveal_jobs(self):
         job=self.accepted()['job_id']
         self.assertEqual(self.post(owner='reader').status_code,403)
