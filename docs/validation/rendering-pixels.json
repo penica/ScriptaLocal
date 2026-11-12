@@ -1,0 +1,11 @@
+{
+  "synthetic_pixel_tests": 4,
+  "native_legacy_replayed_exactly": 24,
+  "crop_sizes_unchanged": 24,
+  "source_image_unchanged": true,
+  "renderer_sha256": "6e9cbe9de45c5f5e93b8884e446cc3bc9c66b80bf27ffea06194f6364a709e1a",
+  "roi_labels": "private provisional AI reference, not human-confirmed",
+  "quality_outcome": "no improvement on the six provisional checked cases; default unchanged",
+  "runtime_image": "sha256:cb0d1d04adf50a5fa237082912fbc6163713bdc179c54ba73782e501934b5f27",
+  "production_pipeline_change": false
+}
