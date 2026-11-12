@@ -1,0 +1,83 @@
+{
+  "model": {
+    "engine": "transformers",
+    "model_id": "dh-unibe/trocr-german-kurrent-xvi-xix-from-kurrent-v2",
+    "revision": "bd1d96b67225b580846d7759f6ba74c66f56680e",
+    "weights_sha256": "054474de1f621f61d1284ee4f274c58def0bb887b1a91694081960fb05dbaf3c"
+  },
+  "manifest_sha256": "8196830c100bcf505b01c7ac9f4b400386967a5304a47bc3a997f9005e174367",
+  "line_crops": 24,
+  "corpus_sha256": "8d6170e81d91be757748d95554a6ee8977252384519871f7040308bcb62d4a15",
+  "ai_reference_sha256": "1527b31d123bba97c7a6e6b6be0c5de481d5896956d150fdc83327486ddef12a",
+  "source_image_sha256": "0a5b42a6aa9f2ad626931151f05c600b5ebb88766620b825e40c7a95ce59d8e6",
+  "cached_baseline_provenance": {
+    "pipeline_version": "pipeline-f880f83b6da6",
+    "configuration_sha256": "5a8bbbccc5b5ea66d3197f565c907493006c88cb3e17da98eeb99955ea6265c9",
+    "segmentation_model": {
+      "engine": "kraken",
+      "model_id": "kraken/blla.mlmodel",
+      "revision": "77a638a83c9e535620827a09e410ed36391e9e8e8126d5796a0f15b978186056",
+      "weights_sha256": "77a638a83c9e535620827a09e410ed36391e9e8e8126d5796a0f15b978186056"
+    },
+    "recognition_model": {
+      "engine": "transformers",
+      "model_id": "dh-unibe/trocr-kurrent-XVI-XVII",
+      "revision": "a6bb6086ba3f7ddc62193a0289b1ee733c1af15e",
+      "weights_sha256": "dfb88d0a11fecc1fb92152a9d435e16c787bb6190c4995f277e4dfeb2976d065"
+    }
+  },
+  "controlled_decoding_recipe": {
+    "num_beams": 4,
+    "max_new_tokens": 128,
+    "length_penalty": 2.0,
+    "no_repeat_ngram_size": 0,
+    "use_cache": false,
+    "do_sample": false,
+    "early_stopping": true
+  },
+  "candidate_author_defaults_before_control": {
+    "num_beams": 4,
+    "max_new_tokens": 256,
+    "length_penalty": 2.0,
+    "no_repeat_ngram_size": 3,
+    "use_cache": false,
+    "do_sample": false,
+    "early_stopping": true
+  },
+  "clean_up_tokenization_spaces": false,
+  "model_load_and_verification_seconds": 10.403,
+  "generation_seconds": 4.223,
+  "peak_cuda_bytes": 1516554240,
+  "backend_calls": 6,
+  "oom_events": 0,
+  "identical_verbatim_to_cached_baseline": 2,
+  "changed_verbatim_from_cached_baseline": 22,
+  "states": {
+    "recognized": 24,
+    "needs-review": 0,
+    "failed": 0
+  },
+  "ai_visual_diagnostics": {
+    "cached_baseline": {
+      "provisional_ai_text_anchors": 4,
+      "matches_after_exterior_whitespace_strip": 0,
+      "provisional_nontext_examples": 2,
+      "nonempty_outputs_on_provisional_nontext": 2
+    },
+    "candidate": {
+      "provisional_ai_text_anchors": 4,
+      "matches_after_exterior_whitespace_strip": 1,
+      "provisional_nontext_examples": 2,
+      "nonempty_outputs_on_provisional_nontext": 2
+    }
+  },
+  "human_ground_truth": false,
+  "accuracy_ranking": "not established",
+  "network": "disabled; inference files mounted read-only",
+  "hardware": "one assigned RTX 3060; host GPU 1",
+  "source_sha256": {
+    "scripts/validation/compare_recognizer.py": "97a0fca0ce258d61c304e4b3dd0fd664b7d1a0e9d3d9c2a8347e6f54fdb1cedb",
+    "scriptalocal/recognition.py": "81682644c107969cb4a75ed85bace7eb72cc3a7b51b68a3d649e6b1dde9c3d0b",
+    "scriptalocal/trocr_recognizer.py": "1a14b8a41bda5a36e16cc11c1e353f79038fe294a67b345de85cae6a7aa1e845"
+  }
+}
