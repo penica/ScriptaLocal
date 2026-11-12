@@ -1,0 +1,18 @@
+{
+  "outgoing_bundle_sha256": "3e6cb67b84544660b648a5969b696d921b3a727c49a966b1219297b18498f42a",
+  "manifest_members_verified": 21,
+  "standalone_cli_tests": 3,
+  "original_service_fixtures_valid": 18,
+  "canonical_fixture_count": 21,
+  "proposed_warning_fixes_valid": 21,
+  "invalid_semantic_examples_rejected": 4,
+  "imported_source": "extracted outgoing package only; no project checkout mounted",
+  "network": "disabled",
+  "scope": "reference package and fixture compatibility, not app/API execution",
+  "runner_image": "sha256:45599215ca2781ac9ed2460f15d8629d1f4ba792491bf6c90dded958dea1c743",
+  "core_suite_passed": 56,
+  "provided_fixture_pytest_passed": 40,
+  "provided_fixture_scope": "unchanged source from received archive",
+  "received_receipt": "file ID ad3137f6-d9fb-4091-9759-e7b92ccde7f7; byte count/hash verified against live intake registry",
+  "constraints_sha256": "114bb567bd73282c519538ea571e0c9c9ae170edd483b7a90b2206b5c020e56e"
+}
