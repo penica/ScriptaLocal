@@ -1,0 +1,26 @@
+{
+  "live_http": 200,
+  "unauthenticated_readiness_http": 401,
+  "readiness": {
+    "ready": false,
+    "components": {
+      "api": "ready",
+      "database": "ready",
+      "storage": "ready",
+      "model": "unavailable",
+      "cleanup": "ready"
+    },
+    "limits": {
+      "max_upload_bytes": 26214400,
+      "max_pixels": 40000000,
+      "max_side": 20000
+    }
+  },
+  "upload_without_worker_http": 503,
+  "original_published_without_worker": false,
+  "credential_or_image_in_logs": false,
+  "binding": "127.0.0.1:8092",
+  "gpu_roundtrip": false,
+  "source_image_sha256": "0a5b42a6aa9f2ad626931151f05c600b5ebb88766620b825e40c7a95ce59d8e6",
+  "api_tests": 25
+}
