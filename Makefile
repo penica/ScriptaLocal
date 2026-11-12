@@ -17,7 +17,7 @@ validation-cpu-build:
 
 # Run source tests from this checkout, without GPU access or network.
 validation-cpu:
-	docker run --rm --network none --read-only --memory 1g --cpus 2 --tmpfs /tmp:size=64m -v "$(CURDIR):/app:ro" scriptalocal-cpu-validation:locked
+	docker run --rm --network none --read-only --memory 2g --cpus 2 --tmpfs /tmp:size=64m -v "$(CURDIR):/app:ro" scriptalocal-cpu-validation:locked
 
 contract-export:
 	docker run --rm --network none --user "$$(id -u):$$(id -g)" -v "$(CURDIR):/app" scriptalocal-cpu-validation:locked python -m scripts.export_contract docs/api/openapi.json
