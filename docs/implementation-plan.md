@@ -1,12 +1,12 @@
 # ScriptaLocal implementation plan
 
-Date: 12 November 2026. Status: foundation validation underway; application inference and quality acceptance remain unverified.
+Date: 12 November 2026. Status: full-row leased GPU prototype verified; HTTP service and quality acceptance remain open.
 
 ## Outcome
 
 ScriptaLocal will provide an HTTP transcription service that the user's existing crop-marking application can select alongside its current Codex CLI provider. Each request contains a table-row image with visible vertical borders and multiline cells. Return ordered cells, ordered lines, geometry, raw transcriptions, review warnings, and reproducible model provenance. Keep data local after model provisioning.
 
-This repository builds the backend and a small diagnostic client, not a replacement website. A future review interface in the existing application is an integration task. Its source, current provider contract, and representative manuscript crops have not yet been supplied. Initial work can proceed against an explicitly versioned service contract.
+This repository builds the backend and a small diagnostic client, not a replacement website. A future review interface in the existing application is an integration task. The existing-app contract and synthetic integration fixtures are supplied, and one manuscript row crop is available. Broader representative crops and corrected transcripts remain pending. Integration follows the explicitly versioned service contract and the Registers/Builder handover.
 
 ## Deployment decision
 
@@ -78,7 +78,7 @@ Initial caps: two concurrent CPU preparation jobs with limited native-library th
 3. Find vertical border candidates using adaptive thresholding, morphological line extraction and corroborating line/projection evidence. Handle slightly slanted, broken and double borders. Merge duplicate detections and use image edges for outer limits when needed. Avoid treating tall handwriting strokes as dividers.
 4. Produce cell polygons, left-to-right order, detection diagnostics and ambiguous-layout warnings. Support no divider as a single-cell input, variable cell count, blank cells, uncertain/merged cells and user-supplied boundary corrections. Never silently assert a fixed table schema or a confident layout when evidence is ambiguous.
 5. Preserve handwriting touching borders. Compare padded cell crops and conservative border masks; do not broadly erase lines in the only recognition image. Flag overlap across cells for review. Keep mappings back to the original crop.
-6. Run a pinned Kraken baseline segmentation model per cell. Select the model through benchmark evidence and license review; there is no verified segmentation model selected yet. Extract ordered line images using baseline geometry, padding and coordinate transforms. Flag missed/overlapping/very long lines and segmentation failures.
+6. Run a pinned Kraken baseline segmentation model per cell. A checksum-pinned bundled Kraken candidate is the runtime baseline; broader segmentation quality selection still requires benchmark evidence and license review. Extract ordered line images using baseline geometry, padding and coordinate transforms. Flag missed/overlapping/very long lines and segmentation failures.
 7. Transcribe each single line with dh-unibe/trocr-kurrent-XVI-XVII as the first candidate for 16th–18th-century German Kurrent. Compare dh-unibe/trocr-kurrent where dates/hands justify it, and a license-compatible Kraken recognition model on the same held-out samples. Do not load Bern Transformers weights into Kraken as if they were Kraken models.
 8. Assemble line and cell results without rewriting spellings, expanding abbreviations, translating, guessing names, or converting ditto marks into inferred values. Keep blank, unreadable, failed and needs-review states distinct. Generation truncation must be visible; split unusually long lines only with explicit geometry and measured validation.
 9. Return structured results and optional image overlays. Retain raw output and revisioned human corrections separately. A change to a divider should invalidate affected downstream artifacts and regenerate them without overwriting previous evidence.
@@ -171,3 +171,9 @@ The user explicitly selected `http://10.10.100.209:8091` after host inspection s
 ## Queue and reusable segmentation update, 12 November 2026
 
 HTR-016 is complete with 20 real PostgreSQL checks and actual WAL recovery after terminating only the isolated test database. HTR-014 now has reusable per-cell Kraken segmentation, seven additional geometry/error tests and a three-line offline real-cell run. Context and padding produce explicit boundary warnings; raw polygons are retained alongside source-clipped result polygons. Full-row recognition/HTTP service and manuscript-quality acceptance remain open. The external application contract has been received; the application has a coding team whose implementing agent can differ from the integration contact. Keep cross-project handovers self-contained.
+
+## Full-row pipeline and comparative model update, 12 November 2026
+
+The full row now passes all three leased GPU stages, retaining original bytes, 18 review-required cells, 24 assigned line readings and immutable configuration/geometry/line evidence. A 10-second lease was renewed through 58-second actual segmentation with 19 heartbeat calls and identical results. The worker image has an exact 171-package lock; 11 synthetic stage-integration tests and 65 core checks pass. HTTP deployment and manuscript quality remain open.
+
+The owner explicitly authorized direct assistant image reading as an additional diagnostic reference. Such AI readings are private, versioned and not human-confirmed ground truth. The newer Bern XVI–XIX model has been provisioned and tested on the same frozen 24 crops. A manually reviewed single-word experiment implicates oversized line crops, and ruling-only detections produce spurious text in both models. Crop rendering and segmentation quality must be evaluated alongside model size; no final best-model claim is established.
