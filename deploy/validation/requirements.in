@@ -1,0 +1,9 @@
+# Candidate compatibility baseline; complete resolved lock is captured after testing.
+# Kraken 6.0.3 accepts torch 2.7.1 and Python 3.11; newer Kraken 7.x requires torch >=2.9.
+kraken==6.0.3
+transformers==4.51.3
+opencv-python-headless==4.11.0.86
+numpy==2.0.2
+torch==2.7.1
+torchvision==0.22.1
+Pillow==11.2.1
