@@ -1,0 +1,30 @@
+ Container scriptalocal-jobs-validation-db-1 Running 
+ Container scriptalocal-jobs-validation-db-1 Waiting 
+ Container scriptalocal-jobs-validation-db-1 Healthy 
+ Container scriptalocal-jobs-validation-tests-run-04c4a1d4bff2 Creating 
+ Container scriptalocal-jobs-validation-tests-run-04c4a1d4bff2 Created 
+test_artifact_parent_symlinks_and_failed_publication_do_not_escape_or_leave_files (test_jobs.JobQueueTests.test_artifact_parent_symlinks_and_failed_publication_do_not_escape_or_leave_files) ... ok
+test_artifact_tampering_and_path_traversal_are_rejected (test_jobs.JobQueueTests.test_artifact_tampering_and_path_traversal_are_rejected) ... ok
+test_capacity_is_atomic_and_replay_still_works_when_full (test_jobs.JobQueueTests.test_capacity_is_atomic_and_replay_still_works_when_full) ... ok
+test_completion_replays_do_not_duplicate_outputs_or_next_stages (test_jobs.JobQueueTests.test_completion_replays_do_not_duplicate_outputs_or_next_stages) ... ok
+test_concurrent_admission_never_exceeds_capacity (test_jobs.JobQueueTests.test_concurrent_admission_never_exceeds_capacity) ... ok
+test_concurrent_duplicate_submissions_create_one_initial_stage (test_jobs.JobQueueTests.test_concurrent_duplicate_submissions_create_one_initial_stage) ... ok
+test_concurrent_workers_claim_each_stage_once (test_jobs.JobQueueTests.test_concurrent_workers_claim_each_stage_once) ... ok
+test_crashed_worker_retries_are_bounded (test_jobs.JobQueueTests.test_crashed_worker_retries_are_bounded) ... ok
+test_explicit_failures_and_retry_delay (test_jobs.JobQueueTests.test_explicit_failures_and_retry_delay) ... ok
+test_final_publication_and_cancellation_race_preserves_one_terminal_outcome (test_jobs.JobQueueTests.test_final_publication_and_cancellation_race_preserves_one_terminal_outcome) ... ok
+test_final_result_is_schema_checked_and_owner_scoped (test_jobs.JobQueueTests.test_final_result_is_schema_checked_and_owner_scoped) ... ok
+test_heartbeat_recovery_and_stale_worker_fencing (test_jobs.JobQueueTests.test_heartbeat_recovery_and_stale_worker_fencing) ... ok
+test_idempotency_survives_new_client_and_is_scoped_to_owner (test_jobs.JobQueueTests.test_idempotency_survives_new_client_and_is_scoped_to_owner) ... ok
+test_invalid_settings_identity_and_failure_message_rejected (test_jobs.JobQueueTests.test_invalid_settings_identity_and_failure_message_rejected) ... ok
+test_migrations_are_idempotent_and_reject_changed_checksums (test_jobs.JobQueueTests.test_migrations_are_idempotent_and_reject_changed_checksums) ... ok
+test_mismatched_final_result_and_foreign_artifacts_are_rejected (test_jobs.JobQueueTests.test_mismatched_final_result_and_foreign_artifacts_are_rejected) ... ok
+test_queued_cancel_is_idempotent_and_ownership_scoped (test_jobs.JobQueueTests.test_queued_cancel_is_idempotent_and_ownership_scoped) ... ok
+test_running_cancel_blocks_late_publication (test_jobs.JobQueueTests.test_running_cancel_blocks_late_publication) ... ok
+test_worker_cancel_ack_and_cancelled_expired_worker (test_jobs.JobQueueTests.test_worker_cancel_ack_and_cancelled_expired_worker) ... ok
+test_worker_capabilities_do_not_claim_other_stage_types (test_jobs.JobQueueTests.test_worker_capabilities_do_not_claim_other_stage_types) ... ok
+
+----------------------------------------------------------------------
+Ran 20 tests in 6.902s
+
+OK
