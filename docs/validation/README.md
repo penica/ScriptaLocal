@@ -104,3 +104,9 @@ The 43,672-byte fixture ZIP checksum, intake registry receipt and all 42 manifes
 ## Leased stage orchestration
 
 `worker-orchestration.json`, `worker-tests.txt` and `worker-core-tests.txt` record 16 real-PostgreSQL worker checks, the original 20 queue checks after query/connection changes, and 65 core checks. [Worker behavior/reproduction](../worker-validation.md) covers independent heartbeats, cancellation/lease fencing, committed predecessor scope, profile routing, configurable database bounds and fail-closed outages. These are generic-handler checks; actual full-row GPU stage assembly and deployment remain open.
+
+## Full-row pipeline and AI visual diagnostics
+
+`pipeline-integration.json`, `pipeline-tests.txt` and `pipeline-core-tests.txt` record 11 actual-PostgreSQL synthetic-model integration tests, 65 core tests and an exact 171-package worker lock. `queued-full-row.json` records 18 review-required cells/24 assigned lines from actual models; `queued-full-row-short-lease.json` records 19 segmentation heartbeats across a 10-second lease and unchanged output. [Full-row reproduction](../pipeline-validation.md) distinguishes processing success from unaccepted quality.
+
+`trocr-new-candidate-manifest.json` pins the newly provisioned MIT Bern XVI–XIX v2 model. `model-comparison-new-trocr.json` records offline GPU-1 inference on frozen line crops and controlled decoding; no human-ground-truth ranking is available. `crop-sensitivity.json` records a single owner-authorized AI-reviewed-word experiment showing crop-sensitive baseline recognition. AI reference readings, raw outputs and images remain private. These diagnostics do not establish CER/WER or production accuracy.
