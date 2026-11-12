@@ -100,3 +100,7 @@ The 43,672-byte fixture ZIP checksum, intake registry receipt and all 42 manifes
 `app-fixtures-revised.json` and `app-fixture-revised-tests.txt` establish 21/21 canonical service fixtures and 52 unchanged upstream tests for the corrected bundle; the three own-scope warning arrays are the only canonical changes.
 
 `recognition-comparison.json`, `recognition-{fp32,fp16,oom,truncation}.json` and `recognition-tests.txt` record resident-model reuse, identical text hashes across precisions on three real line crops, controlled CUDA OOM recovery, real token-limit truncation and the complete 63-test core suite. [Recognition reproduction and limits](../recognition-validation.md) distinguishes these adapter checks from pending leased-worker, HTTP and manuscript-quality acceptance.
+
+## Leased stage orchestration
+
+`worker-orchestration.json`, `worker-tests.txt` and `worker-core-tests.txt` record 16 real-PostgreSQL worker checks, the original 20 queue checks after query/connection changes, and 65 core checks. [Worker behavior/reproduction](../worker-validation.md) covers independent heartbeats, cancellation/lease fencing, committed predecessor scope, profile routing, configurable database bounds and fail-closed outages. These are generic-handler checks; actual full-row GPU stage assembly and deployment remain open.
