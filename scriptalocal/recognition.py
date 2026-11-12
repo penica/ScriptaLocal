@@ -4,6 +4,7 @@ import math
 from uuid import UUID
 
 from PIL import Image
+from .worker_control import ProcessingInterrupted
 
 
 class RecognitionError(ValueError):pass
@@ -64,12 +65,14 @@ class RecognitionRun:
     backend_calls:int
 
 
-def recognize_lines(inputs,backend,*,settings=RecognitionSettings()):
+def recognize_lines(inputs,backend,*,settings=RecognitionSettings(),checkpoint=None):
     """Accept segmented single-line images only, never a cell/page image.
 
     Failures remain explicit; batch splitting cannot change input identity/order.
     No provider/model/precision switch is performed during memory recovery.
     """
+    check=checkpoint or (lambda:None)
+    check()
     lines=[];identifiers=set()
     for line in inputs:
         if len(lines)>=settings.maximum_lines:raise RecognitionError('Line count exceeds limit')
@@ -83,6 +86,7 @@ def recognize_lines(inputs,backend,*,settings=RecognitionSettings()):
         return [LineReading(line.id,'failed',None,(code,),0) for line in batch]
     def generate(batch):
         nonlocal calls,ooms,recoveries,exhausted
+        check()
         if exhausted:return failed(batch,'gpu_memory_recovery_exhausted')
         calls+=1
         try:
@@ -98,8 +102,10 @@ def recognize_lines(inputs,backend,*,settings=RecognitionSettings()):
             if len(batch)==1:return failed(batch,'gpu_memory_exhausted')
             middle=len(batch)//2
             return generate(batch[:middle])+generate(batch[middle:])
+        except ProcessingInterrupted:raise
         except RecognitionError:raise
         except Exception as exc:raise RecognitionError('Recognition backend failed') from exc
+        check()
         if len(results)!=len(batch) or any(not isinstance(result,Generation) for result in results):raise RecognitionError('Backend result count/type mismatch')
         readings=[]
         for line,result in zip(batch,results):
