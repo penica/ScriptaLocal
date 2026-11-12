@@ -24,7 +24,7 @@ The build tags are operator conveniences. Generated `compose.env` and `worker.js
 
 Generated `settings/api.json` and `settings/worker.json` contain configurable paths, limits and pipeline references. `settings/credentials.json` contains token hashes/capabilities/owners, not bearer tokens. Raw application and health tokens are in the private `secrets/` directory. The database DSN is also a protected file, never an environment password. Roots/directories are mode 0700; application secrets are 0600. Only database initialization password files use 0444 so the separate PostgreSQL OS user can read their explicit container mounts; their host parent directories remain 0700. Do not broaden those directories or mount the whole secrets directory into another service.
 
-`settings/operator.json` records the selected backup destination for subsequent operator tooling; it does not create an automatic backup schedule. There is no new web interface. User-selected backup/storage settings remain file-configurable pending any future administration UI.
+`operations/operator.json` records the selected backup destination for subsequent operator tooling; it does not create an automatic backup schedule. The /ui manual workspace now allows a configure-authorized user to update this destination; it does not enable an automatic backup schedule.
 
 ## Start and maintain
 
