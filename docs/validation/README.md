@@ -94,3 +94,9 @@ The actual coding-agent two-file upload is now verified in `integration-handover
 ## Registers synthetic fixture exchange
 
 The 43,672-byte fixture ZIP checksum, intake registry receipt and all 42 manifest entries match. Its 40 pytest checks pass unchanged in a locked 15-package network-disabled runner. `app-fixtures.json` records stricter service-model validation: 18/21 fixtures pass, with three missing warning scopes. `app-fixtures-proposed-fix.json` records 21/21 after explicit proposed in-memory warning additions, with original bytes untouched. `semantic-bundle.json` proves the standalone outgoing reference package reproduces these outcomes without the project checkout mounted. `contract-cli-tests.txt` records the complete 56-test core suite, including three CLI checks for validity, byte limits and input-body redaction. `contract-clarification-download.json` verifies both outgoing files through the LAN intake. [Contract clarification](../registers-contract-clarification.md) records answers and open service release gates. This is offline fixture compatibility, not deployed API/application acceptance.
+
+## Revised fixtures and resident recognition
+
+`app-fixtures-revised.json` and `app-fixture-revised-tests.txt` establish 21/21 canonical service fixtures and 52 unchanged upstream tests for the corrected bundle; the three own-scope warning arrays are the only canonical changes.
+
+`recognition-comparison.json`, `recognition-{fp32,fp16,oom,truncation}.json` and `recognition-tests.txt` record resident-model reuse, identical text hashes across precisions on three real line crops, controlled CUDA OOM recovery, real token-limit truncation and the complete 63-test core suite. [Recognition reproduction and limits](../recognition-validation.md) distinguishes these adapter checks from pending leased-worker, HTTP and manuscript-quality acceptance.
