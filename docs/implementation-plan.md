@@ -6,7 +6,7 @@ Date: 12 November 2026. Status: HTTP/GPU prototype, artifacts and correction his
 
 ScriptaLocal will provide an HTTP transcription service that the user's existing crop-marking application can select alongside its current Codex CLI provider. Each request contains a table-row image with visible vertical borders and multiline cells. Return ordered cells, ordered lines, geometry, raw transcriptions, review warnings, and reproducible model provenance. Keep data local after model provisioning.
 
-This repository builds the backend and a small diagnostic client, not a replacement website. A future review interface in the existing application is an integration task. The existing-app contract and synthetic integration fixtures are supplied, and one manuscript row crop is available. Broader representative crops and corrected transcripts remain pending. Integration follows the explicitly versioned service contract and the Registers/Builder handover.
+This repository builds the backend and a small diagnostic client, not a replacement website. A future review interface in the existing application is an integration task. Separately, the owner requested a lightweight manual submission page; /ui now provides sign-in, upload/progress, result exports and backup-destination settings without resuming the paused validation goal. The existing-app contract and synthetic integration fixtures are supplied, and one manuscript row crop is available. Broader representative crops and corrected transcripts remain pending. Integration follows the explicitly versioned service contract and the Registers/Builder handover.
 
 ## Deployment decision
 
