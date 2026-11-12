@@ -1,0 +1,95 @@
+{
+  "http": {
+    "job_id": "f928c85e-3cc4-4d08-a586-8e6063b895aa",
+    "revisions": 3,
+    "text_revision_seconds": 0.617,
+    "geometry_revision_seconds": 62.948,
+    "cells_after_geometry": 18,
+    "raw_reading_preserved": true,
+    "actor_and_timestamp_server_recorded": true,
+    "stale_revision_http": 409,
+    "prior_revision_bytes_unchanged": true,
+    "old_corrections_not_applied_after_geometry": true,
+    "result_hashes": [
+      "6a22d862db9226b8c64545e1f51153385f9a24f751e71bfb2b69e7de27c9af41",
+      "b4ca75318da3a8fd6bf4ff487d55e1e98ad979a044a1c739d34ae4a9a0160d2c",
+      "4d98679834dac7f142538504432e038564024ba618543672e7091e159fb7825b"
+    ],
+    "correction_value": "synthetic validation text; not ground truth"
+  },
+  "database": {
+    "stages": [
+      {
+        "revision": 1,
+        "name": "layout",
+        "status": "succeeded",
+        "attempts": 1
+      },
+      {
+        "revision": 1,
+        "name": "segmentation",
+        "status": "succeeded",
+        "attempts": 1
+      },
+      {
+        "revision": 1,
+        "name": "recognition",
+        "status": "succeeded",
+        "attempts": 1
+      },
+      {
+        "revision": 2,
+        "name": "recognition",
+        "status": "succeeded",
+        "attempts": 1
+      },
+      {
+        "revision": 3,
+        "name": "layout",
+        "status": "succeeded",
+        "attempts": 1
+      },
+      {
+        "revision": 3,
+        "name": "segmentation",
+        "status": "succeeded",
+        "attempts": 1
+      },
+      {
+        "revision": 3,
+        "name": "recognition",
+        "status": "succeeded",
+        "attempts": 1
+      }
+    ],
+    "result_artifacts_per_revision": [
+      {
+        "revision": 1,
+        "count": 1
+      },
+      {
+        "revision": 2,
+        "count": 1
+      },
+      {
+        "revision": 3,
+        "count": 1
+      }
+    ],
+    "edit_records": 2,
+    "all_revision_results_schema_validated": true
+  },
+  "restart": {
+    "database_restart_preserved_revisions": 3,
+    "result_bytes_unchanged": true,
+    "source_fingerprints_match_tested_checkout": true,
+    "configuration_sha256": "568eb2fca2e9a9cf0d371b6b7dee891ea4c25f3c2602a683b319c8af7ce0b149"
+  },
+  "api_tests": 30,
+  "pipeline_tests": 16,
+  "queue_tests": 21,
+  "worker_tests": 16,
+  "core_tests": 65,
+  "temporary_services_stopped": true,
+  "accuracy_evaluation": false
+}
