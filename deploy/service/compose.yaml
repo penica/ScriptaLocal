@@ -92,6 +92,7 @@ services:
     ports: ['127.0.0.1:${SCRIPTALOCAL_API_PORT:-8090}:8090']
     volumes:
       - ${SCRIPTALOCAL_SERVICE_ROOT}/settings:/settings:ro
+      - ${SCRIPTALOCAL_SERVICE_ROOT}/operations:/operations
       - ${SCRIPTALOCAL_SERVICE_ROOT}/secrets/db-dsn:/run/secrets/db_dsn:ro
       - ${SCRIPTALOCAL_SERVICE_ROOT}/secrets/health.token:/run/secrets/health_token:ro
       - ${SCRIPTALOCAL_SERVICE_ROOT}/originals:/data/originals
