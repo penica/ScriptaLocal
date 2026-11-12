@@ -1,0 +1,25 @@
+services:
+  gpu0:
+    image: ${SCRIPTALOCAL_VALIDATION_IMAGE:?Set the tested image ID or digest}
+    network_mode: none
+    devices:
+      - ${SCRIPTALOCAL_GPU_0:-nvidia.com/gpu=0}
+    environment:
+      VALIDATION_OFFLINE: "1"
+      OMP_NUM_THREADS: "2"
+      OPENBLAS_NUM_THREADS: "2"
+    mem_limit: 8g
+    cpus: 2
+    shm_size: 1g
+    read_only: true
+    tmpfs:
+      - /tmp:size=256m
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+  gpu1:
+    extends:
+      service: gpu0
+    devices: !override
+      - ${SCRIPTALOCAL_GPU_1:-nvidia.com/gpu=1}
+    profiles: [second-gpu]
