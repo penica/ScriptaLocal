@@ -7,7 +7,7 @@ from jsonschema import Draft202012Validator
 from openapi_spec_validator import validate as validate_openapi
 from pydantic import ValidationError
 
-from scriptalocal.contracts import (CoordinateTransform, ErrorResponse, JobAccepted,
+from scriptalocal.contracts import (CoordinateTransform, Divider, ErrorResponse, JobAccepted,
                                    JobOptions, JobResult, JobStatus, RevisionInput)
 from scripts.export_contract import document
 
@@ -114,6 +114,12 @@ class ContractTests(unittest.TestCase):
         for coefficients in [(0,0,0,0,0,0),(1,0,float('inf'),0,1,0)]:
             with self.subTest(coefficients=coefficients), self.assertRaises(ValidationError):
                 CoordinateTransform(from_space='cell',to_space='original',affine=coefficients)
+
+    def test_divider_endpoints_allow_exif_rotated_encoded_frame(self):
+        Divider(top=(0,50),bottom=(200,50))
+        for endpoints in [((1,1),(1,1)),((True,0),(20,100))]:
+            with self.subTest(endpoints=endpoints),self.assertRaises(ValidationError):
+                Divider(top=endpoints[0],bottom=endpoints[1])
 
     def test_exported_openapi_references_resolve_and_schemas_are_valid(self):
         specification=document()
