@@ -1,0 +1,221 @@
+{
+  "api_version": "1",
+  "job_id": "00000000-0000-4000-8000-000000000901",
+  "revision": 1,
+  "coordinate_space": "original_encoded_pixel_edges",
+  "source": {
+    "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "width": 240,
+    "height": 120,
+    "oriented_width": 240,
+    "oriented_height": 120,
+    "exif_orientation": 1,
+    "original_to_oriented": [
+      1,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    "mime_type": "image/png"
+  },
+  "cells": [
+    {
+      "id": "00000000-0000-4000-8000-000000000101",
+      "order": 0,
+      "polygon": [
+        [
+          0,
+          0
+        ],
+        [
+          80,
+          0
+        ],
+        [
+          80,
+          120
+        ],
+        [
+          0,
+          120
+        ]
+      ],
+      "state": "recognized",
+      "text": "Example first line\nExample second line",
+      "lines": [
+        {
+          "id": "00000000-0000-4000-8000-000000000201",
+          "order": 0,
+          "polygon": [
+            [
+              4,
+              10
+            ],
+            [
+              76,
+              10
+            ],
+            [
+              76,
+              35
+            ],
+            [
+              4,
+              35
+            ]
+          ],
+          "baseline": [
+            [
+              5,
+              30
+            ],
+            [
+              75,
+              30
+            ]
+          ],
+          "state": "recognized",
+          "text": "Example first line",
+          "raw_state": "recognized",
+          "raw_text": "Example first line",
+          "correction": null,
+          "recognition_model": {
+            "engine": "transformers",
+            "model_id": "example/recognizer",
+            "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "weights_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+          },
+          "warnings": []
+        },
+        {
+          "id": "00000000-0000-4000-8000-000000000202",
+          "order": 1,
+          "polygon": [
+            [
+              4,
+              40
+            ],
+            [
+              76,
+              40
+            ],
+            [
+              76,
+              65
+            ],
+            [
+              4,
+              65
+            ]
+          ],
+          "baseline": [
+            [
+              5,
+              60
+            ],
+            [
+              75,
+              60
+            ]
+          ],
+          "state": "recognized",
+          "text": "Example second line",
+          "raw_state": "recognized",
+          "raw_text": "Example second line",
+          "correction": null,
+          "recognition_model": {
+            "engine": "transformers",
+            "model_id": "example/recognizer",
+            "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "weights_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+          },
+          "warnings": []
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000102",
+      "order": 1,
+      "polygon": [
+        [
+          80,
+          0
+        ],
+        [
+          160,
+          0
+        ],
+        [
+          160,
+          120
+        ],
+        [
+          80,
+          120
+        ]
+      ],
+      "state": "blank",
+      "text": "",
+      "lines": [],
+      "warnings": []
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000103",
+      "order": 2,
+      "polygon": [
+        [
+          160,
+          0
+        ],
+        [
+          240,
+          0
+        ],
+        [
+          240,
+          120
+        ],
+        [
+          160,
+          120
+        ]
+      ],
+      "state": "needs-review",
+      "text": null,
+      "lines": [],
+      "warnings": [
+        {
+          "code": "no_lines_in_nonblank_cell",
+          "message": "Visible ink needs manual review; no text was inferred."
+        }
+      ]
+    }
+  ],
+  "review_required": true,
+  "warnings": [],
+  "provenance": {
+    "pipeline_version": "contract-example",
+    "configuration_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "segmentation_model": {
+      "engine": "kraken",
+      "model_id": "example/segmenter",
+      "revision": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "weights_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    },
+    "recognition_model": {
+      "engine": "transformers",
+      "model_id": "example/recognizer",
+      "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "weights_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    }
+  },
+  "transforms": [],
+  "stage_seconds": {
+    "layout": 0.01,
+    "segmentation": 0.5,
+    "recognition": 0.2
+  }
+}
