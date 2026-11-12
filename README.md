@@ -8,7 +8,7 @@ Provides a planned HTTP backend for an existing crop-selection application. Pres
 
 ## Project status
 
-Foundation validation is in progress. Both GPUs passed isolated CUDA container tests, and the pinned Bern model passed offline real-weight inference on a synthetic line. The OCR job service and manuscript-quality acceptance are not implemented yet.
+A full-row GPU prototype now runs through leased PostgreSQL stages and produces validated structured JSON. File transfer is deployed separately. All manuscript cells still require review; the OCR HTTP service and quality acceptance remain open.
 
 - [Implementation plan](docs/implementation-plan.md)
 - [Task checklist](tasks.md)
@@ -35,3 +35,6 @@ A separate [agent upload API](docs/agent-uploads.md) is running on the selected 
 - [Durable queue implementation and validation](docs/job-queue.md)
 
 - [Leased stage worker validation](docs/worker-validation.md)
+
+- [Full-row pipeline validation](docs/pipeline-validation.md)
+- [Model candidate comparison and visual diagnostics](docs/model-candidate-review.md)
