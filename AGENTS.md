@@ -26,6 +26,7 @@ Read `docs/implementation-plan.md` and `tasks.md` before implementation. The sel
 - Never send multiline cells directly to the Bern line recognizer. Do not invent a missing cell, illegible text, confidence percentage, or successful empty transcription.
 - Distinguish blank, unreadable, failed, and needs-review states. Preserve raw output separately from human corrections. Do not translate or normalize names by default.
 - Keep inference local after explicit provisioning. No automatic cloud fallback or silent dispatch to Codex. The existing app's Codex provider remains outside this service.
+- The owner selected scripta.penic.net with Let’s Encrypt/Cloudflare DNS-01 for opt-in HTTPS at 10.10.100.209:8093. Keep CF credentials confined to the certificate gateway and out of agent/application bundles. Registers coordinates the download and prepares Builder’s implementation handover.
 - Default OCR API binding is loopback. OCR LAN deployment requires scoped authentication and HTTPS through a configured proxy; the intake-specific user selection above is separate. Workers and database remain private. Do not mount the Docker socket into application containers.
 - Keep scans, model caches, database files, credentials, and generated artifacts out of Git. Redact image content, tokens, and transcription bodies from routine logs.
 - Check disk capacity before downloads/builds. Never delete unrelated Docker data, alter partitions/ZFS pools, or change host drivers merely to make room. Identify a safe storage location first.
