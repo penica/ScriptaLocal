@@ -1,0 +1,44 @@
+{
+  "date": "2026-11-12",
+  "selection_scope": "Initial baseline, not quality acceptance",
+  "recognition": {
+    "model_id": "dh-unibe/trocr-kurrent-XVI-XVII",
+    "revision": "a6bb6086ba3f7ddc62193a0289b1ee733c1af15e",
+    "weights_sha256": "dfb88d0a11fecc1fb92152a9d435e16c787bb6190c4995f277e4dfeb2976d065",
+    "license": "MIT",
+    "license_source": "https://huggingface.co/dh-unibe/trocr-kurrent-XVI-XVII/blob/a6bb6086ba3f7ddc62193a0289b1ee733c1af15e/README.md",
+    "inference_files": 9,
+    "total_bytes": 1337111866
+  },
+  "segmentation": {
+    "model_id": "kraken/blla.mlmodel",
+    "package": "kraken==6.0.3",
+    "weights_sha256": "77a638a83c9e535620827a09e410ed36391e9e8e8126d5796a0f15b978186056",
+    "bytes": 5047020,
+    "distribution_license": "Apache-2.0",
+    "license_source": "https://github.com/mittagessen/kraken/blob/6.0.3/LICENSE",
+    "license_note": "Bundled artifact in the licensed distribution; model metadata has no separate license field.",
+    "runtime_image": "sha256:60a02b3204640a5513e16aa40ca29eed0dcd5859b6eaf1261ba3092127f21f57",
+    "short_cell_policy": "Pad to model canvas height, preserve original pixel scale"
+  },
+  "evidence": {
+    "network": "disabled for real inference",
+    "sample_rows": 1,
+    "manually_bounded_cells": 1,
+    "visually_reviewed_line_crops": 3,
+    "schema_export": "passed",
+    "accuracy": "not measured: no corrected transcript"
+  },
+  "configuration": {
+    "manual_cell_bounds": [
+      948,
+      18,
+      1146,
+      262
+    ],
+    "preserve_scale": true,
+    "canvas_padding": 32,
+    "minimum_canvas_width": 400,
+    "max_new_tokens": 128
+  }
+}
