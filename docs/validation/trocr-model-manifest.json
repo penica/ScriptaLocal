@@ -1,0 +1,61 @@
+{
+  "repository": "dh-unibe/trocr-kurrent-XVI-XVII",
+  "revision": "a6bb6086ba3f7ddc62193a0289b1ee733c1af15e",
+  "license": "mit",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 2250,
+      "sha256": "541bb8073ad7800adbccc8c42e292e70eb8970c051b010d0ca021c9a5b22f8c2",
+      "upstream_lfs_sha256": null
+    },
+    {
+      "path": "config.json",
+      "bytes": 4874,
+      "sha256": "941f05e27f379ee438502591a41bc6af414df100063f92bbada9bc0fbd1fff46",
+      "upstream_lfs_sha256": null
+    },
+    {
+      "path": "generation_config.json",
+      "bytes": 275,
+      "sha256": "6f164281f0965a93abe9194845758c2b2cc3a49a7f9a8590e38415b8f68e5fea",
+      "upstream_lfs_sha256": null
+    },
+    {
+      "path": "merges.txt",
+      "bytes": 456318,
+      "sha256": "1ce1664773c50f3e0cc8842619a93edc4624525b728b188a9e0be33b7726adc5",
+      "upstream_lfs_sha256": null
+    },
+    {
+      "path": "model.safetensors",
+      "bytes": 1335747112,
+      "sha256": "dfb88d0a11fecc1fb92152a9d435e16c787bb6190c4995f277e4dfeb2976d065",
+      "upstream_lfs_sha256": "dfb88d0a11fecc1fb92152a9d435e16c787bb6190c4995f277e4dfeb2976d065"
+    },
+    {
+      "path": "preprocessor_config.json",
+      "bytes": 325,
+      "sha256": "482487ee5a54f49ff5884e7cffc5af08bfde23083c80d60106122b0d4502c1e6",
+      "upstream_lfs_sha256": null
+    },
+    {
+      "path": "special_tokens_map.json",
+      "bytes": 772,
+      "sha256": "c611b1f7d416eb001ee4f293d903ea8c88e703463f1d403f1866a0352743fd00",
+      "upstream_lfs_sha256": null
+    },
+    {
+      "path": "tokenizer_config.json",
+      "bytes": 1118,
+      "sha256": "5a1356884c6ae736a621841535264ba7c5bebd52f169258add2c48fcbb32d50a",
+      "upstream_lfs_sha256": null
+    },
+    {
+      "path": "vocab.json",
+      "bytes": 898822,
+      "sha256": "06b4d46c8e752d410213d9548eb27a54db70fda0319b6271fb8d59dead5e1cab",
+      "upstream_lfs_sha256": null
+    }
+  ]
+}
