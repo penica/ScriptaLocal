@@ -9,6 +9,7 @@ class KrakenSegmenter:
     def __init__(self,path:Path,sha256:str,*,device='cuda:0'):
         from kraken.lib.vgsl import TorchVGSLModel
         self.path=Path(path)
+        self.reference={'engine':'kraken','model_id':'kraken/blla.mlmodel','revision':sha256,'weights_sha256':sha256}
         with self.path.open('rb') as stream:
             if hashlib.file_digest(stream,'sha256').hexdigest()!=sha256:raise SegmentationError('Segmentation model checksum mismatch')
         self.model=TorchVGSLModel.load_model(str(self.path));self.device=device
