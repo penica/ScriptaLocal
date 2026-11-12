@@ -1,0 +1,69 @@
+{
+  "date": "2026-11-12",
+  "tests_passed": 46,
+  "tests_failed": 0,
+  "cpu_image": "sha256:5de635e7b71d68c449cb59aca320147a71d02277945b390c7a0486a1a5dc1558",
+  "resolved_cpu_packages": 29,
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--network",
+    "none",
+    "--read-only",
+    "--memory",
+    "2g",
+    "--cpus",
+    "2",
+    "--tmpfs",
+    "/tmp:size=64m",
+    "scriptalocal-cpu-validation:locked"
+  ],
+  "test_log": "docs/validation/layout-tests.txt",
+  "synthetic_coverage": [
+    "clear/faint/broken/double/slanted rules",
+    "narrow interior and edge columns",
+    "outside margins",
+    "no-divider input",
+    "candidate caps and geometry identity",
+    "manual corrections and invalid/crossing geometry",
+    "border-crossing ink preserved in unchanged context crops",
+    "separate masks",
+    "EXIF-aware corrections and crop mappings",
+    "probe export rejects wrong image/configuration/order/timing/no-line result",
+    "empty/truncated recognition remains uncertain"
+  ],
+  "real_sample": {
+    "rows": 1,
+    "proposed_cells": 18,
+    "boundaries": 19,
+    "excluded_exterior_rules": 1,
+    "warnings": [
+      "automatic_layout_requires_review",
+      "outer_rule_bounds_require_review"
+    ],
+    "review_required": true,
+    "manual_cell_lines": 3,
+    "api_schema_export": "passed",
+    "accuracy": "not measured"
+  },
+  "file_sha256": {
+    "scriptalocal/layout.py": "71d5299d347e0f860e38725a718b5bfa9a8d25a05da4e166db2efa717be04112",
+    "scriptalocal/contracts.py": "5cc2b1f9f0553ebb3726ccc1e37671c0e2f2d07726f081f210b87cf5005b6b02",
+    "scripts/validation/row_geometry_probe.py": "78c34cf374ed55ffdb1747db62593f787bb1f31c6ff40a65bd3da45b3378dd13",
+    "scripts/validation/manuscript_slice.py": "412432f1bf70daf4aa0232eef514ddb7a8bd1855639b86b6563bbfe0620ff5d7",
+    "scripts/validation/export_manuscript_result.py": "e6f3b6e25bf476f84847f67f9eccd06d4e4177e7be9930cda4efbfe3e9ed624a",
+    "tests/test_layout.py": "47460f3e06ac85ba1e54b6da9d18bca9dcd9fc36438ae4ac1a4f7236dcdfb47f",
+    "tests/test_contracts.py": "8d006d6a681a399463f14ae5ac8a8189b0334c3ebd2a2aeb95c9b01c5d6eca38",
+    "tests/test_probe_export.py": "9d80fbfedcc058cddce1539e3f41c5056a3a9201fd117a7fe0cab67b433e0e34",
+    "deploy/cpu-validation/constraints.lock": "be20ca3d8db3e2c7b0f73857730ca27d13c15a8b5e755eee8351420093a126b2"
+  },
+  "not_covered": [
+    "annotated representative manuscript corpus",
+    "full-row line assignment and blank classification",
+    "HTTP service and durable jobs",
+    "caller integration",
+    "full backup restore",
+    "recognition accuracy"
+  ]
+}
