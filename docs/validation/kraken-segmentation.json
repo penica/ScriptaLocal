@@ -1,0 +1,29 @@
+{
+  "kraken": "6.0.3",
+  "model": "kraken/blla.mlmodel (bundled candidate, not manuscript-selected)",
+  "model_sha256": "77a638a83c9e535620827a09e410ed36391e9e8e8126d5796a0f15b978186056",
+  "model_bytes": 5047020,
+  "model_type": "segmentation",
+  "model_metadata": {
+    "class_mapping": {
+      "aux": {
+        "_start_separator": 0,
+        "_end_separator": 1
+      },
+      "baselines": {
+        "default": 2
+      },
+      "regions": {
+        "text": 3
+      }
+    },
+    "legacy_polygons": true,
+    "model_type": "segmentation"
+  },
+  "device": "cpu",
+  "seconds": 167.483,
+  "detected_lines": 22,
+  "synthetic_input_lines": 3,
+  "offline_learned_segmentation": "passed",
+  "handwriting_layout_accuracy": "not measured; synthetic input only"
+}
