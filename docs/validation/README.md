@@ -124,3 +124,7 @@ The 43,672-byte fixture ZIP checksum, intake registry receipt and all 42 manifes
 ## Artifacts, correction revisions and initial local restore
 
 `artifact-access.json` records all 102 derived artifacts and three job-scoped original downloads from a separately restored database. `backup-restore-first.json` records 103 verified data-file checksums at the configured local backup destination; [restore scope](../backup-restore-validation.md) leaves correction-history restoration and rollback open. `revisions.json` records 30 API, 16 pipeline, 21 queue, 16 worker and 65 core checks plus real text/geometry edits, immutable raw/history results, stale-save conflict and persistence across a PostgreSQL restart. These runs used synthetic correction values, never training ground truth. [Revision behavior](../revision-validation.md) documents bounds and identity semantics.
+
+## Persistent local service
+
+`service-deployment.json` records the running Compose project on loopback port 8090, baked API/worker image identities, exact package counts, setup tests, fresh database-role login, denied server-file access, secret/parameter log checks, atomic credential add/revoke, full-row HTTP transcription and restart persistence. [Operator commands and measured storage](../service-deployment.md) cover startup, configuration and remaining lifecycle/LAN/application gates. The temporary validation services remain stopped; the persistent `scriptalocal` stack stays running.
