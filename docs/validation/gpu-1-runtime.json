@@ -1,0 +1,15 @@
+{
+  "python": "3.11.13",
+  "torch": "2.7.1+cu126",
+  "numpy": "2.2.6",
+  "cuda_runtime": "12.6",
+  "cudnn": 90501,
+  "visible_cuda_devices": 1,
+  "gpu": "NVIDIA GeForce RTX 3060",
+  "gpu_identity": "GPU-64231694-f9ba-ae03-30e7-1a5a2c1e8d24, NVIDIA GeForce RTX 3060",
+  "peak_cuda_bytes": 11665408,
+  "seconds": 0.915,
+  "cpu_matrix_and_svd": "passed",
+  "cuda_matrix_and_convolution": "passed",
+  "network_disabled_expected": true
+}
