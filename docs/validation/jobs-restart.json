@@ -1,0 +1,12 @@
+{
+  "database": "scriptalocal_queue_validation",
+  "server_version": "PostgreSQL 17.11 on x86_64-pc-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit",
+  "idempotency_after_restart": "passed",
+  "old_worker_publication": "rejected",
+  "expired_lease_reclaimed": "passed",
+  "new_attempt_number": 2,
+  "one_committed_output": "passed",
+  "old_attempt_bytes_unchanged": "passed",
+  "remaining_old_attempt_file": "unreferenced orphan, not a published result",
+  "synthetic_job_cancelled_after_probe": true
+}
