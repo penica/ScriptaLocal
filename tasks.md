@@ -100,20 +100,22 @@ Use TODO, DOING or BLOCKED with an unchecked box; use DONE with a checked box on
   - Evidence, 12 November 2026: Cell extraction preserves original context and border-crossing ink, returns separate masks and both crop-to-oriented/crop-to-encoded transforms. Manual dividers replace the proposal, including explicit single-cell/merged geometry; EXIF, reversed/crossed/invalid coordinates are checked. Pixel-preservation and mapping tests pass. Downstream line assignment/reading states, correction history and service integration remain open.
 
 
-- [ ] **HTR-014 — Implement robust per-cell line segmentation** — TODO
-  - Owner: unassigned.
+- [ ] **HTR-014 — Implement robust per-cell line segmentation** — DOING
+  - Owner: current chat.
   - Depends on: HTR-010, HTR-013.
   - Done when: Use pinned Kraken segmentation with line extraction, baseline ordering and original-coordinate mapping. Verify multiline, overlapping, blank and long-line cases; expose segmentation failure and review reasons instead of successful empty output.
+  - Evidence, 12 November 2026: Added reusable scale-preserving segmentation and a lazy resident Kraken adapter with pinned-weight verification. 53 core tests pass (seven new segmentation cases): baseline order/stable IDs, blank versus missing-line states, context/overlap review, EXIF mapping, long lines, canvas/crop/count limits and clipped versus raw geometry. Offline real GPU adapter finds three lines in the manual cell in 8.375 seconds; geometry boundary warnings remain explicit. Full-row/downstream and corpus acceptance remain open. See docs/segmentation-validation.md and docs/validation/segmentation-reusable.json.
 
 - [ ] **HTR-015 — Implement resident recognition worker** — TODO
   - Owner: unassigned.
   - Depends on: HTR-010, HTR-014.
   - Done when: Keep TrOCR loaded, batch bounded single-line images, preserve verbatim output and detect generation truncation. Compare FP32/FP16, handle OOM with bounded recovery, record model revision and avoid uncalibrated confidence claims.
 
-- [ ] **HTR-016 — Add persistent jobs and leased stage queue** — TODO
-  - Owner: unassigned.
+- [x] **HTR-016 — Add persistent jobs and leased stage queue** — DONE
+  - Owner: current chat.
   - Depends on: HTR-007, HTR-011.
   - Done when: Create PostgreSQL migrations, atomic stage claims, heartbeats, lease recovery, idempotency and atomic artifact publication. Verify concurrent claims, worker crash recovery, duplicate submissions, cancellation and bounded retries without duplicate final revisions.
+  - Completion, 12 November 2026: Implemented checksummed migrations, caller-scoped idempotency, atomic bounded admission/claims, heartbeats, expiring attempt tokens, cancellation, retry limits and transactionally referenced immutable artifacts. All 20 real PostgreSQL integration tests pass in the locked runtime. Forced termination of the isolated database exercised WAL recovery: duplicate submission retained identity, stale worker publication was fenced, a replacement attempt published exactly one output and original attempt bytes stayed unchanged. Evidence: docs/validation/jobs-queue.json, jobs-tests.txt and jobs-restart.json. HTTP routes, resident workers, correction revisions and orphan cleanup remain separate tasks.
 
 - [ ] **HTR-017 — Expose asynchronous transcription API** — TODO
   - Owner: unassigned.
@@ -139,8 +141,8 @@ Use TODO, DOING or BLOCKED with an unchecked box; use DONE with a checked box on
   - Owner: unassigned.
   - Depends on: HTR-007, HTR-017, HTR-020.
   - Done when: Ship a usable upload/poll/export client. Once existing-app source or provider contract is supplied, add Local HTR selection, service configuration, progress, actionable errors and cell-preserving result import; test a real round trip while retaining explicit Codex choice. Record external integration as incomplete until tested.
-  - Evidence, 12 November 2026: Created docs/existing-app-handover.md with a ready-to-send request for the other AI coder covering crop/provider/result contracts, networking, revisions and sanitized fixtures. Existing-app contract/source is not supplied yet.
-  - Evidence, 12 November 2026: Created ignored data/integration-handover/ for the two files supplied by the existing app coding agent; user is placing them there. Review and integration validation follow after receipt.
+  - Evidence, 12 November 2026: Created docs/existing-app-handover.md with a ready-to-send request for the other AI coder covering crop/provider/result contracts, networking, revisions and sanitized fixtures. The initial handover request preceded receipt of the app contract.
+  - Evidence, 12 November 2026: Created ignored data/integration-handover/ for the two files supplied by the existing app coding agent; both documents are now received and checksum-verified. Reviewed API differences in docs/registers-integration-response.md; referenced synthetic PNG/JSON fixtures were not included and remain needed for cross-app acceptance.
 
 
 - [ ] **HTR-022 — Benchmark recognition and layout quality** — TODO
@@ -187,8 +189,18 @@ Use TODO, DOING or BLOCKED with an unchecked box; use DONE with a checked box on
   - Done when: Configure storage/backup roots, service access, GPU allocation, models, retention and resource limits without source edits. Support local backup now and a verified Synology NFS mount later; reject an unavailable required mount rather than writing into its underlying local directory. If a management UI is implemented, expose validated backup destination/settings there with protected secrets. Verify changes, restart persistence and inaccessible-destination errors.
   - Evidence, 12 November 2026: User requested configurable backup and minimal hardcoding. Initial environment example includes temporary local backup root; UI and NAS validation are not implemented.
 
-- [ ] **HTR-030 — Provide destination-scoped agent upload API** — DOING
+- [x] **HTR-030 — Provide destination-scoped agent upload API** — DONE
   - Owner: current chat.
   - Depends on: HTR-003, HTR-004.
   - Done when: The operator can issue expiring, destination/subfolder-scoped upload requests; the other agent can upload files directly and receive checksummed receipts without administrator credentials, path traversal or overwrites. File/count/byte limits, safe retries, revocation, interrupted-upload recovery and deployment isolation pass. Verify the agent's reachable URL and a real handover upload.
   - Evidence, 12 November 2026: Implemented FastAPI intake, private SQLite transfer registry, operator/uploader CLI, scoped tokens and nonroot read-only Compose deployment. 18 integration tests pass; actual headless HTTP upload, saved checksum, container restart/replay, revocation and credential-safe logs pass. Existing 46 core tests also pass. Service is healthy at 127.0.0.1:8091. A private two-file ticket targets integration-handover/app-api-contract; remote reachability and other-agent upload await the agent's network location. See docs/agent-uploads.md and docs/validation/intake-{validation,http}.json. This service does not implement the OCR job API.
+  - Evidence, 12 November 2026 (LAN selection): User selected http://10.10.100.209:8091. Updated the specific host binding, public base URL and private handover/ticket URLs. A separate container uploaded with a scoped token through the LAN address; saved SHA-256 and unauthorized metadata rejection passed. Validation ticket revoked. Actual other-agent upload remains pending. Evidence: docs/validation/intake-lan.json.
+
+
+  - Completion, 12 November 2026: Coding agent uploaded both contract documents through the scoped LAN intake; on-disk hashes and registry receipts match supplied SHA-256 values. Evidence: docs/validation/integration-handover-received.json. HTR-030 upload acceptance is complete.
+
+- [x] **HTR-031 — Share selected documents through scoped downloads** — DONE
+  - Owner: current chat.
+  - Depends on: HTR-030.
+  - Done when: Operator publishes selected bounded file snapshots; agent can retrieve only those files with a separate expiring read-only capability. Verify checksums, token separation, path/symlink/FIFO boundaries, revocation/expiry, source-edit isolation, restart persistence and LAN retrieval.
+  - Completion, 12 November 2026: Added administrator snapshot publication, scoped manifest/file GET, revocation and CLI share/unshare handovers. 22 combined intake tests pass, including four download-specific cases. Actual separate-container LAN retrieval verified the response and canonical OpenAPI checksums; unauthenticated reads rejected. Published snapshots are private, fixed and do not grant upload access. Evidence: docs/validation/intake-download-http.json and intake-download-tests.txt. Expired snapshot cleanup remains operator-managed.
