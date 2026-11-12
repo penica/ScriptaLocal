@@ -1,0 +1,11 @@
+test_curved_mask_uses_same_geometry_and_keeps_opaque_ink (test_rendering.LineRenderingTests.test_curved_mask_uses_same_geometry_and_keeps_opaque_ink) ... /opt/conda/lib/python3.11/site-packages/kraken/lib/segmentation.py:1339: DeprecationWarning: Arrays of 2-dimensional vectors are deprecated. Use arrays of 3-dimensional vectors instead. (deprecated in NumPy 2.0)
+  poly_bl_y = np.cross(diff_bl_normed[poly_closest_bl], poly_bl_diff)
+ok
+test_straight_mask_white_fill_preserves_source_and_black_ink (test_rendering.LineRenderingTests.test_straight_mask_white_fill_preserves_source_and_black_ink) ... ok
+test_true_black_source_is_not_erased_as_if_it_were_padding (test_rendering.LineRenderingTests.test_true_black_source_is_not_erased_as_if_it_were_padding) ... ok
+test_unsupported_mode_is_rejected (test_rendering.LineRenderingTests.test_unsupported_mode_is_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.010s
+
+OK
