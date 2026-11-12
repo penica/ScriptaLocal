@@ -53,3 +53,7 @@ The API design must be checked against the existing app handover before caller i
 `tests/test_contracts.py` checks fixtures and invariants including blank middle cells, line breaks, unique IDs, state/text consistency, geometry bounds, EXIF dimensions/mapping, uncertainty, immutable raw output, saved corrections, revision conflicts and schema reference resolution. `tests/test_images.py` checks actual decoding and coordinate/pixel agreement, original publication and invalid input handling. A schema test does not establish HTTP routing, persistence, authentication or handwriting accuracy; those remain service acceptance tasks.
 
 Implementation references: [Pillow image verification](https://pillow.readthedocs.io/en/stable/reference/Image.html) and [Pydantic model validation](https://docs.pydantic.dev/latest/concepts/models/). Runtime behavior was tested against the pinned versions in the CPU validation image.
+
+## Semantic validation and cross-project review
+
+[Executable semantic rules](semantic-validation.md) supplement JSON Schema; use `python -m scripts.validate_contract --model JobResult result.json` for offline validation. [Registers contract clarification](../registers-contract-clarification.md) answers the received review and separates verified queue/model behavior from unresolved service lifecycle/resource limits.
