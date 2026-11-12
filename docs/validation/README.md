@@ -74,3 +74,13 @@ The exploratory OpenCV divider overlay initially produced 20 intervals including
 `scriptalocal/images.py` preserves original bytes and uses content-addressed, fsynced atomic publication. It validates image formats, MIME, byte/pixel/side/frame limits and EXIF transforms. TIFF dimensions are taken from encoded-raster tags because Pillow may already report oriented dimensions. Verification uses a fresh parser because inspecting PNG EXIF can change parser state. Tests compare actual decoded pixel positions for all eight orientations of PNG and TIFF and verify reversible crop/rotation/scale/padding mappings. `real-image-input.json` records byte-preserving decode/publication of the user's real JPEG.
 
 The designed HTTP contract is in `../api/openapi.json`, with fictional examples and behavioral documentation in `../api/README.md`. Pydantic and OpenAPI structural validators enforce schema invariants. This does not claim an implemented HTTP service, database, queue, authentication, backup restore or existing-app integration.
+
+## Layout and full manual-cell provenance
+
+`layout-validation.json` and `layout-tests.txt` are the latest 46-test evidence, using a rebuilt 29-package CPU environment whose installed versions match its lock. Earlier 24-test reports/hashes remain historical snapshots. Geometry implementation/limitations and reproduction are documented in `../layout-validation.md`. The real row yields 18 reviewable cells; the larger annotated corpus is still missing.
+
+`model-profile.json` selects the pinned initial recognition and segmentation baseline and records license sources and actual model sizes. `manuscript-provenance-summary.json` records a fresh three-line real-cell run with model/configuration/source hashes, timings and VRAM. The run used UID 1000, no networking, a read-only container root and read-only models, with writable validation outputs only. `manuscript-api-summary.json` proves its text-preserving v1 schema export; its job ID is a CLI artifact and not an existing HTTP job. No raw manuscript text or images were published.
+
+## Agent upload service
+
+`intake-validation.json` and `intake-tests.txt` record 18 integration checks in the separately pinned 20-package intake image, running as UID 1000 with read-only root storage, no network during tests and dropped capabilities. `intake-http.json` records actual host-to-container upload, unchanged-byte checksum, restart/replay, revocation, log credential checks and the current loopback/nonroot/read-only deployment. The core suite remains separate and still passes all 46 checks. See `../agent-uploads.md` for commands. Other-agent reachability and its actual contract-file upload remain pending; no remote exposure or OCR job service is claimed.
