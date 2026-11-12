@@ -15,6 +15,7 @@ from pydantic import ValidationError
 import psycopg
 from starlette.concurrency import run_in_threadpool
 from starlette.datastructures import UploadFile
+from starlette.datastructures import MutableHeaders,Headers
 
 from .contracts import ArtifactInventory,Health,JobAccepted,JobOptions,JobResult,JobStatus,ModelInventory,RevisionInput,SourceImage
 from .images import ImageLimits,ImageInputError,decode_image
@@ -60,16 +61,23 @@ def status_data(queue,identifier,owner):
         error_code=row['error_code'],cancel_requested=row['cancel_requested']).model_dump(mode='json')
 
 
-def create_app(queue,sources:SourceStore,credentials:CredentialStore,profiles:ProfileRegistry,*,settings=APISettings()):
+def create_app(queue,sources:SourceStore,credentials:CredentialStore,profiles:ProfileRegistry,*,settings=APISettings(),operator_path=None):
     if sources.root.resolve()==queue.artifacts.root.resolve():raise ValueError('Original and artifact roots must differ')
     app=FastAPI(title='ScriptaLocal OCR',version='1',docs_url=None,redoc_url=None,openapi_url=None)
     app.state.uploads=0
+    from .manual_ui import ManualUI
+    ui=ManualUI(app,credentials,operator_path)
 
     @app.middleware('http')
     async def access(request,call_next):
         request.state.request_id=str(uuid4())
-        if request.url.path!='/health/live':
-            try:request.state.caller=credentials.authenticate(request.headers.get('authorization',''))
+        if request.url.path!='/health/live' and not ui.public(request):
+            try:
+                authorization=ui.authorization(request)
+                request.state.caller=credentials.authenticate(authorization)
+                if getattr(request.state,'ui_session',None) is not None:
+                    MutableHeaders(scope=request.scope)['authorization']=authorization
+                    request._headers=Headers(scope=request.scope)
             except ServiceError as exc:return error(exc.code,str(exc),exc.status,request.state.request_id)
         try:response=await call_next(request)
         except Exception:return error('internal_error','Service request failed',500,request.state.request_id)
