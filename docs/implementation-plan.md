@@ -1,6 +1,6 @@
 # ScriptaLocal implementation plan
 
-Date: 12 November 2026. Status: full-row leased GPU prototype verified; HTTP service and quality acceptance remain open.
+Date: 12 November 2026. Status: HTTP/GPU prototype, artifacts and correction history validated; permanent deployment and Registers integration remain open. Model/training quality work is deferred from the current critical path at the owner’s request.
 
 ## Outcome
 
