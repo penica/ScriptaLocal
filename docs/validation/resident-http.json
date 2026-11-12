@@ -1,0 +1,107 @@
+{
+  "http_roundtrips": {
+    "source_sha256": "0a5b42a6aa9f2ad626931151f05c600b5ebb88766620b825e40c7a95ce59d8e6",
+    "jobs": [
+      {
+        "job_id": "dc900dcb-29af-4835-8548-c5fbe3b467be",
+        "seconds": 66.959,
+        "cells": 18,
+        "lines": 24,
+        "review_required": true,
+        "configuration_sha256": "1e0767ebca68feb49db0cf48d791a6ba5949f758726eebca42f7cbb0bb1d3f8e",
+        "result_sha256": "a31193ea03c4e996921226607b0b89a182a55af58f7f68727ec038b21607e4e0",
+        "stage_seconds": {
+          "layout": 3.6668584789149463,
+          "segmentation": 56.841939095174894,
+          "recognition": 4.336319827008992
+        },
+        "idempotency_replayed": true
+      },
+      {
+        "job_id": "ffd1b189-1d90-49b5-9c9a-31dd763780b9",
+        "seconds": 65.889,
+        "cells": 18,
+        "lines": 24,
+        "review_required": true,
+        "configuration_sha256": "1e0767ebca68feb49db0cf48d791a6ba5949f758726eebca42f7cbb0bb1d3f8e",
+        "result_sha256": "29f01e577426f16251d870deba18fc87c843017e0e470243b9c09b5feed2444e",
+        "stage_seconds": {
+          "layout": 3.730651384918019,
+          "segmentation": 56.993386468151584,
+          "recognition": 3.990224448032677
+        },
+        "idempotency_replayed": true
+      }
+    ]
+  },
+  "resident_reuse": {
+    "jobs": 2,
+    "identical_cells_and_provenance": true,
+    "original_bytes_unchanged": true,
+    "worker_ready_events": 1,
+    "model_loads": 1,
+    "completed_stages": 6
+  },
+  "recovery": {
+    "source_sha256": "0a5b42a6aa9f2ad626931151f05c600b5ebb88766620b825e40c7a95ce59d8e6",
+    "jobs": [
+      {
+        "job_id": "bd048328-7964-45c9-8c8d-e37d6e0b6781",
+        "seconds": 89.471,
+        "cells": 18,
+        "lines": 24,
+        "review_required": true,
+        "configuration_sha256": "1e0767ebca68feb49db0cf48d791a6ba5949f758726eebca42f7cbb0bb1d3f8e",
+        "result_sha256": "10c3a73d0d8cdde1cc2a240ef39d17e95c1484161bbd91c916813342fcd21ff6",
+        "stage_seconds": {
+          "layout": 3.7021404560655355,
+          "segmentation": 58.159198513953015,
+          "recognition": 4.416328334016725
+        },
+        "idempotency_replayed": true
+      }
+    ]
+  },
+  "recovery_database": {
+    "stages": [
+      {
+        "name": "layout",
+        "status": "succeeded",
+        "attempts": 1
+      },
+      {
+        "name": "segmentation",
+        "status": "succeeded",
+        "attempts": 2
+      },
+      {
+        "name": "recognition",
+        "status": "succeeded",
+        "attempts": 1
+      }
+    ],
+    "final_result_artifacts": 1,
+    "revisions": [
+      {
+        "revision": 1
+      }
+    ],
+    "same_cells_and_provenance": true,
+    "http_results_schema_validated": 3
+  },
+  "restart": {
+    "worker_clean_shutdown_removes_readiness": true,
+    "api_reports_worker_unavailable": true,
+    "api_restart_preserves_results": 3,
+    "original_bytes_unchanged": true,
+    "caller_token_and_sampled_image_bytes_absent_from_logs": true
+  },
+  "readiness_component_tests": 5,
+  "gpu": 0,
+  "worker_image": "sha256:cb0d1d04adf50a5fa237082912fbc6163713bdc179c54ba73782e501934b5f27",
+  "api_image": "sha256:4b8abb6e48917aacef416fefdf34475f9333f128571aa16e7e16ae80663ecac3",
+  "mounted_source": true,
+  "validation_containers_stopped": true,
+  "accuracy": "Unmeasured; one manuscript row repeated, all cells require review",
+  "registers_roundtrip": false
+}
