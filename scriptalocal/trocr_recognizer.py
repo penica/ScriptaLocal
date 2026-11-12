@@ -32,6 +32,9 @@ class TrOCRRecognizer:
     def __init__(self,root,manifest_sha256,*,precision='fp32',device='cuda:0'):
         if precision not in {'fp32','fp16'}:raise RecognitionError('Unsupported recognition precision')
         self.manifest=verify_model(root,manifest_sha256)
+        self.manifest_sha256=manifest_sha256
+        self.reference={'engine':'transformers','model_id':self.manifest['repository'],'revision':self.manifest['revision'],
+                        'weights_sha256':next(item['sha256'] for item in self.manifest['files'] if item['path']=='model.safetensors')}
         import torch
         from transformers import TrOCRProcessor,VisionEncoderDecoderModel
         if device!='cuda:0' or torch.cuda.device_count()!=1:raise RecognitionError('Expose exactly one assigned GPU as cuda:0')
