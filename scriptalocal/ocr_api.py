@@ -6,9 +6,9 @@ import os
 import re
 import shutil
 import stat
-from uuid import UUID,uuid4
+from uuid import UUID,uuid4,uuid5
 
-from fastapi import FastAPI,Request
+from fastapi import FastAPI,Query,Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse,Response
 from pydantic import ValidationError
@@ -16,7 +16,7 @@ import psycopg
 from starlette.concurrency import run_in_threadpool
 from starlette.datastructures import UploadFile
 
-from .contracts import Health,JobAccepted,JobOptions,JobResult,JobStatus,ModelInventory,SourceImage
+from .contracts import ArtifactInventory,Health,JobAccepted,JobOptions,JobResult,JobStatus,ModelInventory,RevisionInput,SourceImage
 from .images import ImageLimits,ImageInputError,decode_image
 from .job_artifacts import ArtifactError
 from .job_deletions import collect_deletions
@@ -29,6 +29,7 @@ from .source_store import SourceStore
 class APISettings:
     image:ImageLimits=ImageLimits()
     maximum_options_bytes:int=65536
+    maximum_revision_bytes:int=2*1024*1024
     multipart_overhead_bytes:int=131072
     maximum_concurrent_uploads:int=1
     upload_timeout_seconds:int=120
@@ -83,7 +84,7 @@ def create_app(queue,sources:SourceStore,credentials:CredentialStore,profiles:Pr
 
     @app.exception_handler(QueueError)
     async def queue_error(request,exc):
-        code=404 if exc.code=='not_found' else 429 if exc.code=='queue_full' else 409
+        code=404 if exc.code=='not_found' else 429 if exc.code=='queue_full' else 422 if exc.code=='invalid_revision' else 409
         return error(exc.code,str(exc),code,request.state.request_id)
 
     @app.exception_handler(RequestValidationError)
@@ -200,15 +201,57 @@ def create_app(queue,sources:SourceStore,credentials:CredentialStore,profiles:Pr
     def job_status(job_id:UUID,request:Request):return status_data(queue,job_id,caller(request,'read').owner)
 
     @app.get('/v1/jobs/{job_id}/result')
-    def result(job_id:UUID,request:Request):
-        record=queue.result_reference(job_id,caller(request,'read').owner)
+    def result(job_id:UUID,request:Request,revision:int|None=Query(default=None,ge=1)):
+        record=queue.result_reference(job_id,caller(request,'read').owner,revision=revision)
         model=JobResult.model_validate_json(queue.artifacts.read(record))
         return model.model_dump(mode='json')
+
+    @app.post('/v1/jobs/{job_id}/revisions',status_code=202)
+    async def revise(job_id:UUID,request:Request):
+        owner=caller(request,'write').owner
+        if request.headers.get('content-type','').split(';',1)[0].strip().lower()!='application/json':raise ServiceError('invalid_revision','Revision requires application/json',415)
+        if app.state.uploads>=settings.maximum_concurrent_uploads:raise ServiceError('upload_busy','Upload concurrency limit reached',429)
+        app.state.uploads+=1
+        try:
+            body=bytearray()
+            try:
+                async with asyncio.timeout(settings.upload_timeout_seconds):
+                    async for chunk in request.stream():
+                        if len(body)+len(chunk)>settings.maximum_revision_bytes:raise ServiceError('revision_too_large','Revision exceeds byte limit',413)
+                        body.extend(chunk)
+            except TimeoutError:raise ServiceError('upload_timeout','Revision upload timed out',503) from None
+            try:changes=RevisionInput.model_validate_json(body,strict=True)
+            except ValidationError:raise ServiceError('invalid_revision','Invalid revision request') from None
+            def submit():
+                renewed=credentials.authenticate(request.headers.get('authorization',''));renewed.require('write')
+                if renewed.owner!=owner:raise ServiceError('unauthorized','Caller identity changed during upload',401)
+                return queue.revise(job_id,owner,changes.model_dump(mode='json'))
+            row=await run_in_threadpool(submit)
+            return JobAccepted(job_id=row['id'],status=row['status'],revision=row['current_revision'],idempotency_replayed=False).model_dump(mode='json')
+        finally:app.state.uploads-=1
+
+    def original_id(job):return uuid5(job['id'],'original:'+job['source']['sha256'])
+
+    @app.get('/v1/jobs/{job_id}/artifacts')
+    def artifact_inventory(job_id:UUID,request:Request,after:UUID|None=None,limit:int=Query(default=100,ge=1,le=200)):
+        owner=caller(request,'read').owner
+        with queue.connect() as db:
+            job=queue._job(db,job_id,owner)
+            rows=db.execute('''SELECT a.*,s.name AS stage FROM sl_artifacts a JOIN sl_stages s ON s.id=a.stage_id
+              WHERE a.job_id=%s AND (%s::uuid IS NULL OR a.id>%s) ORDER BY a.id LIMIT %s''',(job_id,after,after,limit+1)).fetchall()
+        original={'artifact_id':original_id(job),'kind':'original','logical_key':'original','revision':None,'stage':None,
+                  'sha256':job['source']['sha256'],'bytes':sources.size(job['source']['sha256'],settings.image.max_bytes),'mime_type':job['source']['mime_type']}
+        artifacts=[{'artifact_id':row['id'],'kind':'derived','logical_key':row['logical_key'],'revision':row['revision'],'stage':row['stage'],
+                    'sha256':row['sha256'],'bytes':row['bytes'],'mime_type':{'.png':'image/png','.json':'application/json','.txt':'text/plain'}.get(Path(row['relative_path']).suffix,'application/octet-stream')} for row in rows[:limit]]
+        return ArtifactInventory(job_id=job_id,original=original,artifacts=artifacts,next_cursor=rows[limit-1]['id'] if len(rows)>limit else None).model_dump(mode='json')
 
     @app.get('/v1/jobs/{job_id}/artifacts/{artifact_id}')
     def artifact(job_id:UUID,artifact_id:UUID,request:Request):
         owner=caller(request,'read').owner
         with queue.connect() as db:
+            job=queue._job(db,job_id,owner)
+            if artifact_id==original_id(job):
+                return Response(sources.read(job['source']['sha256'],settings.image.max_bytes),media_type=job['source']['mime_type'],headers={'Content-Disposition':'attachment; filename="'+str(artifact_id)+'.original"'})
             row=db.execute('SELECT a.* FROM sl_artifacts a JOIN sl_jobs j ON j.id=a.job_id WHERE a.id=%s AND a.job_id=%s AND j.owner=%s',(artifact_id,job_id,owner)).fetchone()
         if row is None:raise QueueError('not_found','Artifact not found')
         from .job_artifacts import ArtifactRecord
