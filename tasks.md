@@ -106,6 +106,8 @@ Use TODO, DOING or BLOCKED with an unchecked box; use DONE with a checked box on
   - Done when: Use pinned Kraken segmentation with line extraction, baseline ordering and original-coordinate mapping. Verify multiline, overlapping, blank and long-line cases; expose segmentation failure and review reasons instead of successful empty output.
   - Evidence, 12 November 2026: Added reusable scale-preserving segmentation and a lazy resident Kraken adapter with pinned-weight verification. 53 core tests pass (seven new segmentation cases): baseline order/stable IDs, blank versus missing-line states, context/overlap review, EXIF mapping, long lines, canvas/crop/count limits and clipped versus raw geometry. Offline real GPU adapter finds three lines in the manual cell in 8.375 seconds; geometry boundary warnings remain explicit. Full-row/downstream and corpus acceptance remain open. See docs/segmentation-validation.md and docs/validation/segmentation-reusable.json.
 
+  - Evidence, 12 November 2026 (mask-rendering experiment): Added optional alpha-aware white-mask rendering and four passing straight/curved/solid-black/source-preservation tests. Replayed all 24 recorded polygons/baselines to reproduce native legacy PNG pixels exactly, then changed only outside-mask fill; crop sizes and source pixels stayed unchanged. Offline baseline recognition on the white variants did not improve the six provisional AI diagnostics and retained ruling-only false positives. Default pipeline rendering is unchanged. Oversized polygons/margins and false/missed line detections remain unresolved; see docs/line-rendering-review.md and docs/validation/rendering-*.json.
+
 - [ ] **HTR-015 — Implement resident recognition worker** — DOING
   - Owner: current chat.
   - Depends on: HTR-010, HTR-014.
@@ -122,10 +124,13 @@ Use TODO, DOING or BLOCKED with an unchecked box; use DONE with a checked box on
 
   - Evidence, 12 November 2026 (real full-row stages): ImagePipeline now binds source/settings/models/runtime manifest, preserves immutable geometry/line PNG evidence and assembles validated v1 JSON with explicit partial/review states and global limits. All 11 synthetic pipeline integration tests and 65 core checks pass. Actual full-row GPU run produced 18 review-required cells and 24 line readings; all three database stages committed once. A second run used 10-second leases over 58-second segmentation with 19 heartbeat calls and identical cells/text/geometry/provenance. API/deployed daemon/quality acceptance remain open. See docs/pipeline-validation.md and docs/validation/queued-full-row*.json.
 
-- [ ] **HTR-017 — Expose asynchronous transcription API** — TODO
-  - Owner: unassigned.
+- [ ] **HTR-017 — Expose asynchronous transcription API** — DOING
+  - Owner: current chat.
   - Depends on: HTR-015, HTR-016.
   - Done when: Implement validated upload, status, result, model inventory, health, controlled artifact retrieval, cancellation and deletion. Verify consistent error responses, pixel/upload/queue limits and stable ordered cell/line results end to end.
+  - Evidence, 12 November 2026: ASGI prototype passed 25 isolated PostgreSQL API tests, including scoped authorization, upload limits, credential revocation during streaming, idempotency/deletion races, cancellation, artifact checks and replayable physical cleanup. Queue and worker regressions passed 21 and 16 tests. A file-configured Uvicorn factory and temporary loopback HTTP probe verify startup, authenticated health, migration-check readiness and 503 rejection without a worker; no HTTP-to-GPU round trip is claimed. Resident readiness, artifact discovery, background cleanup and production deployment acceptance remain open. See docs/ocr-api-validation.md.
+
+  - Evidence, 12 November 2026 (resident HTTP): File-configured single-GPU resident worker now publishes expiring, exclusive readiness and reuses models across jobs. Five readiness checks pass. Two HTTP jobs returned identical 18-cell/24-line results in 66.959/65.889 seconds with one model load. SIGKILL during a third job’s segmentation recovered on attempt 2, preserving the same job and exactly one final result/revision. All three results validate; API restart preserves them and clean worker stop removes readiness. Temporary services are stopped. Artifact discovery, background cleanup, production deployment and Registers acceptance remain open. See docs/resident-worker-validation.md and docs/validation/resident-http.json.
 
 - [ ] **HTR-018 — Record corrections and result revisions** — TODO
   - Owner: unassigned.
