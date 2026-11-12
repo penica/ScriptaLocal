@@ -1,0 +1,19 @@
+{
+  "data_root": "/home/penica/eScriptorium/data",
+  "backup_root": "/srv/storage/scriptalocal-backups",
+  "paths": {
+    "models": "write, fsync, atomic rename and read passed",
+    "artifacts": "write, fsync, atomic rename and read passed",
+    "postgres": "write, fsync, atomic rename and read passed",
+    "build-cache": "write, fsync, atomic rename and read passed",
+    "reference/row-crops": "write, fsync, atomic rename and read passed",
+    "reference/ground-truth": "write, fsync, atomic rename and read passed"
+  },
+  "off_machine_recovery": "pending Synology NFS; local backup is not off-machine",
+  "local_backup_file_round_trip": {
+    "status": "passed",
+    "sha256": "bb8748183b3554dd86c61076d3200aba527ae2e8cd984d83be93a1be2fee1ab6",
+    "bytes": 65536,
+    "limitation": "file fixture only; database/application restoration remains untested"
+  }
+}
