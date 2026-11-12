@@ -39,6 +39,28 @@ class SourceStore:
             if not stat.S_ISREG(info.st_mode):raise ValueError('Existing source must be a regular file')
         return persist_original(image,self.root)
 
+    @contextmanager
+    def _stream(self,digest,maximum_bytes):
+        if not re.fullmatch(r'[a-f0-9]{64}',digest) or type(maximum_bytes)is not int or maximum_bytes<1:raise ValueError('Invalid source read limits')
+        try:
+            root=os.open(self.root,os.O_RDONLY|os.O_DIRECTORY|os.O_NOFOLLOW)
+            try:fd=os.open(digest+'.original',os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK,dir_fd=root)
+            finally:os.close(root)
+            with os.fdopen(fd,'rb') as stream:
+                info=os.fstat(stream.fileno())
+                if not stat.S_ISREG(info.st_mode) or info.st_size>maximum_bytes:raise ValueError('Invalid source file')
+                yield stream
+        except (OSError,ValueError):raise ServiceError('source_unavailable','Original image is unavailable',503) from None
+
+    def size(self,digest,maximum_bytes):
+        with self._stream(digest,maximum_bytes) as stream:return os.fstat(stream.fileno()).st_size
+
+    def read(self,digest,maximum_bytes):
+        with self._stream(digest,maximum_bytes) as stream:
+            content=stream.read(maximum_bytes+1)
+            if len(content)>maximum_bytes or hashlib.sha256(content).hexdigest()!=digest:raise ValueError('Source checksum differs')
+            return content
+
     def remove_locked(self,digest):
         # Caller holds the hash lock and has checked no live metadata references.
         if not re.fullmatch(r'[a-f0-9]{64}',digest):raise ValueError('Invalid source hash')
