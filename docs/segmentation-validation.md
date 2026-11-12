@@ -1,0 +1,15 @@
+# Reusable per-cell line segmentation
+
+The adapter uses the pinned Kraken 6.0.3 bundled weights, verified before loading. `KrakenSegmenter` keeps its model instance for reuse and imports GPU dependencies only in that environment. Default-module model discovery is avoided because the validated Python 3.11 combination requires an explicit model path.
+
+`segment_cell` accepts an ink-preserving context crop and an injected backend. It pads without resizing to at least the model height (1800 pixels for this model) and a 400-pixel width, with 32-pixel offsets. Geometry is mapped back through the padding, cell origin and EXIF transforms exactly once. Returned line crops retain the backend's rectification and original width; splitting/resizing for recognition is not introduced here.
+
+Only an exactly white selected cell bypasses inference as blank. Any ink, paper noise or ruling prevents that automatic decision. Nonblank cells with no assigned lines return needs-review, not successful empty text. Context lines entirely outside the cell are retained separately as unassigned evidence; crossing baselines and ambiguous nearby baseline order require review. Recognition has not run at the `segmented` state.
+
+Polygons extending into padding outside the encoded source are clipped to the source rectangle with an explicit warning, while the raw model polygon remains alongside the clipped polygon. A baseline outside the source is unassigned evidence. This avoids losing a real line merely because its learned boundary extends into padding. Consumers must preserve these warnings/raw evidence rather than publish a confident reading. Bounds, finite geometry, canvas size, line count and line crop size are checked before results advance.
+
+Seven new CPU tests cover blank/no-line distinction, ordering/stable IDs, preservation of context pixels, cross-cell and overlapping lines, geometry/failure/resource limits, EXIF mapping, raw/clipped boundary evidence and unchanged long-line crops. The complete core suite now passes 53 checks. Run `make validation-cpu`; evidence is [test output](validation/segmentation-tests.txt).
+
+The actual offline GPU probe uses `scripts/validation/segmentation_probe.py`, the locked GPU validation image, one explicitly assigned GPU, nonroot/read-only execution and private writable output storage. The user's manually bounded real cell yielded three line crops in 8.375 seconds including model load, using 401,017,344 bytes peak allocated CUDA memory. Source crossings and source-clipped geometry remain needs-review. Images and geometry stay in ignored `data/validation/reusable-segmentation/`; [public summary](validation/segmentation-reusable.json) contains hashes/settings/counts only.
+
+This is functional manual-cell evidence. Automatic full-row processing, downstream worker/API integration, diverse annotated samples and line quality acceptance remain open under HTR-014 and related tasks. No recognition accuracy claim follows from the line count or synthetic tests.
