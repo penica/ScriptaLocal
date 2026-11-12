@@ -33,6 +33,8 @@ Read `docs/implementation-plan.md` and `tasks.md` before implementation. The sel
 
 ## Reference reading provenance
 
+The owner clarified that transcription accuracy is not the current problem. Prioritize a functioning service, operational validation and Registers integration. Keep model/training/segmentation quality research outside the current critical path; record unmeasured accuracy honestly without treating it as a blocker for functional integration. Do not mark quality-specific checklist items complete without evidence.
+
 The owner explicitly authorized Scripta to view/transcribe the supplied image crops in this chat on 12 November 2026. This permits manual assistant vision review; it does not authorize automatic service fallback or remote dispatch. Keep AI-authored reference readings in ignored private reference storage, mark human_confirmed=false, preserve uncertainty, and distinguish diagnostic AI agreement from human-ground-truth CER/WER or release accuracy. Freeze reference versions before inspecting compared recognizer outputs where possible.
 
 ## Cross-project collaboration
