@@ -7,7 +7,7 @@ from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, model_validato
 from .images import Affine, orientation_transform
 
 Integer = Annotated[int, Field(strict=True, ge=0)]
-Coordinate = Annotated[float, Field(ge=0, allow_inf_nan=False)]
+Coordinate = Annotated[float, Field(strict=True, ge=0, allow_inf_nan=False)]
 Point = tuple[Coordinate, Coordinate]
 Polygon = Annotated[list[Point], Field(min_length=3)]
 ReadingState = Literal['recognized', 'blank', 'unreadable', 'failed', 'needs-review']
@@ -204,8 +204,10 @@ class Divider(Contract):
 
     @model_validator(mode='after')
     def validate_divider(self):
-        if self.top[1] >= self.bottom[1]:
-            raise ValueError('Divider must run from top to bottom')
+        # Endpoints use encoded coordinates; a visually vertical divider can
+        # be horizontal in this frame when EXIF rotates the image by 90°.
+        if self.top == self.bottom:
+            raise ValueError('Divider endpoints must be distinct')
         return self
 
 
