@@ -1,0 +1,21 @@
+{
+  "date": "2026-11-12",
+  "destination": "integration-handover/app-api-contract",
+  "files": [
+    {
+      "filename": "SCRIPTALOCAL-INTEGRATION.md",
+      "bytes": 41947,
+      "sha256": "eaab2a24c1e075f3dcbfdbb4b5ee09bcd99d6bd204f2ea4d4fd99bfb2a0f49ca"
+    },
+    {
+      "filename": "README.md",
+      "bytes": 1892,
+      "sha256": "25e1a20a6e9c4910467e667a44be8fb41db80507d7408c85042cf543d2091755"
+    }
+  ],
+  "registry_receipts": "verified",
+  "user_supplied_hashes": "both match",
+  "remaining_file_slots": 0,
+  "scoped_agent_upload": "completed",
+  "file_contents": "retained privately; no uploaded source documents republished"
+}
