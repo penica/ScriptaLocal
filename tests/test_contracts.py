@@ -139,7 +139,9 @@ class ContractTests(unittest.TestCase):
             elif isinstance(value,list):
                 for child in value:walk(child)
         walk(specification)
-        self.assertEqual(len(specification['paths']),9)
+        self.assertEqual(len(specification['paths']),10)
+        inventory=specification['paths']['/v1/jobs/{job_id}/artifacts']['get']
+        self.assertEqual(inventory['responses']['200']['content']['application/json']['schema']['$ref'],'#/components/schemas/ArtifactInventory')
         for path,methods in specification['paths'].items():
             for method,operation in methods.items():
                 self.assertIn('operationId',operation)
