@@ -1,0 +1,97 @@
+{
+  "precision": "fp32",
+  "model_loads": 1,
+  "model_load_and_verification_seconds": 10.451,
+  "model_id": "dh-unibe/trocr-kurrent-XVI-XVII",
+  "model_revision": "a6bb6086ba3f7ddc62193a0289b1ee733c1af15e",
+  "manifest_sha256": "d3fc87c3d4b4d0fc708059b6351874b4e35e4dd4a035358394fb0186fbce5445",
+  "weights_sha256": "dfb88d0a11fecc1fb92152a9d435e16c787bb6190c4995f277e4dfeb2976d065",
+  "source_line_sha256": [
+    "79d56f844a828b2f697e81013b51aaa22554c1bc4dc74689f7f989f203629157",
+    "a22f6ebe083b291500d68bd421a4e8a1e240b3c879f678548365f8359769ed01",
+    "fd2e8f0bed1eeffb6cf11d29a1aa06d0734b6560d71807acc3b60f830be3e9ea"
+  ],
+  "settings": {
+    "batch_size": 4,
+    "maximum_lines": 4096,
+    "maximum_line_pixels": 4000000,
+    "maximum_batch_pixels": 8000000,
+    "maximum_side": 16384,
+    "maximum_new_tokens": 128,
+    "num_beams": 4,
+    "maximum_oom_recoveries": 4,
+    "wide_line_review_ratio": 20.0
+  },
+  "peak_cuda_bytes": 1478808576,
+  "runs": [
+    {
+      "seconds": 1.467,
+      "backend_calls": 3,
+      "oom_events": 1,
+      "recoveries": 1,
+      "lines": [
+        {
+          "id": "1ce989ff-6305-5a86-a148-6d25a6fcfed7",
+          "state": "recognized",
+          "warnings": [],
+          "generated_tokens": 8,
+          "text_sha256": "c8acc60d021fc90aa9675cd2fe127d0251cc2cdb8b7d4717e4aeff456faa8fcc"
+        },
+        {
+          "id": "342ea70d-fb98-523a-830b-cc3134b47843",
+          "state": "recognized",
+          "warnings": [],
+          "generated_tokens": 4,
+          "text_sha256": "a21db0f0071d52efa82bd9aaa797ac5b19dd5abcbdb76b2a9d649a3153dfc2b0"
+        },
+        {
+          "id": "44df1aa4-a5ec-5b34-a372-7d83fb97cd2a",
+          "state": "recognized",
+          "warnings": [],
+          "generated_tokens": 6,
+          "text_sha256": "c256ad2519c576421134e8ab7dbef5fba0924d52fee8c2cd206b6f0f0f59add5"
+        }
+      ]
+    },
+    {
+      "seconds": 0.55,
+      "backend_calls": 1,
+      "oom_events": 0,
+      "recoveries": 0,
+      "lines": [
+        {
+          "id": "1ce989ff-6305-5a86-a148-6d25a6fcfed7",
+          "state": "recognized",
+          "warnings": [],
+          "generated_tokens": 8,
+          "text_sha256": "c8acc60d021fc90aa9675cd2fe127d0251cc2cdb8b7d4717e4aeff456faa8fcc"
+        },
+        {
+          "id": "342ea70d-fb98-523a-830b-cc3134b47843",
+          "state": "recognized",
+          "warnings": [],
+          "generated_tokens": 4,
+          "text_sha256": "a21db0f0071d52efa82bd9aaa797ac5b19dd5abcbdb76b2a9d649a3153dfc2b0"
+        },
+        {
+          "id": "44df1aa4-a5ec-5b34-a372-7d83fb97cd2a",
+          "state": "recognized",
+          "warnings": [],
+          "generated_tokens": 6,
+          "text_sha256": "c256ad2519c576421134e8ab7dbef5fba0924d52fee8c2cd206b6f0f0f59add5"
+        }
+      ]
+    }
+  ],
+  "same_outputs_after_reuse": true,
+  "network": "disabled",
+  "oom_fault_injected": true,
+  "oom_scope": "controlled CUDA exception then real smaller-batch inference",
+  "accuracy": "not measured: no human ground truth",
+  "clean_up_tokenization_spaces": false,
+  "source_sha256": {
+    "scriptalocal/recognition.py": "8ecc3a8febae7b5a6f11f5e0168dcd1712f38fdd893e4d26332f4cd19a639262",
+    "scriptalocal/trocr_recognizer.py": "7aa24ab92f86ca36f905a7b8ff376e4d0d59cb15c0a569505ad28dc161b4f3bf",
+    "scripts/validation/recognition_probe.py": "bffa4bcb8732895ca0804f714c31e55c4ee20d500d2dee590c06983c33dfd131"
+  }
+}
