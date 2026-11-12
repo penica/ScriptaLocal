@@ -1,0 +1,20 @@
+{
+  "date": "2026-11-12",
+  "user_selected_url": "http://10.10.100.209:8091",
+  "host_interface": "br0",
+  "binding": [
+    {
+      "HostIp": "10.10.100.209",
+      "HostPort": "8091"
+    }
+  ],
+  "host_liveness": "passed",
+  "separate_container_upload_via_lan_url": "passed",
+  "uploaded_file_sha256": "04b683b3261d1f4f161cf9550b3af0c68a9f99f7d3142c7edf56f0be2a4b64bf",
+  "saved_bytes": 35,
+  "unauthenticated_request_metadata_status": 404,
+  "validation_ticket_revoked": true,
+  "active_handover_url_updated": true,
+  "image": "sha256:664b715501ef5785bd2f196c9ea5d9fb582fdc19b7cff4823e684e88c03305b0",
+  "external_other_agent_upload": "pending; separate-container test is not an external-machine test"
+}
