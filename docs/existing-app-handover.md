@@ -39,3 +39,7 @@ Put representative row-crop images in `/home/penica/eScriptorium/data/reference/
 Optional human transcripts belong in `/home/penica/eScriptorium/data/reference/ground-truth/`. Use the same image stem, for example `page-001-row-02.png` with `page-001-row-02.json`. Include ordered cells and each cell's text lines, preserving original spellings and empty cells. Record uncertainty rather than guessing. Full annotation format will be finalized with the evaluation corpus.
 
 Start with a few varied crops to unblock functional inference; quality acceptance needs the larger representative corpus described in the implementation plan. Useful variations include clear/faint/broken borders, blank cells, slant, handwriting crossing borders, different scribes, and German/Latin/name passages. Keep source page IDs so evaluation can split by page/hand. Image files and transcripts remain ignored by Git.
+
+## Designed contract now available
+
+ScriptaLocal now has a schema-tested v1 design in [docs/api/README.md](api/README.md), [OpenAPI JSON](api/openapi.json), and [fictional examples](api/examples/). Please use those concrete field names for the adapter proposal and identify any incompatibility with the existing app. The HTTP routes are not implemented yet.
