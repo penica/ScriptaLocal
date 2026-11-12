@@ -1,0 +1,82 @@
+{
+  "certificate": {
+    "origin": "https://scripta.penic.net:8093",
+    "default_system_trust_passed": true,
+    "tls_version": "TLSv1.3",
+    "certificate_sha256": "03a9f0a17a8a9de208874172b1389a2e988b285fec34bc07f6330e5dd2e4b4a8",
+    "issuer": [
+      [
+        [
+          "countryName",
+          "US"
+        ]
+      ],
+      [
+        [
+          "organizationName",
+          "Let's Encrypt"
+        ]
+      ],
+      [
+        [
+          "commonName",
+          "YE2"
+        ]
+      ]
+    ],
+    "subject_alt_names": [
+      [
+        "DNS",
+        "scripta.penic.net"
+      ]
+    ],
+    "not_after": "Feb 10 17:42:55 2027 GMT",
+    "host_trust_store_changed": false
+  },
+  "boundaries": {
+    "origin": "https://scripta.penic.net:8093",
+    "default_system_trust_passed": true,
+    "authenticated_ready": true,
+    "unauthenticated_readiness_http": 401,
+    "unknown_host_http": 421,
+    "wrong_tls_hostname_rejected": true,
+    "https_redirect_preserved": true,
+    "untrusted_cors_origin_not_allowed": true,
+    "credentials_absent_from_logs": true,
+    "gateway_backend_network_access": false,
+    "remote_registers_roundtrip": "pending Builder"
+  },
+  "http": {
+    "source_sha256": "0a5b42a6aa9f2ad626931151f05c600b5ebb88766620b825e40c7a95ce59d8e6",
+    "jobs": [
+      {
+        "job_id": "8ea6ca70-51cc-47a9-9dbc-3f3af82ffec4",
+        "seconds": 67.562,
+        "cells": 18,
+        "lines": 24,
+        "review_required": true,
+        "configuration_sha256": "c5e687d1bd1559b5bc9a8f5c924561563ddcb5ea5c6d6ba3b0e69c3f306de163",
+        "result_sha256": "aa1d90b78e483af418d71ee7ef84c60deeef60b8515844483a885ab3372f2a2a",
+        "stage_seconds": {
+          "layout": 3.8393499119999888,
+          "segmentation": 57.81501962200002,
+          "recognition": 4.656498701000032
+        },
+        "idempotency_replayed": true
+      }
+    ]
+  },
+  "handover": {
+    "request_id": "f27cb8a2-6c2c-46ee-bacd-cc9aaae2bcb2",
+    "https_manifest_url": "https://scripta.penic.net:8093/intake/v1/downloads/f27cb8a2-6c2c-46ee-bacd-cc9aaae2bcb2",
+    "files_verified": 4,
+    "acceptance_credential_health_passed": true,
+    "credential_owner": "registers-acceptance",
+    "download_token_printed": false
+  },
+  "gateway_image": "sha256:edef75b5fc1d2b604f3cc145a64587db9091e8773eb52933a7faacca8b447661",
+  "core_tests": 65,
+  "lan_setup_tests": 2,
+  "receiver": "Registers prepares Builder handover",
+  "renewal": "configured, future execution not yet observed"
+}
