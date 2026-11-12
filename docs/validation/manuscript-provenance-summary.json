@@ -1,0 +1,51 @@
+{
+  "original_size": [
+    2418,
+    272
+  ],
+  "manual_cell_bounds": [
+    948,
+    18,
+    1146,
+    262
+  ],
+  "image_sha256": "0a5b42a6aa9f2ad626931151f05c600b5ebb88766620b825e40c7a95ce59d8e6",
+  "model": "dh-unibe/trocr-kurrent-XVI-XVII",
+  "revision": "a6bb6086ba3f7ddc62193a0289b1ee733c1af15e",
+  "segmentation_seconds": 4.867,
+  "total_seconds": 7.351,
+  "peak_cuda_bytes": 1402479104,
+  "accuracy": "unmeasured: human ground truth not provided",
+  "preserve_scale": true,
+  "segmentation_canvas": [
+    400,
+    1800
+  ],
+  "configuration": {
+    "manual_cell_bounds": [
+      948,
+      18,
+      1146,
+      262
+    ],
+    "preserve_scale": true,
+    "canvas_padding": 32,
+    "minimum_canvas_width": 400,
+    "max_new_tokens": 128
+  },
+  "configuration_sha256": "45bb05db272ce282e01aa715f0dd9d339d1b1b235c0873a101c8b440fee52192",
+  "source_script_sha256": "412432f1bf70daf4aa0232eef514ddb7a8bd1855639b86b6563bbfe0620ff5d7",
+  "recognition_weights_sha256": "dfb88d0a11fecc1fb92152a9d435e16c787bb6190c4995f277e4dfeb2976d065",
+  "segmentation_weights_sha256": "77a638a83c9e535620827a09e410ed36391e9e8e8126d5796a0f15b978186056",
+  "layout": "manual single cell; automatic divider detection not implemented",
+  "detected_lines": 3,
+  "api_schema_validation": "passed",
+  "http_service": "not implemented",
+  "execution": {
+    "user": "1000:1000",
+    "network": "none",
+    "container_root": "read-only",
+    "model_mount": "read-only",
+    "writable_mount": "project validation output only"
+  }
+}
