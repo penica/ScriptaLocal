@@ -1,0 +1,33 @@
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+secrets/
+
+# Manuscripts, artifacts, models and databases
+data/
+artifacts/
+models/
+backups/
+*.mlmodel
+*.safetensors
+*.pt
+*.pth
+*.ckpt
+*.sqlite*
+
+# Python and tooling
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Build output and local tools
+build/
+dist/
+*.egg-info/
+node_modules/
+.DS_Store
