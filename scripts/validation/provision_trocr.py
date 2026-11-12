@@ -13,7 +13,7 @@ parser.add_argument('--destination', type=Path, required=True)
 args = parser.parse_args()
 assert re.fullmatch(r'[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+', args.repository)
 assert re.fullmatch(r'[0-9a-f]{40}', args.revision), 'Require immutable commit SHA'
-allowed = {'README.md', 'config.json', 'generation_config.json', 'merges.txt',
+allowed = {'README.md', 'LICENSE', 'tokenizer.json', 'added_tokens.json', 'config.json', 'generation_config.json', 'merges.txt',
            'model.safetensors', 'preprocessor_config.json', 'special_tokens_map.json',
            'tokenizer_config.json', 'vocab.json'}
 metadata_url = f'https://huggingface.co/api/models/{args.repository}/revision/{args.revision}?blobs=true'
