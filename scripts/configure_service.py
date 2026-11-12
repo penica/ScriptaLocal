@@ -19,28 +19,30 @@ def configure(root,model_root,api_image,worker_image,manifest_sha256,*,port=8090
     if not re.fullmatch(r'nvidia\.com/gpu=(?:[0-9]+|GPU-[A-Fa-f0-9-]+)',gpu):raise ValueError('Assign one CDI GPU')
     if not all(re.fullmatch(r'[A-Za-z0-9_./-]+',str(path)) for path in [root,model_root]):raise ValueError('Compose paths require plain absolute path characters')
     root.mkdir(mode=0o700,parents=True,exist_ok=False)
-    for name in ['secrets','settings','originals','artifacts','status','postgres']:(root/name).mkdir(mode=0o700)
+    for name in ['secrets','settings','operations','originals','artifacts','status','postgres']:(root/name).mkdir(mode=0o700)
     def write(relative,content,mode=0o600):
         path=root/relative
         with path.open('x') as stream:stream.write(content+'\n')
         path.chmod(mode)
     def document(relative,value):write(relative,json.dumps(value,indent=2))
     app_password=secrets.token_urlsafe(48);admin_password=secrets.token_urlsafe(48)
-    caller=secrets.token_urlsafe(48);health=secrets.token_urlsafe(48)
+    caller=secrets.token_urlsafe(48);health=secrets.token_urlsafe(48);manual=secrets.token_urlsafe(32)
     # Parent directories are 0700. The database's separate OS UID must read
     # only these mounted files; API/worker never receive the admin secret.
     write('secrets/admin-password',admin_password,0o444);write('secrets/app-password',app_password,0o444)
     write('secrets/db-dsn','postgresql://scriptalocal_app:'+app_password+'@db:5432/scriptalocal')
     write('secrets/caller.token',caller);write('secrets/health.token',health)
+    write('secrets/manual-ui.token',manual)
     document('settings/credentials.json',{'credentials':[
         {'sha256':hashlib.sha256(caller.encode()).hexdigest(),'owner':'registers-integration','capabilities':['read','write','delete']},
-        {'sha256':hashlib.sha256(health.encode()).hexdigest(),'owner':'health-probe','capabilities':['read']}]})
+        {'sha256':hashlib.sha256(health.encode()).hexdigest(),'owner':'health-probe','capabilities':['read']},
+        {'sha256':hashlib.sha256(manual.encode()).hexdigest(),'owner':'manual-submissions','capabilities':['read','write','configure']}]})
     document('settings/api.json',{'dsn_file':'/run/secrets/db_dsn','originals_root':'/data/originals','artifacts_root':'/data/artifacts',
-                                 'credentials_file':'/settings/credentials.json','profiles_file':'/status/profiles.json'})
+                                 'credentials_file':'/settings/credentials.json','profiles_file':'/status/profiles.json','operator_settings_file':'/operations/operator.json'})
     document('settings/worker.json',{'dsn_file':'/run/secrets/db_dsn','originals_root':'/data/originals','artifacts_root':'/data/artifacts',
                                     'status_root':'/status','model_root':'/model','recognition_manifest_sha256':manifest_sha256,
                                     'runtime_image':worker_image,'worker_id':'gpu-worker-0','precision':'fp32','license':license_name,'scripts':['German Kurrent']})
-    document('settings/operator.json',{'backup_destination':str(Path(backup_destination).resolve()) if backup_destination else None})
+    document('operations/operator.json',{'backup_destination':str(Path(backup_destination).resolve()) if backup_destination else None})
     values={'SCRIPTALOCAL_SERVICE_ROOT':str(root),'SCRIPTALOCAL_MODEL_ROOT':str(model_root),'SCRIPTALOCAL_API_IMAGE':api_image,
             'SCRIPTALOCAL_WORKER_IMAGE':worker_image,'SCRIPTALOCAL_UID':str(os.getuid()),'SCRIPTALOCAL_GID':str(os.getgid()),
             'SCRIPTALOCAL_API_PORT':str(port),'SCRIPTALOCAL_GPU':gpu}
