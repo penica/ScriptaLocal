@@ -52,7 +52,7 @@ class CredentialStore:
                 if not re.fullmatch(r'[a-f0-9]{64}',record['sha256']) or record['sha256'] in seen:raise ValueError
                 seen.add(record['sha256'])
                 owner=principal(record['owner']);capabilities=record['capabilities']
-                if not isinstance(capabilities,list) or not capabilities or set(capabilities)-{'read','write','delete'}:raise ValueError
+                if not isinstance(capabilities,list) or not capabilities or set(capabilities)-{'read','write','delete','configure'}:raise ValueError
                 enabled=record.get('enabled',True)
                 if type(enabled)is not bool:raise ValueError
                 expires=record.get('expires_at')
