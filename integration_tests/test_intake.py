@@ -237,5 +237,76 @@ class IntakeTests(unittest.TestCase):
         ticket=self.ticket();os.mkfifo(self.destination/'pipe.md')
         self.assertEqual(self.upload(ticket,'pipe.md',b'data').status_code,409)
 
+    def download_ticket(self,**changes):
+        self.destination.mkdir(exist_ok=True)
+        (self.destination/'response.md').write_bytes(b'contract response')
+        options={'destination':'handover','label':'Response','filenames':['response.md'],'expires_in_seconds':3600}
+        options.update(changes)
+        result=self.client.post('/intake/v1/downloads',headers=self.admin,json=options)
+        self.assertEqual(result.status_code,201,result.text)
+        ticket=result.json()
+        return ticket,'/intake/v1/downloads/'+ticket['request_id'],{'Authorization':'Bearer '+ticket['download_token']}
+
+    def test_download_snapshot_manifest_checksum_and_no_upload_capability(self):
+        ticket,url,headers=self.download_ticket()
+        manifest=self.client.get(url,headers=headers)
+        self.assertEqual(manifest.status_code,200)
+        self.assertNotIn(ticket['download_token'],manifest.text)
+        self.assertNotIn(str(self.root),manifest.text)
+        item=ticket['files'][0];path=url+'/files/'+item['file_id']
+        response=self.client.get(path,headers=headers)
+        self.assertEqual(response.content,b'contract response')
+        self.assertEqual(response.headers['x-content-sha256'],hashlib.sha256(response.content).hexdigest())
+        self.assertEqual(response.headers['cache-control'],'no-store')
+        self.assertEqual(self.client.get(path).status_code,404)
+        self.assertEqual(self.client.get(path,headers=self.admin).status_code,404)
+        self.assertEqual(self.client.post('/intake/v1/requests',headers=headers,json={}).status_code,401)
+        self.assertEqual(self.client.put('/intake/v1/requests/'+ticket['request_id']+'/files',headers=headers,content=b'x').status_code,404)
+        (self.destination/'response.md').write_bytes(b'changed source')
+        self.assertEqual(self.client.get(path,headers=headers).content,b'contract response')
+
+    def test_download_expiry_revocation_and_ticket_isolation(self):
+        ticket,url,headers=self.download_ticket()
+        other,other_url,other_headers=self.download_ticket()
+        self.assertEqual(self.client.get(other_url,headers=headers).status_code,404)
+        upload=self.ticket()
+        self.assertEqual(self.client.get(url,headers=self.headers(upload,'x.md')).status_code,404)
+        self.assertEqual(self.client.post(url+'/revoke',headers=headers).status_code,401)
+        self.assertEqual(self.client.post(url+'/revoke',headers=self.admin).status_code,200)
+        self.assertEqual(self.client.get(url,headers=headers).status_code,410)
+        self.assertEqual(self.client.get(url+'/files/'+ticket['files'][0]['file_id'],headers=headers).status_code,410)
+        with self.app.state.store.transaction() as db:
+            db.execute('UPDATE downloads SET expires=0 WHERE id=?',(other['request_id'],))
+        self.assertEqual(self.client.get(other_url,headers=other_headers).status_code,410)
+
+    def test_download_rejects_paths_symlinks_fifo_limits_and_tampering(self):
+        ticket,url,headers=self.download_ticket()
+        for name in ['../response.md','missing.md']:
+            response=self.client.post('/intake/v1/downloads',headers=self.admin,json={'destination':'handover','label':'bad','filenames':[name]})
+            self.assertIn(response.status_code,[422,503])
+        (self.destination/'link.md').symlink_to(self.destination/'response.md')
+        os.mkfifo(self.destination/'pipe.md')
+        (self.destination/'large.md').write_bytes(b'x'*101)
+        for name in ['link.md','pipe.md','large.md']:
+            response=self.client.post('/intake/v1/downloads',headers=self.admin,json={'destination':'handover','label':'bad','filenames':[name]})
+            self.assertIn(response.status_code,[422,503])
+        target=self.settings.state_root/'downloads'/ticket['request_id']/ticket['files'][0]['file_id']
+        target.write_bytes(b'X'*len(b'contract response'))
+        self.assertEqual(self.client.get(url+'/files/'+ticket['files'][0]['file_id'],headers=headers).status_code,409)
+        target.unlink();target.symlink_to(self.destination/'response.md')
+        self.assertEqual(self.client.get(url+'/files/'+ticket['files'][0]['file_id'],headers=headers).status_code,503)
+        self.assertEqual(len(list((self.settings.state_root/'downloads').iterdir())),1)
+
+    def test_download_persists_after_service_restart(self):
+        ticket,url,headers=self.download_ticket()
+        self.client.__exit__(None,None,None)
+        self.app=create_app(self.settings);self.client=TestClient(self.app);self.client.__enter__()
+        response=self.client.get(url+'/files/'+ticket['files'][0]['file_id'],headers=headers)
+        self.assertEqual(response.content,b'contract response')
+        with self.app.state.store.connection() as db:
+            row=db.execute('SELECT * FROM downloads WHERE id=?',(ticket['request_id'],)).fetchone()
+        self.assertNotIn(ticket['download_token'],str(dict(row)))
+
+
 
 if __name__=='__main__':unittest.main()
