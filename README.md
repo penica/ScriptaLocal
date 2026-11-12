@@ -22,5 +22,6 @@ No project license has been selected yet. Model and dependency licenses are trac
 
 - [Validation evidence and commands](docs/validation/README.md)
 - [Handover request for the existing app coder](docs/existing-app-handover.md)
+- [Designed API contract and examples](docs/api/README.md)
 - Local manuscript input folder: `data/reference/row-crops/` (ignored by Git).
 - Configuration template: `.env.example`; backup storage is configurable for a future Synology NFS mount.
