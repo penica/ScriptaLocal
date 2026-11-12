@@ -29,7 +29,10 @@ def main():
         except urllib.error.HTTPError as response:return response.code,response.read()
     deadline=time.monotonic()+120
     while True:
-        code,content=request('/health/ready')
+        try:code,content=request('/health/ready')
+        except OSError:
+            if time.monotonic()>deadline:raise RuntimeError('API startup deadline exceeded') from None
+            time.sleep(1);continue
         if code==200 and json.loads(content)['ready']:break
         if time.monotonic()>deadline:raise RuntimeError('Worker readiness deadline exceeded')
         time.sleep(1)
