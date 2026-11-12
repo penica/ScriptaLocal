@@ -1,0 +1,26 @@
+{
+  "original_size": [
+    2418,
+    272
+  ],
+  "manual_cell_bounds": [
+    948,
+    18,
+    1146,
+    262
+  ],
+  "image_sha256": "0a5b42a6aa9f2ad626931151f05c600b5ebb88766620b825e40c7a95ce59d8e6",
+  "model": "dh-unibe/trocr-kurrent-XVI-XVII",
+  "revision": "a6bb6086ba3f7ddc62193a0289b1ee733c1af15e",
+  "segmentation_seconds": 12.229,
+  "total_seconds": 13.457,
+  "peak_cuda_bytes": 1401559040,
+  "accuracy": "unmeasured: human ground truth not provided",
+  "layout": "manual single cell; automatic divider detection not implemented",
+  "detected_lines": 0,
+  "line_crops_and_transcriptions": "Private: data/validation/manuscript-cell/",
+  "automatic_segmentation_review": "Failed: default scaling candidate detected no lines",
+  "state": "needs-review",
+  "reason": "Zero lines found in visibly nonblank three-line cell",
+  "recognition_executed": false
+}
