@@ -1,0 +1,26 @@
+{
+  "description": "Proposed fixture corrections from Scripta. Original received ZIP remains unchanged. Paths use RFC 6902 JSON Pointer; each operation adds warnings at the affected scope.",
+  "fixtures": {
+    "canonical-result-partial.json": [
+      {
+        "op": "add",
+        "path": "/cells/0/warnings",
+        "value": [{"code": "synthetic_partial_reading", "message": "Synthetic cell contains an unknown line and requires human review."}]
+      }
+    ],
+    "canonical-result-cell-failed.json": [
+      {
+        "op": "add",
+        "path": "/cells/2/lines/0/warnings",
+        "value": [{"code": "synthetic_cell_failure", "message": "Synthetic line recognition failed."}]
+      }
+    ],
+    "canonical-result-review.json": [
+      {
+        "op": "add",
+        "path": "/cells/2/lines/0/warnings",
+        "value": [{"code": "synthetic_ambiguous_reading", "message": "Review this synthetic line reading."}]
+      }
+    ]
+  }
+}
