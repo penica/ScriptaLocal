@@ -1,0 +1,26 @@
+ Container scriptalocal-jobs-validation-db-1 Running 
+ Container scriptalocal-jobs-validation-db-1 Waiting 
+ Container scriptalocal-jobs-validation-db-1 Healthy 
+ Container scriptalocal-jobs-validation-tests-run-e9d14fd0ccf3 Creating 
+ Container scriptalocal-jobs-validation-tests-run-e9d14fd0ccf3 Created 
+test_ambiguous_commit_response_does_not_publish_twice (test_workers.WorkerTests.test_ambiguous_commit_response_does_not_publish_twice) ... ok
+test_background_heartbeats_keep_long_stage_lease_alive (test_workers.WorkerTests.test_background_heartbeats_keep_long_stage_lease_alive) ... ok
+test_cancel_ack_database_failure_requires_worker_restart (test_workers.WorkerTests.test_cancel_ack_database_failure_requires_worker_restart) ... ok
+test_configuration_routing_does_not_consume_other_profile_jobs (test_workers.WorkerTests.test_configuration_routing_does_not_consume_other_profile_jobs) ... ok
+test_database_statement_deadline_is_enforced (test_workers.WorkerTests.test_database_statement_deadline_is_enforced) ... ok
+test_expired_old_worker_cannot_publish_after_reclaim (test_workers.WorkerTests.test_expired_old_worker_cannot_publish_after_reclaim) ... ok
+test_handler_publication_advances_once_and_passes_committed_artifacts (test_workers.WorkerTests.test_handler_publication_advances_once_and_passes_committed_artifacts) ... ok
+test_heartbeat_failure_is_fail_closed_and_worker_requires_restart (test_workers.WorkerTests.test_heartbeat_failure_is_fail_closed_and_worker_requires_restart) ... ok
+test_input_refs_are_not_shared_between_jobs_or_expired_leases (test_workers.WorkerTests.test_input_refs_are_not_shared_between_jobs_or_expired_leases) ... ok
+test_invalid_completion_artifact_fails_job_instead_of_stalling (test_workers.WorkerTests.test_invalid_completion_artifact_fails_job_instead_of_stalling) ... ok
+test_midstage_heartbeat_failure_interrupts_processing_without_publication (test_workers.WorkerTests.test_midstage_heartbeat_failure_interrupts_processing_without_publication) ... ok
+test_retryable_failure_requeues_with_attempt_bound (test_workers.WorkerTests.test_retryable_failure_requeues_with_attempt_bound) ... ok
+test_running_cancellation_stops_handler_and_never_publishes (test_workers.WorkerTests.test_running_cancellation_stops_handler_and_never_publishes) ... ok
+test_stalled_heartbeat_drain_never_permits_artifact_publication (test_workers.WorkerTests.test_stalled_heartbeat_drain_never_permits_artifact_publication) ... ok
+test_unexpected_handler_failure_is_redacted_and_terminal (test_workers.WorkerTests.test_unexpected_handler_failure_is_redacted_and_terminal) ... ok
+test_worker_interval_and_handler_settings_are_checked (test_workers.WorkerTests.test_worker_interval_and_handler_settings_are_checked) ... ok
+
+----------------------------------------------------------------------
+Ran 16 tests in 6.345s
+
+OK
