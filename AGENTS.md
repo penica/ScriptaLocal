@@ -31,6 +31,10 @@ Read `docs/implementation-plan.md` and `tasks.md` before implementation. The sel
 - Check disk capacity before downloads/builds. Never delete unrelated Docker data, alter partitions/ZFS pools, or change host drivers merely to make room. Identify a safe storage location first.
 - Verify host CPU instruction compatibility: this machine has AVX but no AVX2. A CUDA check alone does not validate CPU libraries.
 
+## Reference reading provenance
+
+The owner explicitly authorized Scripta to view/transcribe the supplied image crops in this chat on 12 November 2026. This permits manual assistant vision review; it does not authorize automatic service fallback or remote dispatch. Keep AI-authored reference readings in ignored private reference storage, mark human_confirmed=false, preserve uncertainty, and distinguish diagnostic AI agreement from human-ground-truth CER/WER or release accuracy. Freeze reference versions before inspecting compared recognizer outputs where possible.
+
 ## Cross-project collaboration
 
 Agent role aliases: **Scripta** is this project’s local transcription backend/validation agent; **Registers** is the existing application’s integration contact; **Builder** is the agent assigned to implement and test changes in the Registers application. These name responsibilities, not permanent model/process identities. A replacement agent should state the role it is taking over and read the recorded handover. Other implementation agents belong to the application coding team and must be named by their actual assigned role; do not assume the integration contact owns every code change.
