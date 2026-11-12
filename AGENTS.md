@@ -33,6 +33,8 @@ Read `docs/implementation-plan.md` and `tasks.md` before implementation. The sel
 
 ## Cross-project collaboration
 
+Agent role aliases: **Scripta** is this project’s local transcription backend/validation agent; **Registers** is the existing application’s integration contact; **Builder** is the agent assigned to implement and test changes in the Registers application. These name responsibilities, not permanent model/process identities. A replacement agent should state the role it is taking over and read the recorded handover. Other implementation agents belong to the application coding team and must be named by their actual assigned role; do not assume the integration contact owns every code change.
+
 The existing application has a coding team; the current integration contact may differ from the agent that later implements changes. Keep contracts, decisions, acceptance criteria and evidence self-contained in versioned documents. Scope transfer tickets to a concrete deliverable, not an assumed persistent agent identity. A document handover does not authorize another project deployment or bypass its own instructions.
 
 ## Verification and handoff
