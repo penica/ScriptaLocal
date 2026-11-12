@@ -1,0 +1,12 @@
+{
+  "real_model": "pinned Bern Kurrent XVI-XVII",
+  "maximum_new_tokens": 1,
+  "input_lines": 3,
+  "truncated_lines": 3,
+  "reading_state": "needs-review",
+  "false_blank_states": 0,
+  "raw_text_retained_privately_in_memory": true,
+  "network": "disabled",
+  "source_sha256": "f0c813357b77283763fbfc3ccd68dbb503d94aeb52cc51c27c52a1345ff3d998",
+  "manifest_sha256": "d3fc87c3d4b4d0fc708059b6351874b4e35e4dd4a035358394fb0186fbce5445"
+}
