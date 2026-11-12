@@ -1,0 +1,44 @@
+services:
+  tests:
+    image: ${SCRIPTALOCAL_PIPELINE_IMAGE:?Set immutable tested worker image ID}
+    user: '${SCRIPTALOCAL_UID:-1000}:${SCRIPTALOCAL_GID:-1000}'
+    environment:
+      SCRIPTALOCAL_ALLOW_DATABASE_TESTS: '1'
+      SCRIPTALOCAL_TEST_DSN_FILE: /run/secrets/db_dsn
+      PYTHONDONTWRITEBYTECODE: '1'
+      OMP_NUM_THREADS: '2'
+      OPENBLAS_NUM_THREADS: '2'
+    volumes:
+      - ${SCRIPTALOCAL_JOB_VALIDATION_ROOT:?}/db-dsn:/run/secrets/db_dsn:ro
+      - ${SCRIPTALOCAL_PROJECT_ROOT:?}/scriptalocal:/app/scriptalocal:ro
+      - ${SCRIPTALOCAL_PROJECT_ROOT}/integration_tests:/app/integration_tests:ro
+      - ${SCRIPTALOCAL_PROJECT_ROOT}/docs/api/examples:/app/docs/api/examples:ro
+    read_only: true
+    tmpfs: [/tmp:size=128m]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 2g
+    cpus: 2
+    pids_limit: 256
+    networks: [validation_database]
+  gpu:
+    extends:
+      service: tests
+    profiles: [gpu]
+    devices:
+      - ${SCRIPTALOCAL_VALIDATION_GPU:-nvidia.com/gpu=0}
+    environment:
+      HF_HUB_OFFLINE: '1'
+      TRANSFORMERS_OFFLINE: '1'
+    volumes:
+      - ${SCRIPTALOCAL_PROJECT_ROOT}/scripts:/app/scripts:ro
+      - ${SCRIPTALOCAL_MODEL_ROOT:?}:/model:ro
+      - ${SCRIPTALOCAL_REFERENCE_ROOT:?}:/input:ro
+      - ${SCRIPTALOCAL_PIPELINE_VALIDATION_ROOT:?}:/output
+    mem_limit: 8g
+    tmpfs: !override [/tmp:size=256m]
+    command: [python, -m, scripts.validation.pipeline_probe, --image, /input/reference-crop.jpg, --model, /model, --output, /output, --dsn-file, /run/secrets/db_dsn, --runtime-image, '${SCRIPTALOCAL_PIPELINE_IMAGE}']
+networks:
+  validation_database:
+    external: true
+    name: ${SCRIPTALOCAL_VALIDATION_DATABASE_NETWORK:-scriptalocal-jobs-validation_default}
