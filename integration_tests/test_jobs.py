@@ -37,7 +37,7 @@ class JobQueueTests(unittest.TestCase):
         self.clear();self.directory.cleanup()
 
     def clear(self):
-        with self.queue.connect() as db:db.execute('TRUNCATE sl_artifacts,sl_stages,sl_revisions,sl_jobs')
+        with self.queue.connect() as db:db.execute('TRUNCATE sl_deletions,sl_artifacts,sl_stages,sl_revisions,sl_jobs')
 
     def create(self,owner='alice',key=None,**options):
         return self.queue.create(owner,self.source,options,self.configuration,idempotency_key=key)[0]
@@ -64,7 +64,7 @@ class JobQueueTests(unittest.TestCase):
     def test_migrations_are_idempotent_and_reject_changed_checksums(self):
         self.queue.migrate()
         with self.queue.connect() as db:
-            self.assertEqual(db.execute('SELECT count(*) AS count FROM sl_schema_migrations').fetchone()['count'],1)
+            self.assertEqual(db.execute('SELECT count(*) AS count FROM sl_schema_migrations').fetchone()['count'],2)
             checksum=db.execute('SELECT sha256 FROM sl_schema_migrations WHERE version=1').fetchone()['sha256']
             db.execute("UPDATE sl_schema_migrations SET sha256=%s WHERE version=1",('0'*64,))
         try:
@@ -82,6 +82,14 @@ class JobQueueTests(unittest.TestCase):
         with self.assertRaises(QueueError) as caught:
             self.queue.create('alice',self.source,{'client_reference':'different'},self.configuration,idempotency_key='request-1')
         self.assertEqual(caught.exception.code,'idempotency_conflict')
+
+    def test_expected_existing_identity_blocks_deleted_key_recreation(self):
+        first=self.create('alice','immutable-operation')
+        self.queue.request_deletion(first['id'],'alice')
+        with self.assertRaises(QueueError) as caught:
+            self.queue.create('alice',self.source,{},self.configuration,idempotency_key='immutable-operation',expected_existing_id=first['id'])
+        self.assertEqual(caught.exception.code,'idempotency_state_changed')
+        with self.queue.connect() as db:self.assertEqual(db.execute('SELECT count(*) AS count FROM sl_jobs').fetchone()['count'],0)
 
     def test_concurrent_duplicate_submissions_create_one_initial_stage(self):
         def submit(_):return self.queue.create('alice',self.source,{},self.configuration,idempotency_key='same')[0]['id']
