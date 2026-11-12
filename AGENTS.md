@@ -17,7 +17,9 @@ Read `docs/implementation-plan.md` and `tasks.md` before implementation. The sel
 
 ## Implementation rules
 
-- Use FastAPI/Pydantic for the API, PostgreSQL for durable job state, a PostgreSQL-backed leased job queue, CPU OpenCV preprocessing, Kraken line segmentation, and a separate Transformers/PyTorch TrOCR worker environment.
+- The independent agent intake uses a private SQLite transfer registry; this is not OCR job state. Keep its upload tokens scoped to an operator-selected destination, never expose administrator credentials, and keep default binding loopback until network access is configured.
+- Run core tests from `tests/` in the CPU validation image and intake HTTP tests from `integration_tests/` in the intake image; do not silently skip either required suite.
+- Use FastAPI/Pydantic for the OCR API, PostgreSQL for durable job state, a PostgreSQL-backed leased job queue, CPU OpenCV preprocessing, Kraken line segmentation, and a separate Transformers/PyTorch TrOCR worker environment.
 - Keep model adapters isolated to accommodate incompatible dependency requirements. Pin tested dependencies, container image digests, model revisions, checksums, and licenses. Do not use floating production tags or arbitrary remote model code.
 - Benchmark one RTX 3060 first. Use explicit GPU assignments and one inference process per assigned GPU. Two 12 GB GPUs are not one 24 GB allocation. Distributed training is not the default.
 - Preserve the original crop. Save transforms and cell/line coordinates relative to the original image. Never destructively erase border-crossing handwriting.
