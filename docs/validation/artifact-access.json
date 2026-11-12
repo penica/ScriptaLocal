@@ -1,0 +1,34 @@
+{
+  "api_tests": 28,
+  "core_tests": 65,
+  "http": {
+    "jobs": [
+      {
+        "job_id": "dc900dcb-29af-4835-8548-c5fbe3b467be",
+        "pages": 5,
+        "derived_downloads_verified": 34,
+        "original_download_verified": true
+      },
+      {
+        "job_id": "ffd1b189-1d90-49b5-9c9a-31dd763780b9",
+        "pages": 5,
+        "derived_downloads_verified": 34,
+        "original_download_verified": true
+      },
+      {
+        "job_id": "bd048328-7964-45c9-8c8d-e37d6e0b6781",
+        "pages": 5,
+        "derived_downloads_verified": 34,
+        "original_download_verified": true
+      }
+    ],
+    "derived_downloads_verified": 102,
+    "original_downloads_verified": 3,
+    "all_bytes_and_checksums_match_inventory": true,
+    "cross_job_original_rejected": true,
+    "read_only_caller_cannot_mutate_jobs": true,
+    "filesystem_paths_not_exposed": true,
+    "binding": "127.0.0.1:8092",
+    "restored_data": true
+  }
+}
