@@ -1,4 +1,5 @@
 from dataclasses import replace
+from concurrent.futures import ThreadPoolExecutor
 from io import BytesIO
 import json
 from pathlib import Path
@@ -16,6 +17,7 @@ from scriptalocal.pipeline import ImagePipeline,PipelineSettings,source_metadata
 from scriptalocal.recognition import Generation,RecognitionOOM
 from scriptalocal.segmentation import DetectedLine,SegmentationSettings
 from scriptalocal.worker import StageWorker
+from scriptalocal.job_queue import QueueError
 
 
 class SyntheticSegmenter:
@@ -173,6 +175,77 @@ class PipelineTests(unittest.TestCase):
         with patch.object(self.pipeline,'_inputs',side_effect=tampered):outcome=self.worker.run_once()
         self.assertEqual((outcome.status,outcome.error_code),('failed','stage_input_mismatch'))
         self.assertEqual(self.recognizer.calls,0)
+
+
+    def test_text_revision_assembles_without_model_calls_and_preserves_raw_history(self):
+        self.prepare();self.finish();identifier=self.job['id']
+        first_record=self.queue.result_reference(identifier,'alice');original=self.store.read(first_record)
+        first=JobResult.model_validate_json(original);line=first.cells[0].lines[0]
+        calls=(self.segmenter.calls,self.recognizer.calls)
+        row=self.queue.revise(identifier,'alice',{'expected_revision':1,'text_corrections':[{'line_id':str(line.id),'text':'Corrected Name','state':'recognized'}]})
+        self.assertEqual(row['current_revision'],2)
+        self.assertEqual(self.worker.run_once().status,'completed')
+        second=JobResult.model_validate_json(self.store.read(self.queue.result_reference(identifier,'alice')))
+        corrected=second.cells[0].lines[0]
+        self.assertEqual(corrected.text,'Corrected Name');self.assertEqual(corrected.raw_text,line.raw_text)
+        self.assertEqual(corrected.raw_state,line.raw_state);self.assertEqual(corrected.correction.actor_id,'alice')
+        self.assertEqual(second.cells[0].text,'Corrected Name\n'+first.cells[0].lines[1].text)
+        self.assertEqual((self.segmenter.calls,self.recognizer.calls),calls)
+        self.assertEqual(self.store.read(first_record),original)
+        self.assertEqual(self.store.read(self.queue.result_reference(identifier,'alice',revision=1)),original)
+
+    def test_unreadable_revision_preserves_null_and_later_reading_resolves_only_human_warning(self):
+        self.prepare();self.finish();identifier=self.job['id']
+        first=JobResult.model_validate_json(self.store.read(self.queue.result_reference(identifier,'alice')))
+        line=first.cells[0].lines[0]
+        self.queue.revise(identifier,'alice',{'expected_revision':1,'text_corrections':[{'line_id':str(line.id),'text':None,'state':'unreadable'}]})
+        self.assertEqual(self.worker.run_once().status,'completed')
+        second=JobResult.model_validate_json(self.store.read(self.queue.result_reference(identifier,'alice')))
+        self.assertIsNone(second.cells[0].text);self.assertIsNone(second.cells[0].lines[0].text);self.assertTrue(second.review_required)
+        self.queue.revise(identifier,'alice',{'expected_revision':2,'text_corrections':[{'line_id':str(line.id),'text':'Resolved name','state':'recognized'}]})
+        self.assertEqual(self.worker.run_once().status,'completed')
+        third=JobResult.model_validate_json(self.store.read(self.queue.result_reference(identifier,'alice')))
+        self.assertEqual(third.cells[0].lines[0].raw_text,line.raw_text);self.assertEqual(third.cells[0].lines[0].text,'Resolved name')
+        self.assertFalse(third.review_required)
+        self.assertIsNone(JobResult.model_validate_json(self.store.read(self.queue.result_reference(identifier,'alice',revision=2))).cells[0].text)
+
+    def test_geometry_revision_reruns_pipeline_and_never_carries_old_line_corrections(self):
+        self.prepare();self.finish();identifier=self.job['id']
+        first=JobResult.model_validate_json(self.store.read(self.queue.result_reference(identifier,'alice')))
+        self.queue.revise(identifier,'alice',{'expected_revision':1,'text_corrections':[{'line_id':str(first.cells[0].lines[0].id),'text':'Human reading','state':'recognized'}]})
+        self.assertEqual(self.worker.run_once().status,'completed')
+        self.queue.revise(identifier,'alice',{'expected_revision':2,'corrected_dividers':[]})
+        self.finish()
+        third=JobResult.model_validate_json(self.store.read(self.queue.result_reference(identifier,'alice')))
+        self.assertEqual(third.revision,3);self.assertEqual(len(third.cells),1)
+        self.assertTrue(all(line.correction is None for cell in third.cells for line in cell.lines))
+        second=JobResult.model_validate_json(self.store.read(self.queue.result_reference(identifier,'alice',revision=2)))
+        self.assertEqual(second.cells[0].lines[0].correction.text,'Human reading')
+
+    def test_concurrent_revision_writers_have_one_winner_and_invalid_geometry_is_atomic(self):
+        self.prepare();self.finish();identifier=self.job['id']
+        first=JobResult.model_validate_json(self.store.read(self.queue.result_reference(identifier,'alice')))
+        for dividers in [[{'top':[200,0],'bottom':[100,100]},{'top':[100,0],'bottom':[200,100]}],[{'top':[301,0],'bottom':[301,100]}]]:
+            with self.assertRaises(QueueError) as caught:self.queue.revise(identifier,'alice',{'expected_revision':1,'corrected_dividers':dividers})
+            self.assertEqual(caught.exception.code,'invalid_revision')
+        def write(value):
+            try:
+                self.queue.revise(identifier,'alice',{'expected_revision':1,'text_corrections':[{'line_id':str(first.cells[0].lines[0].id),'text':value,'state':'recognized'}]})
+                return 'accepted'
+            except QueueError as exc:return exc.code
+        with ThreadPoolExecutor(max_workers=2) as executor:outcomes=list(executor.map(write,['Writer A','Writer B']))
+        self.assertCountEqual(outcomes,['accepted','revision_conflict'])
+        self.assertEqual(self.worker.run_once().status,'completed')
+        with self.queue.connect() as db:self.assertEqual(db.execute('SELECT count(*) AS count FROM sl_revision_edits WHERE job_id=%s',(identifier,)).fetchone()['count'],1)
+
+    def test_cancelled_pending_revision_retains_completed_history(self):
+        self.prepare();self.finish();identifier=self.job['id']
+        original=self.store.read(self.queue.result_reference(identifier,'alice'))
+        first=JobResult.model_validate_json(original)
+        self.queue.revise(identifier,'alice',{'expected_revision':1,'text_corrections':[{'line_id':str(first.cells[0].lines[0].id),'text':None,'state':'unreadable'}]})
+        self.queue.cancel(identifier,'alice');self.assertEqual(self.worker.run_once().status,'idle')
+        self.assertEqual(self.store.read(self.queue.result_reference(identifier,'alice',revision=1)),original)
+        self.assertEqual(self.queue.get(identifier,'alice')['status'],'cancelled')
 
 
 if __name__=='__main__':unittest.main()
