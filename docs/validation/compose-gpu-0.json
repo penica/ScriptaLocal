@@ -1,0 +1,23 @@
+{
+  "versions": {
+    "torch": "2.7.1+cu126",
+    "torchvision": "0.22.1+cu126",
+    "transformers": "4.51.3",
+    "kraken": "6.0.3",
+    "numpy": "2.0.2",
+    "opencv-python-headless": "4.11.0.86",
+    "scipy": "1.13.1",
+    "scikit-image": "0.24.0",
+    "scikit-learn": "1.5.2",
+    "Pillow": "11.2.1"
+  },
+  "cpu_opencv_geometry": "passed",
+  "cpu_scipy_skimage": "passed",
+  "kraken_binarization_and_segmentation_imports": "passed",
+  "tiny_random_trocr_cuda_generation": "passed",
+  "handwriting_accuracy": "not tested: random weights and synthetic geometry only",
+  "generated_shape": [
+    1,
+    2
+  ]
+}
