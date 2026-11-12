@@ -1,0 +1,12 @@
+{
+  "restored_jobs": 3,
+  "restored_result_revisions": 3,
+  "artifact_files": 102,
+  "original_files": 1,
+  "restored_file_hashes_verified": 103,
+  "file_bytes": 2373555,
+  "backup_destination": "/srv/storage/scriptalocal-backups/resident-http-001",
+  "independent_machine_backup": false,
+  "correction_history_included": false,
+  "restored_database": "scriptalocal_artifact_restore_validation"
+}
