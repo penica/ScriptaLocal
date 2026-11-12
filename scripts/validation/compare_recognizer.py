@@ -17,7 +17,9 @@ from scriptalocal.trocr_recognizer import TrOCRRecognizer
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--model',type=Path,required=True)
     parser.add_argument('--manifest-sha256',required=True);parser.add_argument('--corpus',type=Path,required=True)
-    parser.add_argument('--reference',type=Path,required=True);parser.add_argument('--output',type=Path,required=True);args=parser.parse_args()
+    parser.add_argument('--reference',type=Path,required=True);parser.add_argument('--output',type=Path,required=True)
+    parser.add_argument('--comparison-kind',choices=['model-on-frozen-crops','rendering-against-cached-baseline'],default='model-on-frozen-crops')
+    args=parser.parse_args()
     assert torch.cuda.device_count()==1 and os.environ.get('HF_HUB_OFFLINE')=='1'
     torch.set_num_threads(2)
     corpus_blob=(args.corpus/'corpus.json').read_bytes();corpus=json.loads(corpus_blob)
@@ -54,7 +56,7 @@ def main():
             'matches_after_exterior_whitespace_strip':sum(texts[item['line_id']] is not None and texts[item['line_id']].strip()==item['reading'] for item in text_entries),
             'provisional_nontext_examples':len(nontext),
             'nonempty_outputs_on_provisional_nontext':sum(bool(texts[item['line_id']] and texts[item['line_id']].strip()) for item in nontext)}
-    report={'model':backend.reference,'manifest_sha256':args.manifest_sha256,'line_crops':len(inputs),
+    report={'comparison_kind':args.comparison_kind,'corpus_rendering':corpus.get('rendering'),'model':backend.reference,'manifest_sha256':args.manifest_sha256,'line_crops':len(inputs),
             'corpus_sha256':hashlib.sha256(corpus_blob).hexdigest(),'ai_reference_sha256':hashlib.sha256(reference_blob).hexdigest(),
             'source_image_sha256':corpus['source_sha256'],'cached_baseline_provenance':corpus['baseline_provenance'],
             'controlled_decoding_recipe':recipe,'candidate_author_defaults_before_control':author_defaults,
