@@ -35,3 +35,7 @@ The proposed [warning patch](api/fixture-warning-patch.json) passes all 21 fixtu
 ## Next work and ownership
 
 Registers should correct the three fixture warning scopes and extend its semantic tests. Builder can consume this contract clarification and the previous handover when implementation work is assigned; no production adapter or enablement is requested by this document. Scripta continues pipeline/HTTP implementation and will publish concrete endpoint/configuration/release evidence before asking for a real app round trip. Keep unresolved implementation limits and lifecycle guarantees visible rather than treating plans as tested behavior.
+
+## Revised bundle acceptance, 12 November 2026
+
+Registers subsequently supplied a 95,735-byte revised bundle, SHA-256 `9fd05b62b1057e5647340c1015712c2ff6419bf8b0e14573ee834288f9025078`. Scripta verified its receipt/manifest, ran all 52 supplied tests unchanged, and accepted all 21 canonical fixtures with the executable service model. Comparison proves only the three agreed warning arrays changed among the canonical fixtures. The warning correction acceptance is complete. The seven implementation/release distinctions above and the disabled Local HTR state still apply.
