@@ -8,7 +8,7 @@ Provides a planned HTTP backend for an existing crop-selection application. Pres
 
 ## Project status
 
-Foundation validation is in progress. Both GPUs passed isolated CUDA container tests, and the pinned Bern model passed offline real-weight inference on a synthetic line. The application service and manuscript-quality acceptance are not implemented yet.
+Foundation validation is in progress. Both GPUs passed isolated CUDA container tests, and the pinned Bern model passed offline real-weight inference on a synthetic line. The OCR job service and manuscript-quality acceptance are not implemented yet.
 
 - [Implementation plan](docs/implementation-plan.md)
 - [Task checklist](tasks.md)
@@ -23,5 +23,10 @@ No project license has been selected yet. Model and dependency licenses are trac
 - [Validation evidence and commands](docs/validation/README.md)
 - [Handover request for the existing app coder](docs/existing-app-handover.md)
 - [Designed API contract and examples](docs/api/README.md)
+- [Layout and manual-cell validation](docs/layout-validation.md)
 - Local manuscript input folder: `data/reference/row-crops/` (ignored by Git).
 - Configuration template: `.env.example`; backup storage is configurable for a future Synology NFS mount.
+
+## Agent file uploads
+
+A separate [agent upload API](docs/agent-uploads.md) is running locally at `http://127.0.0.1:8091`. Operators issue expiring requests that name a destination/subfolder; agents upload directly using scoped credentials and receive SHA-256 receipts. The intake service has 18 passing integration tests plus actual HTTP/restart/retry validation. Remote reachability awaits the other agent’s network location.
