@@ -1,0 +1,25 @@
+/usr/local/lib/python3.11/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+  from starlette.testclient import TestClient as TestClient  # noqa
+test_administrator_and_upload_capabilities_are_separate (test_intake.IntakeTests.test_administrator_and_upload_capabilities_are_separate) ... ok
+test_byte_total_count_and_extension_limits (test_intake.IntakeTests.test_byte_total_count_and_extension_limits) ... ok
+test_chunked_oversize_upload_cannot_bypass_limits (test_intake.IntakeTests.test_chunked_oversize_upload_cannot_bypass_limits) ... ok
+test_concurrent_reservations_cannot_exceed_request_file_count (test_intake.IntakeTests.test_concurrent_reservations_cannot_exceed_request_file_count) ... ok
+test_concurrent_uploads_respect_capacity_without_duplicate_publication (test_intake.IntakeTests.test_concurrent_uploads_respect_capacity_without_duplicate_publication) ... ok
+test_existing_fifo_is_rejected_without_blocking_the_server (test_intake.IntakeTests.test_existing_fifo_is_rejected_without_blocking_the_server) ... ok
+test_filename_and_subfolder_traversal_rejected (test_intake.IntakeTests.test_filename_and_subfolder_traversal_rejected) ... ok
+test_openapi_documents_scopes_and_required_upload_headers (test_intake.IntakeTests.test_openapi_documents_scopes_and_required_upload_headers) ... ok
+test_replay_detects_missing_or_changed_files (test_intake.IntakeTests.test_replay_detects_missing_or_changed_files) ... ok
+test_request_upload_and_receipt_scoped_to_requested_folder (test_intake.IntakeTests.test_request_upload_and_receipt_scoped_to_requested_folder) ... ok
+test_restart_recovers_interrupted_upload_and_retains_completed_receipts (test_intake.IntakeTests.test_restart_recovers_interrupted_upload_and_retains_completed_receipts) ... ok
+test_retries_are_idempotent_and_different_content_never_overwrites (test_intake.IntakeTests.test_retries_are_idempotent_and_different_content_never_overwrites) ... ok
+test_revocation_and_expiry_rechecked_before_publication (test_intake.IntakeTests.test_revocation_and_expiry_rechecked_before_publication) ... ok
+test_revocation_during_stream_prevents_file_publication (test_intake.IntakeTests.test_revocation_during_stream_prevents_file_publication) ... ok
+test_single_process_lock_and_invalid_configuration (test_intake.IntakeTests.test_single_process_lock_and_invalid_configuration) ... ok
+test_symlink_destinations_and_existing_symlink_files_rejected (test_intake.IntakeTests.test_symlink_destinations_and_existing_symlink_files_rejected) ... ok
+test_unauthorized_request_does_not_consume_upload_body (test_intake.IntakeTests.test_unauthorized_request_does_not_consume_upload_body) ... ok
+test_upload_timeout_releases_reservation_and_temporary_file (test_intake.IntakeTests.test_upload_timeout_releases_reservation_and_temporary_file) ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 1.773s
+
+OK
