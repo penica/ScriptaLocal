@@ -1,0 +1,19 @@
+{
+  "source_rows": 1,
+  "source_cells": 1,
+  "source_lines": 3,
+  "same_fp32_fp16_text_hashes": true,
+  "same_fp32_after_oom_split_text_hashes": true,
+  "fp32_warm_batch_seconds": 0.545,
+  "fp16_warm_batch_seconds": 0.348,
+  "fp32_peak_cuda_bytes": 1478038528,
+  "fp16_peak_cuda_bytes": 761414656,
+  "core_tests_passed": 63,
+  "default_precision": "fp32",
+  "fp16_scope": "optional validated runtime; manuscript corpus/accuracy acceptance remains pending",
+  "worker_scope": "resident adapter and batching; not a deployed PostgreSQL worker or OCR endpoint",
+  "hardware": "one assigned RTX 3060, host device 0",
+  "runtime_image": "sha256:60a02b3204640a5513e16aa40ca29eed0dcd5859b6eaf1261ba3092127f21f57",
+  "network": "disabled",
+  "accuracy": "unmeasured: no corrected transcripts"
+}
