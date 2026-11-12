@@ -102,7 +102,19 @@ class JobQueue:
                     db.execute(content.decode(),prepare=False)
                     db.execute('INSERT INTO sl_schema_migrations(version,sha256) VALUES(%s,%s)',(version,checksum))
 
-    def create(self,owner,source,options,configuration_sha256,*,idempotency_key=None):
+    def schema_current(self):
+        """Read-only readiness check; never apply migrations from an HTTP probe."""
+        expected={int(file.name.split('_',1)[0]):hashlib.sha256(file.read_bytes()).hexdigest()
+                  for file in (Path(__file__).parent/'migrations').glob('*.sql')}
+        with self.connect() as db:
+            history=db.execute('SELECT version,sha256 FROM sl_schema_migrations').fetchall()
+            if {row['version']:row['sha256'] for row in history}!=expected:return False
+            for table in ('sl_jobs','sl_stages','sl_artifacts','sl_deletions'):
+                # Table names are fixed literals, never request input.
+                db.execute('SELECT 1 FROM '+table+' LIMIT 0')
+        return True
+
+    def create(self,owner,source,options,configuration_sha256,*,idempotency_key=None,expected_existing_id=None):
         owner=principal(owner);source=SourceImage.model_validate(source).model_dump(mode='json')
         options=JobOptions.model_validate(options).model_dump(mode='json')
         if not re.fullmatch(r'[a-f0-9]{64}',configuration_sha256):raise ValueError('Invalid configuration hash')
@@ -116,8 +128,10 @@ class JobQueue:
             if idempotency_key is not None:
                 old=db.execute('SELECT * FROM sl_jobs WHERE owner=%s AND idempotency_key=%s',(owner,idempotency_key)).fetchone()
                 if old:
+                    if expected_existing_id is not None and old['id']!=expected_existing_id:raise QueueError('idempotency_state_changed','Previous operation identity changed')
                     if old['fingerprint']!=fingerprint:raise QueueError('idempotency_conflict','Key was already used with different input')
                     return old,True
+            if expected_existing_id is not None:raise QueueError('idempotency_state_changed','Previous operation was deleted; reconcile before retrying')
             count=db.execute("SELECT count(*) AS count FROM sl_jobs WHERE status IN ('queued','running')").fetchone()['count']
             if count>=self.settings.maximum_active_jobs:raise QueueError('queue_full','Job queue has reached its active-job limit')
             identifier=uuid4()
@@ -294,6 +308,25 @@ class JobQueue:
             if not rows or len(rows)>self.settings.maximum_artifacts or not any(row['logical_key']=='output' for row in rows):
                 raise QueueError('stage_input_unavailable','Committed predecessor output is unavailable')
             return tuple(ArtifactRecord(row['id'],row['logical_key'],row['relative_path'],row['sha256'],row['bytes']) for row in rows)
+
+    def find_idempotent(self,owner,key):
+        owner=principal(owner)
+        if not isinstance(key,str) or not re.fullmatch(r'[!-~]{1,128}',key):raise ValueError('Invalid idempotency key')
+        with self.connect() as db:
+            return db.execute('SELECT * FROM sl_jobs WHERE owner=%s AND idempotency_key=%s',(owner,key)).fetchone()
+
+    def request_deletion(self,identifier,owner):
+        with self.connect() as db:
+            db.execute('SELECT pg_advisory_xact_lock(7346002)')
+            job=self._job(db,identifier,owner,lock=True)
+            if job['status']=='running':raise QueueError('job_running','Cancel and acknowledge the running job before deletion')
+            records=db.execute('SELECT * FROM sl_artifacts WHERE job_id=%s ORDER BY relative_path',(identifier,)).fetchall()
+            manifest=[ArtifactRecord(row['id'],row['logical_key'],row['relative_path'],row['sha256'],row['bytes']).manifest() for row in records]
+            request_id=uuid4()
+            db.execute('INSERT INTO sl_deletions(id,job_id,owner,source_sha256,artifacts) VALUES(%s,%s,%s,%s,%s)',
+                       (request_id,identifier,job['owner'],job['source']['sha256'],Jsonb(manifest)))
+            db.execute('DELETE FROM sl_jobs WHERE id=%s',(identifier,))
+            return request_id
 
     def result_reference(self,identifier,owner):
         with self.connect() as db:
