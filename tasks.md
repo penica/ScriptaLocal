@@ -60,20 +60,22 @@ Use TODO, DOING or BLOCKED with an unchecked box; use DONE with a checked box on
   - Evidence, 12 November 2026 (sample received): reference-crop.jpg uploaded, 2418 × 272 pixels. First real single-cell segmentation/recognition probe is running. No human ground truth or larger page/hand-separated corpus yet.
 
 
-- [ ] **HTR-009 — Provision reproducible offline models** — DOING
+- [x] **HTR-009 — Provision reproducible offline models** — DONE
   - Owner: current chat.
   - Depends on: HTR-004, HTR-006.
   - Done when: Pin Bern recognition and candidate Kraken segmentation model revisions, hashes, licenses and configuration. Verify safe loading, cache completeness and offline mode. Document actual disk use; select segmentation weights using sample evidence.
   - Evidence, 12 November 2026: Provisioned only inference files for Bern model commit a6bb6086ba3f7ddc62193a0289b1ee733c1af15e; verified upstream safetensors SHA-256 and recorded all file hashes/MIT model-card license. Real FP32 inference passed offline on GPU 1 using a synthetic printed line (not handwriting accuracy). Bundled Kraken segmentation candidate is being exercised; sample-based model selection remains open.
   - Evidence, 12 November 2026 (learned segmentation): Bundled blla candidate SHA-256 77a638a83c9e535620827a09e410ed36391e9e8e8126d5796a0f15b978186056 ran offline. Default scaling missed all three lines in the real cell; padding to preserve pixel scale found three lines, visually checked via saved crops, and real TrOCR generation ran on each. This is one-sample functional evidence, not model-selection/accuracy acceptance.
+  - Completion, 12 November 2026: Selected the initial pinned Bern safetensors recognition revision and bundled Kraken 6.0.3 blla baseline, with profile/configuration, file hashes, engine-image identity, licenses/sources and actual bytes recorded in docs/validation/model-profile.json. All recognition inference files were checksum-verified again before the real run; learned segmentation and recognition both ran offline as UID 1000 in a read-only container with read-only model mounts. Unpadded segmentation failed; scale-preserving padding extracted the three visible lines. This selects reproducible baseline weights using one-sample evidence; comparative quality acceptance remains HTR-022, not claimed here.
 
 
-- [ ] **HTR-010 — Build single-cell inference vertical slice** — DOING
+- [x] **HTR-010 — Build single-cell inference vertical slice** — DONE
   - Owner: current chat.
   - Depends on: HTR-006, HTR-007, HTR-009.
   - Done when: Run a real manually bounded multiline cell through Kraken line extraction and TrOCR single-line recognition on GPU 0; return ordered text and geometry with model provenance. Record time and VRAM. A sample is required for handwriting acceptance.
   - Evidence, 12 November 2026: scripts/validation/manuscript_slice.py runs the supplied manuscript with explicit manual cell bounds through learned Kraken segmentation and real TrOCR offline on GPU 0, preserving geometry and private line crops/text. Padded candidate extracted three visible lines; summary timings/VRAM in docs/validation/manuscript-cell-padded-summary.json. The unpadded failure is retained as needs-review evidence. Versioned service contract/provenance integration remains open, so task is unchecked.
   - Evidence, 12 November 2026 (contract update): HTR-007 now defines the versioned result contract. The probe still needs full provenance/state adaptation to that contract; segmentation model selection under HTR-009 remains open.
+  - Completion, 12 November 2026: Ran the uploaded manually bounded multiline cell through real Kraken segmentation and Bern TrOCR on GPU 0, offline and nonroot, with immutable model hashes, source/configuration hashes, original-coordinate geometry, raw output, truncation flags, timings and peak VRAM. Exported a schema-valid v1 JobResult with three lines and review warnings, preserving text privately. No HTTP job exists. Evidence: docs/validation/manuscript-{api,provenance}-summary.json plus the private result under data/validation/manuscript-cell-provenance/. Accuracy remains unmeasured without corrected text.
 
 
 - [x] **HTR-011 — Implement image validation and geometry transforms** — DONE
@@ -83,17 +85,20 @@ Use TODO, DOING or BLOCKED with an unchecked box; use DONE with a checked box on
   - Completion, 12 November 2026: Implemented bounded PNG/JPEG/single-image TIFF decoding, MIME/byte/pixel/frame checks, original hashes and atomic unchanged publication, transparent-background normalization and reversible affine/EXIF coordinate mapping. Tests verify all 8 orientations for PNG and TIFF against actual output pixels, corrupt/truncated/oversized/multiframe inputs, coordinate round trips and corrupt/symlink artifact rejection. Uploaded 2418 × 272 JPEG also decoded and persisted byte-for-byte. Evidence: docs/validation/cpu-contract-images.json, cpu-tests.txt and real-image-input.json; HTTP upload read limits remain an API implementation responsibility.
 
 
-- [ ] **HTR-012 — Detect vertical borders and derive cells** — TODO
-  - Owner: unassigned.
+- [ ] **HTR-012 — Detect vertical borders and derive cells** — DOING
+  - Owner: current chat.
   - Depends on: HTR-008, HTR-011.
   - Done when: Implement conservative morphological and line-evidence detection with duplicate merging, skew tolerance and image-edge bounds. Verify cell count/order on reference fixtures, faint and broken borders, handwriting strokes, double borders and no-divider inputs; return ambiguity diagnostics.
   - Evidence, 12 November 2026: Added configurable row_geometry_probe.py and generated a private divider overlay/cell crops on the uploaded row. Removed outside-table edge strips from candidate cells after visual review. This is an exploratory single-image probe, not the implemented/accepted detector or full difficult-border benchmark.
+  - Evidence, 12 November 2026: Reusable morphological/Hough layout module and diagnostics implemented. Synthetic clear/faint/broken/double/slanted rules, margins, narrow columns, caps, corrections and invalid geometry pass. Current real row yields 18 cells/19 boundaries; excluded weaker exterior shadow remains in review metadata. Public report docs/validation/layout-validation.json records 46 total passing tests. Automatic proposals remain needs-review; larger annotated-corpus acceptance is pending HTR-008.
 
 
-- [ ] **HTR-013 — Preserve border-crossing ink and correct layouts** — TODO
-  - Owner: unassigned.
+- [ ] **HTR-013 — Preserve border-crossing ink and correct layouts** — DOING
+  - Owner: current chat.
   - Depends on: HTR-012.
   - Done when: Keep original pixels and padded recognition crops; make any border masking reversible. Accept validated divider corrections and uncertain/merged-cell states; preserve empty cells and produce overlay diagnostics without silently assigning a fixed schema.
+  - Evidence, 12 November 2026: Cell extraction preserves original context and border-crossing ink, returns separate masks and both crop-to-oriented/crop-to-encoded transforms. Manual dividers replace the proposal, including explicit single-cell/merged geometry; EXIF, reversed/crossed/invalid coordinates are checked. Pixel-preservation and mapping tests pass. Downstream line assignment/reading states, correction history and service integration remain open.
+
 
 - [ ] **HTR-014 — Implement robust per-cell line segmentation** — TODO
   - Owner: unassigned.
@@ -135,6 +140,7 @@ Use TODO, DOING or BLOCKED with an unchecked box; use DONE with a checked box on
   - Depends on: HTR-007, HTR-017, HTR-020.
   - Done when: Ship a usable upload/poll/export client. Once existing-app source or provider contract is supplied, add Local HTR selection, service configuration, progress, actionable errors and cell-preserving result import; test a real round trip while retaining explicit Codex choice. Record external integration as incomplete until tested.
   - Evidence, 12 November 2026: Created docs/existing-app-handover.md with a ready-to-send request for the other AI coder covering crop/provider/result contracts, networking, revisions and sanitized fixtures. Existing-app contract/source is not supplied yet.
+  - Evidence, 12 November 2026: Created ignored data/integration-handover/ for the two files supplied by the existing app coding agent; user is placing them there. Review and integration validation follow after receipt.
 
 
 - [ ] **HTR-022 — Benchmark recognition and layout quality** — TODO
@@ -180,3 +186,9 @@ Use TODO, DOING or BLOCKED with an unchecked box; use DONE with a checked box on
   - Depends on: HTR-007, HTR-019.
   - Done when: Configure storage/backup roots, service access, GPU allocation, models, retention and resource limits without source edits. Support local backup now and a verified Synology NFS mount later; reject an unavailable required mount rather than writing into its underlying local directory. If a management UI is implemented, expose validated backup destination/settings there with protected secrets. Verify changes, restart persistence and inaccessible-destination errors.
   - Evidence, 12 November 2026: User requested configurable backup and minimal hardcoding. Initial environment example includes temporary local backup root; UI and NAS validation are not implemented.
+
+- [ ] **HTR-030 — Provide destination-scoped agent upload API** — DOING
+  - Owner: current chat.
+  - Depends on: HTR-003, HTR-004.
+  - Done when: The operator can issue expiring, destination/subfolder-scoped upload requests; the other agent can upload files directly and receive checksummed receipts without administrator credentials, path traversal or overwrites. File/count/byte limits, safe retries, revocation, interrupted-upload recovery and deployment isolation pass. Verify the agent's reachable URL and a real handover upload.
+  - Evidence, 12 November 2026: Implemented FastAPI intake, private SQLite transfer registry, operator/uploader CLI, scoped tokens and nonroot read-only Compose deployment. 18 integration tests pass; actual headless HTTP upload, saved checksum, container restart/replay, revocation and credential-safe logs pass. Existing 46 core tests also pass. Service is healthy at 127.0.0.1:8091. A private two-file ticket targets integration-handover/app-api-contract; remote reachability and other-agent upload await the agent's network location. See docs/agent-uploads.md and docs/validation/intake-{validation,http}.json. This service does not implement the OCR job API.
