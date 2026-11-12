@@ -1,0 +1,81 @@
+{
+  "api_image": "sha256:4c95cf770a065d7b722e676e7d8d3a447402ad47b5bb8c80d4664b30509254b7",
+  "worker_image": "sha256:2d254e635de7c5342e830c41df88664af387807797c8bac8b5b05ab82e72f089",
+  "installed_packages": {
+    "api": 24,
+    "worker": 171
+  },
+  "setup_tests": 3,
+  "http": {
+    "source_sha256": "0a5b42a6aa9f2ad626931151f05c600b5ebb88766620b825e40c7a95ce59d8e6",
+    "jobs": [
+      {
+        "job_id": "83700303-ee89-4ba4-a963-b3f22abfe7e7",
+        "seconds": 67.973,
+        "cells": 18,
+        "lines": 24,
+        "review_required": true,
+        "configuration_sha256": "c5e687d1bd1559b5bc9a8f5c924561563ddcb5ea5c6d6ba3b0e69c3f306de163",
+        "result_sha256": "a6c3a19fff5f7d804e928ebf4126495507a2c13b4d54cd12702c887095eee5d2",
+        "stage_seconds": {
+          "layout": 3.680351268965751,
+          "segmentation": 57.97534888004884,
+          "recognition": 4.441354071954265
+        },
+        "idempotency_replayed": true
+      }
+    ]
+  },
+  "restart": {
+    "api_ready_after_stack_restart": true,
+    "job_id": "83700303-ee89-4ba4-a963-b3f22abfe7e7",
+    "result_bytes_unchanged": true,
+    "source_hash_unchanged": true,
+    "runtime_image_matches_running_worker": true,
+    "pipeline_source_fingerprints_match_checkout": true,
+    "binding": "127.0.0.1:8090"
+  },
+  "boundaries": {
+    "database_role": {
+      "rolname": "scriptalocal_app",
+      "rolsuper": false,
+      "rolcreatedb": false,
+      "rolcreaterole": false,
+      "rolreplication": false,
+      "rolbypassrls": false
+    },
+    "server_secret_read_denied": true,
+    "fresh_initialization_scram_login_passed": true,
+    "generated_credentials_and_bound_error_parameter_absent_from_logs": true,
+    "read_only_root_filesystems": 3,
+    "api_worker_nonroot_and_no_capabilities": true,
+    "source_bind_mounts": false,
+    "only_api_host_port": "127.0.0.1:8090",
+    "worker_network_internal_only": true
+  },
+  "credential_reload": {
+    "unknown_token_http": 401,
+    "atomic_added_token_http": 200,
+    "atomic_revoked_token_http": 401,
+    "api_restart_required": false,
+    "untrusted_origin_not_allowed": true,
+    "token_absent_from_logs": true,
+    "original_credentials_restored": true
+  },
+  "allocated_kib": {
+    "postgres": 47452,
+    "artifacts": 784,
+    "originals": 300,
+    "settings": 20,
+    "status": 12,
+    "secrets": 24
+  },
+  "logical_image_bytes": {
+    "api": 260817431,
+    "worker": 11056096830
+  },
+  "persistent_stack_running": true,
+  "registers_integration": false,
+  "lan_https_enabled": false,
+  "core_tests": 65
+}
