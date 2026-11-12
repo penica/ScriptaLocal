@@ -64,6 +64,179 @@
         ]
       }
     },
+    "/intake/v1/downloads": {
+      "post": {
+        "summary": "Publish Download",
+        "operationId": "publish_download_intake_v1_downloads_post",
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Administrator": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DownloadRequestInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/intake/v1/downloads/{download_id}": {
+      "get": {
+        "summary": "Download Manifest",
+        "operationId": "download_manifest_intake_v1_downloads__download_id__get",
+        "parameters": [
+          {
+            "name": "download_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Download Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Administrator": []
+          },
+          {
+            "DownloadTicket": []
+          }
+        ]
+      }
+    },
+    "/intake/v1/downloads/{download_id}/revoke": {
+      "post": {
+        "summary": "Revoke Download",
+        "operationId": "revoke_download_intake_v1_downloads__download_id__revoke_post",
+        "parameters": [
+          {
+            "name": "download_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Download Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Administrator": []
+          }
+        ]
+      }
+    },
+    "/intake/v1/downloads/{download_id}/files/{file_id}": {
+      "get": {
+        "summary": "Download File",
+        "operationId": "download_file_intake_v1_downloads__download_id__files__file_id__get",
+        "parameters": [
+          {
+            "name": "download_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Download Id"
+            }
+          },
+          {
+            "name": "file_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "File Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "DownloadTicket": []
+          }
+        ]
+      }
+    },
     "/intake/v1/requests": {
       "post": {
         "summary": "Create Request",
@@ -364,9 +537,59 @@
         ],
         "title": "UploadRequestInput",
         "type": "object"
+      },
+      "DownloadRequestInput": {
+        "additionalProperties": false,
+        "properties": {
+          "destination": {
+            "maxLength": 100,
+            "minLength": 1,
+            "title": "Destination",
+            "type": "string"
+          },
+          "subfolder": {
+            "default": "",
+            "maxLength": 500,
+            "title": "Subfolder",
+            "type": "string"
+          },
+          "label": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Label",
+            "type": "string"
+          },
+          "filenames": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 50,
+            "minItems": 1,
+            "title": "Filenames",
+            "type": "array"
+          },
+          "expires_in_seconds": {
+            "default": 86400,
+            "minimum": 1,
+            "title": "Expires In Seconds",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "destination",
+          "label",
+          "filenames"
+        ],
+        "title": "DownloadRequestInput",
+        "type": "object"
       }
     },
     "securitySchemes": {
+      "DownloadTicket": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Expiring read-only token scoped to explicitly published snapshot files."
+      },
       "Administrator": {
         "type": "http",
         "scheme": "bearer",
