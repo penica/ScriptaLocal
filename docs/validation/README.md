@@ -84,3 +84,9 @@ The designed HTTP contract is in `../api/openapi.json`, with fictional examples 
 ## Agent upload service
 
 `intake-validation.json` and `intake-tests.txt` record 18 integration checks in the separately pinned 20-package intake image, running as UID 1000 with read-only root storage, no network during tests and dropped capabilities. `intake-http.json` records actual host-to-container upload, unchanged-byte checksum, restart/replay, revocation, log credential checks and the current loopback/nonroot/read-only deployment. The core suite remains separate and still passes all 46 checks. See `../agent-uploads.md` for commands. Other-agent reachability and its actual contract-file upload remain pending; no remote exposure or OCR job service is claimed.
+
+## Durable queue and scoped file transfer updates
+
+`jobs-queue.json`, `jobs-tests.txt` and `jobs-restart.json` record 20 real PostgreSQL tests and actual forced-stop recovery. See [queue reproduction](../job-queue.md). This completes HTR-016 at queue-library scope; OCR routes/resident workers remain open.
+
+The actual coding-agent two-file upload is now verified in `integration-handover-received.json`. The selected LAN interface is documented in `intake-lan.json`. Scoped downloads add explicitly published snapshots, separate read-only tokens and manifests; `intake-download-http.json` and `intake-download-tests.txt` record LAN checksum verification and all 22 intake checks. Older loopback/pending-upload statements above describe historical snapshots.
