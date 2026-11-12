@@ -153,3 +153,13 @@ GPU container computation passed using existing CDI definitions and pinned PyTor
 ## Image and contract validation update, 12 November 2026
 
 A real row crop is now supplied; larger reference data and corrected transcripts remain pending. HTR-007 and HTR-011 have schema/decoder implementations with 24 passing CPU tests. The designed OpenAPI contract and examples live under `docs/api/`; this does not deploy the HTTP routes. Original image geometry uses encoded-raster pixel edges, with explicit EXIF mapping and additional affine transforms. Raw recognition and saved human corrections are distinct fields. The existing app coder should review this concrete contract alongside its current interface.
+
+## Layout and baseline model update, 12 November 2026
+
+The baseline profile and offline manual-cell slice are now pinned and schema-exported (HTR-009/010). This does not accept manuscript quality or deploy the HTTP API. Reusable layout and ink-preserving context extraction are implemented with synthetic geometry tests and a reviewed real-row overlay; HTR-012/013 remain open for corpus/downstream acceptance. Automatic layouts always require review, weak exterior shadow proposals are retained in metadata, and original pixels are not erased by masks. Public divider endpoints are interpreted in the original encoded frame and validated after one EXIF transform. See `docs/layout-validation.md` for reproduction and limits.
+
+## Agent file intake, requested 12 November 2026
+
+The user requested an API through which another AI coding agent can upload files to a folder chosen by this agent/operator. A separate, scoped file-intake service now implements that flow. Its small private SQLite registry stores transfer tickets/receipts only; PostgreSQL remains the OCR job-state/queue decision. Uploading never executes a file or starts transcription. Destination aliases, relative subfolders, limits, expiry and the public base URL are configurable; administrator credentials remain private and uploading agents receive only request-scoped tokens.
+
+The service runs nonroot with read-only root storage and limited writable mounts at loopback port 8091. Eighteen integration checks plus actual HTTP/checksum/restart/retry/revocation/log-redaction checks pass. A two-file app-contract request is prepared under ignored private storage. Network location of the other agent is still needed before choosing a reachable HTTPS/private-tunnel endpoint. See `docs/agent-uploads.md`; this does not implement `/v1/jobs`.
