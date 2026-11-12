@@ -37,7 +37,7 @@ class JobQueueTests(unittest.TestCase):
         self.clear();self.directory.cleanup()
 
     def clear(self):
-        with self.queue.connect() as db:db.execute('TRUNCATE sl_deletions,sl_artifacts,sl_stages,sl_revisions,sl_jobs')
+        with self.queue.connect() as db:db.execute('TRUNCATE sl_revision_edits,sl_deletions,sl_artifacts,sl_stages,sl_revisions,sl_jobs')
 
     def create(self,owner='alice',key=None,**options):
         return self.queue.create(owner,self.source,options,self.configuration,idempotency_key=key)[0]
@@ -64,7 +64,7 @@ class JobQueueTests(unittest.TestCase):
     def test_migrations_are_idempotent_and_reject_changed_checksums(self):
         self.queue.migrate()
         with self.queue.connect() as db:
-            self.assertEqual(db.execute('SELECT count(*) AS count FROM sl_schema_migrations').fetchone()['count'],2)
+            self.assertEqual(db.execute('SELECT count(*) AS count FROM sl_schema_migrations').fetchone()['count'],3)
             checksum=db.execute('SELECT sha256 FROM sl_schema_migrations WHERE version=1').fetchone()['sha256']
             db.execute("UPDATE sl_schema_migrations SET sha256=%s WHERE version=1",('0'*64,))
         try:
