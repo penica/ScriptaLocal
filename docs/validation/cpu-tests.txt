@@ -1,0 +1,29 @@
+test_all_sanitized_examples_validate (test_contracts.ContractTests.test_all_sanitized_examples_validate) ... ok
+test_blank_middle_cell_and_line_breaks_survive_roundtrip (test_contracts.ContractTests.test_blank_middle_cell_and_line_breaks_survive_roundtrip) ... ok
+test_cell_and_line_order_and_ids_are_not_silently_repaired (test_contracts.ContractTests.test_cell_and_line_order_and_ids_are_not_silently_repaired) ... ok
+test_exported_openapi_references_resolve_and_schemas_are_valid (test_contracts.ContractTests.test_exported_openapi_references_resolve_and_schemas_are_valid) ... ok
+test_geometry_bounds_finiteness_area_and_orientation (test_contracts.ContractTests.test_geometry_bounds_finiteness_area_and_orientation) ... ok
+test_geometry_transform_singular_or_infinite_rejected (test_contracts.ContractTests.test_geometry_transform_singular_or_infinite_rejected) ... ok
+test_human_correction_preserves_raw_output (test_contracts.ContractTests.test_human_correction_preserves_raw_output) ... ok
+test_job_status_lifecycle_and_timestamps (test_contracts.ContractTests.test_job_status_lifecycle_and_timestamps) ... ok
+test_missing_provenance_and_extra_fields_rejected (test_contracts.ContractTests.test_missing_provenance_and_extra_fields_rejected) ... ok
+test_revision_conflicts_are_explicit_and_old_line_ids_cannot_mix_with_geometry (test_contracts.ContractTests.test_revision_conflicts_are_explicit_and_old_line_ids_cannot_mix_with_geometry) ... ok
+test_uncertain_readings_cannot_be_successful_empty_text (test_contracts.ContractTests.test_uncertain_readings_cannot_be_successful_empty_text) ... ok
+test_existing_corrupt_or_symlink_artifact_is_rejected (test_images.ArtifactTests.test_existing_corrupt_or_symlink_artifact_is_rejected) ... ok
+test_original_publication_is_unchanged_and_idempotent (test_images.ArtifactTests.test_original_publication_is_unchanged_and_idempotent) ... ok
+test_byte_and_pixel_limits (test_images.DecodeTests.test_byte_and_pixel_limits) ... ok
+test_corrupt_and_empty_inputs (test_images.DecodeTests.test_corrupt_and_empty_inputs) ... ok
+test_corrupt_pixel_stream_not_only_header (test_images.DecodeTests.test_corrupt_pixel_stream_not_only_header) ... ok
+test_exif_geometry_matches_actual_pixels_all_orientations (test_images.DecodeTests.test_exif_geometry_matches_actual_pixels_all_orientations) ... ok
+test_formats_and_original_bytes (test_images.DecodeTests.test_formats_and_original_bytes) ... ok
+test_invalid_limits_and_nonbytes (test_images.DecodeTests.test_invalid_limits_and_nonbytes) ... ok
+test_invalid_orientation_is_not_silently_ignored (test_images.DecodeTests.test_invalid_orientation_is_not_silently_ignored) ... ok
+test_transparency_is_composited_on_white (test_images.DecodeTests.test_transparency_is_composited_on_white) ... ok
+test_unsupported_mismatched_and_multiframe (test_images.DecodeTests.test_unsupported_mismatched_and_multiframe) ... ok
+test_crop_rotate_scale_padding_round_trip (test_images.GeometryTests.test_crop_rotate_scale_padding_round_trip) ... ok
+test_invalid_geometry (test_images.GeometryTests.test_invalid_geometry) ... ok
+
+----------------------------------------------------------------------
+Ran 24 tests in 0.716s
+
+OK
