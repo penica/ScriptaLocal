@@ -1,0 +1,15 @@
+{
+  "model": "dh-unibe/trocr-kurrent-XVI-XVII",
+  "revision": "a6bb6086ba3f7ddc62193a0289b1ee733c1af15e",
+  "checksum_verification": "passed",
+  "parameters": 333921792,
+  "precision": "torch.float32",
+  "model_load_seconds": 1.584,
+  "generation_seconds": 1.04,
+  "peak_cuda_bytes": 1396779008,
+  "generated_tokens": 10,
+  "decoded_output_sha256": "2af2059f02e4bfe8989d17c75e215ce0849d49bc6b0b7ccb7d5e54ace4a22864",
+  "input_type": "synthetic printed line",
+  "handwriting_accuracy": "not measured; no ground-truth comparison",
+  "offline_real_weight_inference": "passed"
+}
