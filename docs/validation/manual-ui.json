@@ -1,0 +1,26 @@
+{
+  "real_browser": "Chromium",
+  "upload_requests": 1,
+  "cells": 18,
+  "lines": 24,
+  "job_id": "7a966c5e-95bc-4cc0-bed7-5b912823d63b",
+  "json_download_passed": true,
+  "reload_restores_job": true,
+  "settings_saved": true,
+  "mobile_390px_no_horizontal_overflow": true,
+  "sign_out_passed": true,
+  "page_errors": [],
+  "final_session_checks": {
+    "host_prefix_cookie_accepted_by_browser": true,
+    "secure_httponly_strict": true,
+    "key_absent_from_browser_storage": true,
+    "reopened_existing_job": true,
+    "private_results_cleared_on_logout": true
+  },
+  "ui_tests": 4,
+  "api_regression_tests": 30,
+  "core_tests": 65,
+  "setup_tests": 3,
+  "api_image": "sha256:c5ff9cac98e1e6eddf1b707936d1e735e50828becb907073015d62f148a1a7e0",
+  "broad_goal_resumed": false
+}
