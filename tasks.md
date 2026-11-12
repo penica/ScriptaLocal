@@ -124,7 +124,7 @@ Use TODO, DOING or BLOCKED with an unchecked box; use DONE with a checked box on
 
   - Evidence, 12 November 2026 (real full-row stages): ImagePipeline now binds source/settings/models/runtime manifest, preserves immutable geometry/line PNG evidence and assembles validated v1 JSON with explicit partial/review states and global limits. All 11 synthetic pipeline integration tests and 65 core checks pass. Actual full-row GPU run produced 18 review-required cells and 24 line readings; all three database stages committed once. A second run used 10-second leases over 58-second segmentation with 19 heartbeat calls and identical cells/text/geometry/provenance. API/deployed daemon/quality acceptance remain open. See docs/pipeline-validation.md and docs/validation/queued-full-row*.json.
 
-- [ ] **HTR-017 — Expose asynchronous transcription API** — DOING
+- [x] **HTR-017 — Expose asynchronous transcription API** — DONE
   - Owner: current chat.
   - Depends on: HTR-015, HTR-016.
   - Done when: Implement validated upload, status, result, model inventory, health, controlled artifact retrieval, cancellation and deletion. Verify consistent error responses, pixel/upload/queue limits and stable ordered cell/line results end to end.
@@ -132,10 +132,14 @@ Use TODO, DOING or BLOCKED with an unchecked box; use DONE with a checked box on
 
   - Evidence, 12 November 2026 (resident HTTP): File-configured single-GPU resident worker now publishes expiring, exclusive readiness and reuses models across jobs. Five readiness checks pass. Two HTTP jobs returned identical 18-cell/24-line results in 66.959/65.889 seconds with one model load. SIGKILL during a third job’s segmentation recovered on attempt 2, preserving the same job and exactly one final result/revision. All three results validate; API restart preserves them and clean worker stop removes readiness. Temporary services are stopped. Artifact discovery, background cleanup, production deployment and Registers acceptance remain open. See docs/resident-worker-validation.md and docs/validation/resident-http.json.
 
-- [ ] **HTR-018 — Record corrections and result revisions** — TODO
-  - Owner: unassigned.
+  - Completion, 12 November 2026: Implemented upload/status/result/models/health/cancel/delete and bounded artifact inventory/downloads, including unchanged originals. All 28 API and 65 core checks pass. Real HTTP/GPU execution, reuse, crash recovery and API restart are verified; a separately restored database served all 102 derived artifacts plus three job-scoped original downloads with matching hashes. Production deployment belongs to HTR-019, corrections to HTR-018 and background retention/cleanup to HTR-024. See docs/ocr-api-validation.md and docs/validation/artifact-access.json.
+
+- [x] **HTR-018 — Record corrections and result revisions** — DONE
+  - Owner: current chat.
   - Depends on: HTR-013, HTR-017.
   - Done when: Store raw recognition separately from human edits, preserve provenance and optimistic concurrency, and regenerate affected stages after geometry edits. Verify conflicting updates and cancellation cannot overwrite completed correction history.
+
+  - Completion, 12 November 2026: Added immutable server-attributed edit records, optimistic concurrency, queued text-only assembly without model calls, geometry regeneration and historical result retrieval. All 30 API, 16 pipeline, 21 queue, 16 worker and 65 core tests pass. Real HTTP synthetic correction completed in 0.617 seconds; divider regeneration completed in 62.948 seconds. All three revision results retain exact prior bytes across edits and PostgreSQL restart, with exactly one result per revision and no carried corrections on regenerated lines. Cancellation/conflicting writers preserve history. See docs/revision-validation.md and docs/validation/revisions.json.
 
 - [ ] **HTR-019 — Package Compose deployment and local access** — TODO
   - Owner: unassigned.
@@ -178,12 +182,14 @@ Use TODO, DOING or BLOCKED with an unchecked box; use DONE with a checked box on
   - Depends on: HTR-016, HTR-019.
   - Done when: Expose stage/queue/worker timing and disk health without manuscript text. Bound logs, caches and retries; implement configurable artifact retention with protection for corrected reference material. Verify stale leases, full disk, missing models, worker loss and GPU OOM produce recoverable explicit outcomes.
 
-- [ ] **HTR-025 — Verify backup restoration and deployment rollback** — TODO
+- [ ] **HTR-025 — Verify backup restoration and deployment rollback** — DOING
   - Owner: unassigned.
   - Depends on: HTR-018, HTR-024.
   - Done when: Back up PostgreSQL plus consistent artifact manifests and corrections to independent storage. Restore in isolation and verify image hashes, jobs and revision history. Demonstrate image/config rollback and a safe migration restore procedure.
   - Evidence, 12 November 2026: User chose local storage for initial backups and future Synology NFS. Configurable local destination created with mode 0700. A temporary 64 KiB file restored with matching SHA-256; this is not application/database restoration and does not complete the task.
 
+
+  - Evidence, 12 November 2026 (initial local restore): Preserved the three-job database before destructive API tests. Its dump restored into a separate database; all 102 artifact files and one shared original were copied to the configured local backup destination and restored to separate paths with all 103 checksums verified. Restored results/artifacts pass actual HTTP retrieval. This covers revision-1 machine outputs only; correction history, independent-machine/NFS backup and deployment/migration rollback remain open. See docs/backup-restore-validation.md.
 
 - [ ] **HTR-026 — Complete deployment and integration acceptance** — TODO
   - Owner: unassigned.
