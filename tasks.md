@@ -120,6 +120,8 @@ Use TODO, DOING or BLOCKED with an unchecked box; use DONE with a checked box on
 
   - Evidence, 12 November 2026 (leased orchestration): Added StageWorker with independent heartbeats, generator-safe execution, same-job/revision committed predecessor inputs, configuration filtering and fail-closed cancellation/outage handling. All 16 new PostgreSQL worker tests pass, including work beyond its original lease, late-owner rejection, stalled heartbeat drain and lost commit response without duplicate output. The original 20 queue tests and 65 core tests pass. Connection/query/keepalive bounds are configurable. Actual GPU stage assembly and deployed daemon/API remain open; see docs/worker-validation.md and docs/validation/worker-orchestration.json.
 
+  - Evidence, 12 November 2026 (real full-row stages): ImagePipeline now binds source/settings/models/runtime manifest, preserves immutable geometry/line PNG evidence and assembles validated v1 JSON with explicit partial/review states and global limits. All 11 synthetic pipeline integration tests and 65 core checks pass. Actual full-row GPU run produced 18 review-required cells and 24 line readings; all three database stages committed once. A second run used 10-second leases over 58-second segmentation with 19 heartbeat calls and identical cells/text/geometry/provenance. API/deployed daemon/quality acceptance remain open. See docs/pipeline-validation.md and docs/validation/queued-full-row*.json.
+
 - [ ] **HTR-017 — Expose asynchronous transcription API** — TODO
   - Owner: unassigned.
   - Depends on: HTR-015, HTR-016.
@@ -152,10 +154,14 @@ Use TODO, DOING or BLOCKED with an unchecked box; use DONE with a checked box on
 
   - Evidence, 12 November 2026 (revised fixtures): Received 95,735-byte revised ZIP, SHA-256 9fd05b62b1057e5647340c1015712c2ff6419bf8b0e14573ee834288f9025078. Its 52 tests pass unchanged and all 21 canonical fixtures pass service-model semantics. Compared all canonical objects: only the three agreed warning arrays changed; text, geometry and IDs are unchanged. Four invalid semantic mutations remain rejected. This completes the current fixture-warning correction acceptance, not the application adapter or HTTP round trip. Evidence: docs/validation/app-fixtures-revised.json and app-fixture-revised-tests.txt.
 
-- [ ] **HTR-022 — Benchmark recognition and layout quality** — TODO
-  - Owner: unassigned.
+- [ ] **HTR-022 — Benchmark recognition and layout quality** — DOING
+  - Owner: current chat.
   - Depends on: HTR-008, HTR-015, HTR-017.
   - Done when: Compare pinned TrOCR candidates and a suitable licensed Kraken recognition model using identical held-out samples. Report layout errors, CER/WER, names/dates, blank false positives and review rate by script/hand. Separate manual-layout and automatic-layout results; agree numeric acceptance criteria from evidence.
+
+  - Evidence, 12 November 2026 (model-selection review): User asked whether the baseline is the best model that fits one/both GPUs. It is not established as best. Current author model cards identify newer Bern trocr-german-kurrent-xvi-xix-from-kurrent-v2, kraken-german-xix-v1 and line-specialized Qwen3.5-4B/Qwen3-VL-4B adapters for comparison. Checkpoint/license/runtime validation and identical user-ground-truth evaluation must precede selection. A medieval Medusa model was reviewed but its 9th–15th-century focus is a weaker chronological match. See docs/model-candidate-review.md. No candidate weights downloaded or accuracy/VRAM fit claimed from model-card scores.
+
+  - Evidence, 12 November 2026 (candidate and visual diagnostics): Provisioned MIT Bern XVI–XIX v2 at immutable revision bd1d96b67225b580846d7759f6ba74c66f56680e with safetensors/config/license/tokenizer checksums. Offline inference on GPU 1 used the same frozen 24 line crops and a controlled decoding recipe; 22 readings differ from the cached baseline, which does not establish accuracy. Owner authorized direct assistant image reading; six provisional AI references (four text, two ruling-only crops) are stored privately and are not human ground truth. A single-word crop-sensitivity experiment showed the baseline matches the AI reading after manual tightening but not with the original oversized crop; the newer model did not match this case. Prioritize crop-quality diagnosis alongside model comparison. Evidence: docs/validation/model-comparison-new-trocr.json, crop-sensitivity.json and docs/model-candidate-review.md.
 
 - [ ] **HTR-023 — Enable and benchmark second GPU worker** — TODO
   - Owner: unassigned.
