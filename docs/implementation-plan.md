@@ -149,3 +149,7 @@ The user selected `/srv/storage/scriptalocal-backups` as an initial local backup
 ZFS is online with no known data errors, but one member reports five read errors. No pool repairs, error clearing or disk reconfiguration were performed. Local backups can validate restoration, but independent/off-machine recovery remains pending the NAS. The pool already contains other workloads and must not be treated as a spare blank disk.
 
 GPU container computation passed using existing CDI definitions and pinned PyTorch 2.7.1/CUDA 12.6 image, with exactly one visible device per container. The Compose implementation will use CDI device mapping on this host rather than adding an NVIDIA runtime or restarting Docker. Evidence and commands are in `docs/validation/`.
+
+## Image and contract validation update, 12 November 2026
+
+A real row crop is now supplied; larger reference data and corrected transcripts remain pending. HTR-007 and HTR-011 have schema/decoder implementations with 24 passing CPU tests. The designed OpenAPI contract and examples live under `docs/api/`; this does not deploy the HTTP routes. Original image geometry uses encoded-raster pixel edges, with explicit EXIF mapping and additional affine transforms. Raw recognition and saved human corrections are distinct fields. The existing app coder should review this concrete contract alongside its current interface.
