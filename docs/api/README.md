@@ -1,6 +1,6 @@
 # ScriptaLocal HTTP contract, version 1
 
-Status: designed and schema-tested contract. HTTP routes are not implemented or deployed yet. [openapi.json](openapi.json) is the machine-readable definition. [examples/](examples/) contains fictional fixtures, never manuscript content. The definitions live in `scriptalocal/contracts.py`; regenerate the specification using `python -m scripts.export_contract` in the CPU validation environment.
+Status: schema-tested contract with an implemented API prototype and verified local HTTP/GPU runs. Correction revisions passed real HTTP/GPU and restart validation; production deployment and Registers acceptance remain open. [openapi.json](openapi.json) is the machine-readable definition. [examples/](examples/) contains fictional fixtures, never manuscript content. The definitions live in `scriptalocal/contracts.py`; regenerate the specification using `python -m scripts.export_contract` in the CPU validation environment.
 
 ## Upload and lifecycle
 
@@ -10,7 +10,7 @@ The intended default decoder limits are 25 MiB, 40 million pixels and 20,000 pix
 
 Initial upload returns 202 `JobAccepted`. Poll `GET /v1/jobs/{job_id}` until a terminal status. `queued → running → succeeded`, `failed` or `cancelled` are the lifecycle states. A `succeeded` job means a complete structured result exists; its cells may still need human review. A failed job carries a public error code, never an exception traceback. `stage=complete` applies only to succeeded jobs. No fabricated percentage progress is exposed.
 
-Retrieve the result only after success. A result that is not ready returns 409. The current design exposes the latest revision; callers must compare its revision before importing. Older raw results and human readings remain in service storage and must never be overwritten by worker retries. Persisted history retrieval can be added as a versioned endpoint if the caller needs it.
+Retrieve the result only after success. A result that is not ready returns 409. The current design exposes the latest revision; callers must compare its revision before importing. Older raw results and human readings remain in service storage and must never be overwritten by worker retries. Use `GET /v1/jobs/{job_id}/result?revision=N` to retrieve immutable completed history, including while a newer revision is pending or cancelled.
 
 `Idempotency-Key` is optional, printable ASCII, 1–128 characters. The server scopes it to the authenticated caller. Reusing a key with the same image and canonical options returns the same job ID with `idempotency_replayed=true` and its current status. Different content returns 409. The key reservation must be atomic with job creation, not an in-memory cache. The retention window must be documented when implemented. Queue pressure returns 429 with a retry policy; missing models/components return 503 rather than cloud fallback.
 
@@ -42,11 +42,13 @@ Submit corrections with `POST /v1/jobs/{job_id}/revisions` and `expected_revisio
 
 ## Access and integration
 
-Service tokens use bearer authentication with server-assigned read/write/delete capabilities. Liveness may be unauthenticated; readiness, model inventory, jobs and artifacts require appropriate capability and caller ownership. These are implementation requirements, not evidence of working authentication. Keep tokens on the existing application's backend. Default service binding is loopback; remote/LAN use needs configured routing and HTTPS. No CORS permission is assumed.
+Service tokens use bearer authentication with server-assigned read/write/delete capabilities. Liveness may be unauthenticated; readiness, model inventory, jobs and artifacts require appropriate capability and caller ownership. Scoped authentication is covered by API integration and HTTP tests; production routing remains a deployment acceptance requirement. Keep tokens on the existing application's backend. Default service binding is loopback; remote/LAN use needs configured routing and HTTPS. No CORS permission is assumed.
+
+`GET /v1/jobs/{job_id}/artifacts` returns `ArtifactInventory`: a job-wide `original` descriptor and committed derived `artifacts`, ordered by artifact UUID. `limit` defaults to 100 and accepts 1–200; pass `next_cursor` as `after` until it is null. The original descriptor repeats on each page. Derived descriptors identify revision, stage, logical key, MIME type, byte count and SHA-256, without filesystem paths. Enumeration is eventually consistent while stages/revisions add outputs; repeat after completion for a complete inventory. Downloads verify checksums; corrupt/missing/nonregular original files return 503. Original IDs are scoped to the job even when source bytes are shared.
 
 Artifact URLs accept an opaque artifact UUID owned by the job. They never accept paths or user-supplied filenames. Error bodies use `ErrorResponse` with a public code/message, retryable flag and request UUID. Routine logs must not contain uploaded image bytes, credentials, raw text, corrections or arbitrary decoder exception details.
 
-The API design must be checked against the existing app handover before caller implementation. This contract does not claim compatibility with an app whose provider interface is not yet supplied.
+The API design must be checked against the existing app handover before caller implementation. The Registers handover and corrected synthetic fixtures pass offline compatibility checks; actual application integration remains open.
 
 ## Validation
 
