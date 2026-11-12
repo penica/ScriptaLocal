@@ -1,0 +1,4 @@
+Pillow==11.2.1
+pydantic==2.11.4
+jsonschema==4.23.0
+openapi-spec-validator==0.7.2
