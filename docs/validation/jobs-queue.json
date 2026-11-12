@@ -1,0 +1,13 @@
+{
+  "date": "2026-11-12",
+  "tests": 20,
+  "passed": 20,
+  "elapsed_seconds": 7.027,
+  "runner_image": "sha256:61e14e651877ac85c73b3d01746020ed67f9c8053753670877da1a2d386fbd36",
+  "database_image": "postgres:17-alpine@sha256:b0f9560a2de083e2cc7382e75f808c7381a32852a7ec49117deedb300e552b24",
+  "network": "dedicated internal Compose network; no database host port",
+  "restart_evidence": "jobs-restart.json",
+  "migration_sha256": "b91e2cb7fc342e4e9ea5d8819e1bc4e97d3a46138713815727e044dedaaa704d",
+  "constraints_sha256": "167ef4bc963ac9fae484005eb1414eedabe8cf575ab7f4e8d792a0defa5fb9b5",
+  "scope": "PostgreSQL queue and immutable stage publication; OCR HTTP routes and resident workers not implemented"
+}
