@@ -1,0 +1,18 @@
+{
+  "base_url": "http://10.10.100.209:8091",
+  "manifest": "passed",
+  "snapshot_checksums": "passed",
+  "unauthorized_file_read": "rejected",
+  "files": [
+    {
+      "filename": "registers-contract-clarification.md",
+      "bytes": 7764,
+      "sha256": "1e240f1889ea7ef762288c1131abe054baad220c25edb315d97215d92aec260c"
+    },
+    {
+      "filename": "scriptalocal-semantic-validator.zip",
+      "bytes": 36723,
+      "sha256": "3e6cb67b84544660b648a5969b696d921b3a727c49a966b1219297b18498f42a"
+    }
+  ]
+}
