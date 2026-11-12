@@ -1,6 +1,6 @@
 # ScriptaLocal implementation plan
 
-Date: 12 November 2026. Status: HTTP/GPU prototype, artifacts and correction history validated; permanent deployment and Registers integration remain open. Model/training quality work is deferred from the current critical path at the owner’s request.
+Date: 12 November 2026. Status: HTTP/GPU prototype, artifacts and correction history validated; persistent local and trusted HTTPS deployment are validated; Registers integration and remaining operational work remain open. Model/training quality work is deferred from the current critical path at the owner’s request.
 
 ## Outcome
 
