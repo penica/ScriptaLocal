@@ -32,6 +32,13 @@ class QueueSettings:
     retry_delay_seconds:int=2
     maximum_artifacts:int=4096
     maximum_completion_bytes:int=256*1024*1024
+    database_statement_timeout_ms:int=5000
+    database_lock_timeout_ms:int=2000
+    database_connect_timeout_seconds:int=5
+    database_tcp_user_timeout_ms:int=5000
+    database_keepalive_idle_seconds:int=5
+    database_keepalive_interval_seconds:int=2
+    database_keepalive_count:int=2
 
     def __post_init__(self):
         for key,value in vars(self).items():
@@ -71,8 +78,12 @@ class JobQueue:
         self._dsn=dsn;self.artifacts=artifacts;self.settings=settings
 
     def connect(self):
-        return psycopg.connect(self._dsn,row_factory=dict_row,connect_timeout=5,
-                               options='-c timezone=UTC -c application_name=scriptalocal')
+        return psycopg.connect(self._dsn,row_factory=dict_row,connect_timeout=self.settings.database_connect_timeout_seconds,
+                               options=f'-c timezone=UTC -c application_name=scriptalocal -c statement_timeout={self.settings.database_statement_timeout_ms} -c lock_timeout={self.settings.database_lock_timeout_ms}',
+                               tcp_user_timeout=self.settings.database_tcp_user_timeout_ms,keepalives=1,
+                               keepalives_idle=self.settings.database_keepalive_idle_seconds,
+                               keepalives_interval=self.settings.database_keepalive_interval_seconds,
+                               keepalives_count=self.settings.database_keepalive_count)
 
     def migrate(self):
         files=sorted((Path(__file__).parent/'migrations').glob('*.sql'))
@@ -131,15 +142,17 @@ class JobQueue:
     def get(self,identifier,owner):
         with self.connect() as db:return self._job(db,identifier,owner)
 
-    def claim(self,worker_id,capabilities=STAGES):
+    def claim(self,worker_id,capabilities=STAGES,*,configuration_sha256=None):
         worker_id=principal(worker_id);capabilities=list(capabilities)
+        if configuration_sha256 is not None and not re.fullmatch(r'[a-f0-9]{64}',configuration_sha256):raise ValueError('Invalid configuration hash')
         if not capabilities or any(name not in STAGES for name in capabilities):raise ValueError('Invalid worker capabilities')
         self.recover_expired()
         with self.connect() as db:
             job=db.execute("""SELECT j.* FROM sl_jobs j WHERE j.status='queued' AND NOT j.cancel_requested
+             AND (%s::text IS NULL OR j.configuration_sha256=%s)
              AND EXISTS(SELECT 1 FROM sl_stages s WHERE s.job_id=j.id AND s.revision=j.current_revision
               AND s.status='queued' AND s.available_at<=clock_timestamp() AND s.name=ANY(%s))
-             ORDER BY j.created_at,j.id FOR UPDATE OF j SKIP LOCKED LIMIT 1""",(capabilities,)).fetchone()
+             ORDER BY j.created_at,j.id FOR UPDATE OF j SKIP LOCKED LIMIT 1""",(configuration_sha256,configuration_sha256,capabilities)).fetchone()
             if job is None:return None
             stage=db.execute("SELECT * FROM sl_stages WHERE job_id=%s AND revision=%s AND status='queued' AND name=ANY(%s) ORDER BY created_at FOR UPDATE LIMIT 1",
                              (job['id'],job['current_revision'],capabilities)).fetchone()
@@ -267,6 +280,20 @@ class JobQueue:
                 self._new_stage(db,job['id'],lease.revision,STAGES[STAGES.index(lease.stage)+1])
                 db.execute("UPDATE sl_jobs SET status='queued',updated_at=clock_timestamp() WHERE id=%s",(job['id'],))
             return 'completed'
+
+    def input_artifacts(self,lease):
+        """Committed predecessor artifacts only, under a current live worker lease."""
+        with self.connect() as db:
+            job,stage=self._locked(db,lease);self._assert_live(job,stage,lease)
+            if job['cancel_requested']:raise QueueError('cancel_requested','Cancellation was requested')
+            index=STAGES.index(lease.stage)
+            if index==0:return ()
+            rows=db.execute("""SELECT a.* FROM sl_stages s JOIN sl_artifacts a ON a.stage_id=s.id
+              WHERE s.job_id=%s AND s.revision=%s AND s.name=%s AND s.status='succeeded'
+              ORDER BY a.logical_key LIMIT %s""",(lease.job_id,lease.revision,STAGES[index-1],self.settings.maximum_artifacts+1)).fetchall()
+            if not rows or len(rows)>self.settings.maximum_artifacts or not any(row['logical_key']=='output' for row in rows):
+                raise QueueError('stage_input_unavailable','Committed predecessor output is unavailable')
+            return tuple(ArtifactRecord(row['id'],row['logical_key'],row['relative_path'],row['sha256'],row['bytes']) for row in rows)
 
     def result_reference(self,identifier,owner):
         with self.connect() as db:
